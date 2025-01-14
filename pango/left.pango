@@ -1,0 +1,36 @@
+<xl>Link Demo</xl>
+<w>
+<link name=image.pango>\
+Link to image.pango</link> here. 
+
+<link name=colors.pango>\
+<u>Underlined link</u></link> to colors here.
+
+<xl>LARGE text <link name=margins.pango> \
+<u>link to margins.pango</u></link> </xl>. 
+
+International Text display. \
+<link name=inter.pango color=green>\
+This is <b>another</b> link in green to inter.pango</link>
+
+<link name=bad.pango>This is a broken link </link>
+<link name=justify.pango color=#6666ff>
+This is a centered light blue 
+<b>bold</b> link to justify.pango</link>
+
+<link name=bad.pango color=#ff0000>\
+This is broken link in red (bad.pango)</link>
+
+<link name=formats.pango color=#000088> \
+This is a link in dark blue with \
+<bg#ffff00><u>yellow background</u></bg#>
+to formats.pango</link>
+
+International Link.<link name=inter.pango>\
+ <r>Gr\303\274\303\237</r> Gott
+</link>
+
+</w>
+
+
+

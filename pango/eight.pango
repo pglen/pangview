@@ -1,0 +1,6 @@
+<c>International formatting / color test:</c>
+
+<e>German</e> (Deutsch S\303\274d) <b>Gr\303\274\303\237</b> Gott
+<b>German</b> (Deutsch S\303\274d) <i>Gr\303\274\303\237</i> Gott
+<g>German</g> (Deutsch S\303\274d) <i><b>Gr\303\274\303\237</b></i> Gott
+<r>German</r> (Deutsch S\303\274d) <sup>Gr\303\274\303\237</sup> Gott

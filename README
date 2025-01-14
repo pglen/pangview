@@ -7,7 +7,7 @@ a welcome screen.
  The pangview utility is fast, it displays a regular README file in less than a second.
 
  The format of the file is friendly, like pango, rich text or html. 
-(but simpler)The parser was written in python, it is easy to extend.
+(but simpler) The parser was written in python, it is easy to extend.
 
  A quick intro:
 
@@ -28,6 +28,5 @@ utility,
 
 This project is in the public domain.
 
-Peter
- 
+Peter Glen
 

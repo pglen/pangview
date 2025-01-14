@@ -44,7 +44,9 @@ Syntactic elements:
     <m> text </m>       margin (both in)
     <lm> text </lm>     left margin 
     <in> text </in>     indent (cummulative)
-
+    \t                  insert TAB
+    <tab>               insert TAB
+    
  Text hiding instructions:
 
     <hid> text </hid>   hidden text (removed from output)
@@ -60,9 +62,9 @@ Syntactic elements:
 
         Formatting Instructions:
     
-        font = name             name of the font
+        font = name             name of the font ex. Mono, Times, System
         face  = name            alias: name of the font
-        size  = num             size of the font
+        size  = num             size of the font in pixels
         color = colorspec       color of the font
         foreground = colorspec  alias: color of the font
         fg    = colorspec       alias: color of the font
@@ -72,11 +74,10 @@ Syntactic elements:
         italic  = true          italic font
         under  = true           underlined
         underline  = true       alias: underlined
-        sub   = true           subscript
-        super   = true         superscript
-        wrap = true             wrap text (ignore new line)
+        sub   = true            subscript
+        super   = true          superscript
+        wrap = true             wrap text (ignore new line, collapse space)
         align = alignment       left / right / center
-
     
     When wrap not in effect, space, tab, newline operate in their
     original meaning. If wrap is in effect spaces are collapsed and
@@ -98,6 +99,8 @@ Syntactic elements:
             align = alignment       left / right / center
             width = num             image display width            
             height = num            image display height
+         
+        Image size defaults to image's original size
 
      ESCAPES:
 
@@ -124,4 +127,5 @@ closing tag is not properly nested.
  Most attributes are recursive, however the text rendering engine cannot 
 do red and blue text at the same time. Thus the conflicting items will 
 be applied as their priority dictates. (usually: the last one prevails)
+
 

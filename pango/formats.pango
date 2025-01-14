@@ -2,7 +2,8 @@
 </xl>   
 This is <i>Italic</i> text and <b> Bold </b> text, and this is <b><i> ItalicBold </i></b> text. 
 This is <u>underline</u> text, this is <uu>double underline</uu> text, \
-this is <s>StrikeTrough</s> text. 
+this is <s>StrikeTrough</s> text. \
+This is line continuation.
 
 </in></in>\
 <t>This is Right aligned <b>Bold</b> text</t>
@@ -55,14 +56,17 @@ List item One.List item One.List item One.List item One.List item One.
 Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item Text 
 Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item 
 Sub sub Item Text Sub Item Text Sub Item Text                    
-Sub sub Item Text Sub Item Text 
+Sub sub Item Text <xxl>Sub Item Text</xxl>
 </in>\
 2.b) Sub item
 </in>\
 
-3.) List item three
-<in>List item three. List item three. List item three. List item three. List item three. 
+3.) List item three <b>Bold Item</b>
+<in>List item three. <i>List item three.</i> List item three. List item three. List item three. 
+<xl>Big item in list</xl>
 </in></in>
 
 <c>End of document.</c>
+
+
 

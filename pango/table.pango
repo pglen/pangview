@@ -1,0 +1,61 @@
+<xl><c> List and Table Formatting Demo</c>
+</xl>   
+
+<xl>List Demo</xl>
+
+<in>\
+1.) List item one
+<in>\
+List item                                                                                
+List item List item List item List item List item 
+</in>\
+
+ 2.) List item two
+<in>\
+ 2.a) Sub item one
+<in>\
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item Text 
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item 
+Sub sub Item Text Sub Item Text Sub Item Text                    
+Sub sub Item Text Sub Item Text 
+</in>\
+2.b) Sub item
+</in>\
+
+3.) List item three
+<in>List item three. List item three. List item three. List item three. List item three. 
+</in></in>
+
+<xl>Table Demo</xl>
+
+Regular font: 
+
+Table items:
+<lm>    
+abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg
+1234567812345678123456781234567812345678123456781234567812345678
+Table row1  \tTable col2     <tab>Table col3 <tab>Table col4
+</lm>
+
+<span font=mono>\
+Fixed font: 
+
+Table items:
+<in><in>
+abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg
+1234567812345678123456781234567812345678123456781234567812345678
+</span>\
+
+<span font=mono> 
+Table row1  <tab>Table col2x<tab>Table col3x  <tab>Table col4x
+Table row2  <tab>Table col2x<tab>Table col3x  <tab>Table col4x
+Table row3  <tab>Table col2x<tab>Table col3x  <tab>Table col4x
+Table row4   \tTable col2x  \tTable col3x</in>
+</span>
+
+</in></in>
+
+
+
+
+

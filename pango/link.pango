@@ -1,4 +1,4 @@
-<c><xxl>Link text Demo</xxl></c>
+<xxl>Link text Demo</xxl><
 
 <link name=image.pango color = #ff0000>This is link in red (image.pango)</link>
 Embedded in text <link name=colors.pango> is a regular link (colors.pango)</link> here. 
@@ -15,3 +15,4 @@ Embedded in <xxl>LARGE text <link name=colors.pango><u>link to colors.pango\
  link in dark blue with <bg#ffff00> <u>yellow background</u> </bg#> (formats.pango)</link>
 
 You may press backspace to go to previous page.
+

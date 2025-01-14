@@ -1,0 +1,25 @@
+<xxl><c>Pango Markup</c></xxl>   
+
+<b> Bold </b> <i> Italic </i>
+Newlines preserve their meaning.
+<hid>Hidden text is not shown.</hid>\
+
+Backslash at the end of line \
+is the continuation mark.
+<span foreground='blue' size="50">Blue text</span> is <i>cool</i>
+End of span.
+<span background='green' size="50" italic=1 under=1 align=left> Green italic background </span> is <i>cool</i>
+End of span.
+<span foreground="red" size="40">Red text</span> is <i>un-cool</i>
+<span foreground="green" size="20" align=center>Green centered text</span> is here.
+Regular line of text.
+Subscript text <sub>is here</sub> Back to regular. Superscript text <sup>is here</sup> 
+Regular line of text.
+Large <span size = 30>Subscript text <sub> is here</sub> Back to regular.</span>
+Large <span size=30>Superscript text <sup>is here</sup> Regular again.</span> 
+Einstein:
+<span size=50>e = mc<sup>2</sup></span>
+Indexed Pythagoras:
+    a<sub>1</sub><sup>2</sup> + b<sub>2</sub><sup>2</sup> = c<sup>2</sup>
+End of file.
+
