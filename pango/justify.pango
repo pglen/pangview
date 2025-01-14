@@ -1,0 +1,31 @@
+<xxl><c> Justify Formatting Demo</c>
+</xxl>   
+Wrapped text:
+<w>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick 
+</w>\
+
+Justified wrapped text:
+<j><w>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. 
+</w></j>
+
+Right aligned text:
+<w><t>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick 
+</t></w>\
+
+Centered text:
+<w><c>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick 
+</c></w>\
+
+
+Centered justified text:
+<w><c><j>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick 
+</j></c></w>\
+
+
+<c>End of document.</c>
+

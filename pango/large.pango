@@ -1,0 +1,5 @@
+Regular text, <l>large text, </l><xl>Extra large text. </xl><xxl>Extra extra large text</xxl>
+<b>Regular Bold text, <l>large text, </l><xl>Extra large text. </xl><xxl>Extra extra large text</xxl></b>
+<i>Regular Italic text, <l>large text, </l><xl>Extra large text. </xl><xxl>Extra extra large text</xxl></i>
+<b><i>Regular Bold Italic text, <l>large text, </l><xl>Extra large text. </xl><xxl>Extra extra large text</xxl></i></b>
+

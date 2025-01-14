@@ -1,0 +1,16 @@
+<#ffff00>Numbered color1</#>
+<#ff00ff>Numbered color2</#>
+<#00ffff>Numbered color3</#>
+<#ff0000>Numbered color4</#>
+<#00ff00>Numbered color5</#>
+<r> Red text</r>
+<e> Blue text</e>
+<g> Green text</g>
+<rb> Red background. </rb>
+<gb> Green background. </gb>
+<eb> Blue background. </eb>
+<eb><#ffffff> Blue background, white foreground. </#></eb>
+<#666666> Gray foreground. </#></eb>
+Empty line
+<bg#888888><fg#ffffff>Gray background, white foreground.</#></bg#>
+Regular text

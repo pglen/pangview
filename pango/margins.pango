@@ -1,0 +1,31 @@
+<xxl><c> Margins and Justify Demo</c>
+</xxl>   
+Wrapped text:
+<w>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick 
+</w>
+<c> End of Paragraph</c>
+
+Justified wrapped text:
+<j><w>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. 
+</w></j>
+<c>End of Paragraph</c>
+##<hid>
+Justified wrapped text with indent:
+<j><w>
+<in>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. 
+</in></w></j>
+
+<c> End of Paragraph</c>
+
+Justified wrapped text with margin:
+<j><w>
+<m>
+The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumpedoverthe <b>lazy</b> dog. Thequick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped overthe<b>lazy</b> dog. The quick <#886600>brown</#> foxjumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the<b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. The quick <#886600>brown</#> fox jumped over the <b>lazy</b> dog. 
+</w></j>
+</m>
+
+<c> End of Paragraph</c>
+

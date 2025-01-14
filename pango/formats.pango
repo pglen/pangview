@@ -1,0 +1,68 @@
+<xl><c> Document Formatting Demo</c>
+</xl>   
+This is <i>Italic</i> text and <b> Bold </b> text, and this is <b><i> ItalicBold </i></b> text. 
+This is <u>underline</u> text, this is <uu>double underline</uu> text, \
+this is <s>StrikeTrough</s> text. 
+
+</in></in>\
+<t>This is Right aligned <b>Bold</b> text</t>
+<c>And this is <i>centered</i> text.</c>
+And this left aligned (regular) text.</c>
+
+<c>This is centered text with <f>fixed (monospace) font</f></c> 
+
+<f>Monospace <b>bold</b> <i>Italic</i> <xl>Extra Large</xl> font</f>
+
+<sm>This is small <b>Bold</b> and small <i>Italic</i> and small <u>Underline</u> text.</sm>
+<sm>(small new line)
+</sm>
+<xs>This is extra small <b>Bold</b> and extra small <i>Italic</i> and extra small\
+ <u>Underline</u> text.</xs>
+<xs>(extra small new line)
+</xs>
+Before Hidden text .... \
+<hid>Hidden text. Can be used as notes or instructions.</hid>\
+After Hidden text.
+
+This is <r>Red</r> text, this is <g>Green</g> text, this is <e>Blue</e> text.
+This is <l> Large </l> text, this is <sm>Small</sm> text.
+(regular new line)
+
+This is <l><r> Red Large</r></l> text, this is <l><g>Green Large</g></l> text.
+This is <l><e>Blue Large <b>Bold</b> <i>Italic</i> </e></l> text. 
+(large new line)<l>
+</l>
+This is <l><g> Green Large <b>Bold</b> <u>Underline</u> </g></l> text.
+This is <xl> Extra Large <b>Bold</b> <i>Italic</i> <s>StrikeTrough</s> </xl> text.
+(extra large newline)<xl>
+</xl>
+This is <xxl> Extra Extra Large <b>Bold</b> <i>Italic</i> <s>StrikeTrough</s> </xxl> text.
+(extra extra large newline)<xxl>
+</xxl>
+List:
+
+<in>\
+1.) List item one
+<in>\
+List item One.List item One.List item One.List item One.List item One.
+List item One.List item One.List item One.List item One.List item One.
+</in>\
+
+ 2.) List item two
+<in>\
+ 2.a) Sub item one
+<in>\
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item Text 
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item 
+Sub sub Item Text Sub Item Text Sub Item Text                    
+Sub sub Item Text Sub Item Text 
+</in>\
+2.b) Sub item
+</in>\
+
+3.) List item three
+<in>List item three. List item three. List item three. List item three. List item three. 
+</in></in>
+
+<c>End of document.</c>
+

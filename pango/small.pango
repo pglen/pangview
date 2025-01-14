@@ -1,0 +1,5 @@
+Regular text, <sm>small text, </sm><xs>Extra small text. </xs>
+<b>Regular Bold text, <sm>small text, </sm><xs>Extra small text. </xs></b>
+<i>Regular Italic text, <sm>small text, </sm><xs>Extra small text. </xs></i>
+<b><i>Regular Bold Italic text, <sm>small text, </sm><xs>Extra small text. </xs></i></b>
+
