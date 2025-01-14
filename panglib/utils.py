@@ -50,7 +50,8 @@ def uni(xtab):
             cc += (xtab[4] & 0x3f) << 6
             cc += (xtab[5] & 0x3f)
 
-        ccc = unichr(cc)
+        #ccc = unichr(cc)
+        ccc = chr(cc)
     except:
         pass
 
@@ -119,7 +120,8 @@ def unescape(strx):
                                 xtab.append(octx)
                             else:
                                 #print ("other ",str.format("{0:b}", octx))
-                                retx += unichr(octx)
+                                retx += chr(octx)
+                                #retx += unichr(octx)
                         else:
                             xtab.append(octx)
                             #print ("data ",str.format("{0:b}", octx))

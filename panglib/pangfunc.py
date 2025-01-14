@@ -51,6 +51,26 @@ def chkstate(obj_1, obj_2):
 # manipulate the parser stack. Note the naming convention like Bold() for
 # bold start, eBold() for bold end.
 
+class xTextTag(Gtk.TextTag):
+
+    def __init__(self):
+        Gtk.TextTag.__init__(self)
+        self.link = ""
+        #self.set_sensitive(True)
+        #self.connect("event", self.clicked)
+
+    def clicked(self, arg1, arg2, arg3, arg4):
+        print("Event", arg1, arg2,)
+
+    def do_event(self, arg1, arg2, arg3):
+        if arg2.type == Gdk.EventType.MOTION_NOTIFY:
+            return
+        if not self.link:
+            return
+
+        if arg2.type == Gdk.EventType.BUTTON_RELEASE:
+            print("Link event", self.link)
+
 class CallBack():
 
     def __init__(self, TextState, Mainview, Emit, Pvg):
@@ -168,7 +188,7 @@ class CallBack():
     # --------------------------------------------------------------------
     def parseTextState(self, TextState, vparser = None):
 
-        xtag = Gtk.TextTag()
+        xtag = xTextTag()
 
         if TextState.font != "":
             xtag.set_property("font", TextState.font)
@@ -226,7 +246,9 @@ class CallBack():
             xtag.set_property("size", TextState.size * Pango.SCALE)
 
         if TextState.link != "":
-            xtag.set_data("link", TextState.link)
+            xtag.link = TextState.link
+            #xtag.set_property("link", TextState.link)
+            #print("Link", TextState.link)
             if TextState.color == "":
                 xtag.set_property("foreground", "blue")
 
@@ -577,7 +599,7 @@ class CallBack():
             if vparser.contflag == 0:
                 break
 
-        xtag = Gtk.TextTag();  fname = ""; www = 0; hhh = 0
+        xtag = xTextTag();  fname = ""; www = 0; hhh = 0
 
         while True:
             xkey = xstack.pop()
@@ -590,11 +612,11 @@ class CallBack():
 
             if kk == "align":
                 if vv == "left":
-                    xtag.set_property("justification", Gtk.JUSTIFY_LEFT)
+                    xtag.set_property("justification", Gtk.Justification.LEFT)
                 elif vv == "center":
-                    xtag.set_property("justification", Gtk.JUSTIFY_CENTER)
+                    xtag.set_property("justification", Gtk.Justification.CENTER)
                 elif vv == "right":
-                    xtag.set_property("justification", Gtk.JUSTIFY_RIGHT)
+                    xtag.set_property("justification", Gtk.Justification.RIGHT)
 
             if kk == "width":
                 www = int(vv)
@@ -615,18 +637,18 @@ class CallBack():
         # Exec collected stuff
         self.Mainview.add_text_xtag(" ", xtag, self.pvg.flag)
         try:
-            pixbuf = Gtk.gdk.pixbuf_new_from_file(fname)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(fname)
             if www and hhh:
                 #print ("scaling to", www, hhh)
-                pixbuf2 = Gtk.gdk.Pixbuf(Gtk.gdk.COLORSPACE_RGB, True, 8, www, hhh)
+                pixbuf2 = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, www, hhh)
                 pixbuf.scale(pixbuf2, 0, 0, www, hhh,
                     0, 0, float(www)/pixbuf.get_width(), float(hhh)/pixbuf.get_height(),
-                Gtk.gdk.INTERP_BILINEAR)
+                        GdkPixbuf.InterpType.BILINEAR)
                 self.Mainview.add_pixbuf(pixbuf2, self.pvg.flag)
             else:
                 self.Mainview.add_pixbuf(pixbuf, self.pvg.flag)
 
-        except gobject.GError as error:
+        except GObject.GError as error:
             #print ("Failed to load image file '" + vv + "'")
             self.Mainview.add_broken(self.pvg.flag)
 

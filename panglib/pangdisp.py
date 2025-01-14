@@ -270,7 +270,8 @@ class PangoView(Gtk.Window):
         '''
         tags = iter.get_tags()
         for tag in tags:
-            page = tag.get_data("link")
+            #page = tag.get_data("link")
+            page = tag.link
             if page != None:
                 #print ("Calling link ", page)
                 # Paint a new cursor

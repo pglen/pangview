@@ -16,6 +16,8 @@ from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import GdkPixbuf
 
+VERSION = "0.98.0"
+
 # Our modules
 
 import  panglib.parser as parser
@@ -762,7 +764,7 @@ def showfile(strx):
 def help():
     myname = os.path.basename(sys.argv[0])
     print()
-    print (myname + ":", "Version 0.95 - Utility for displaying a pango file.")
+    print (myname + ":", "Version %s - Utility for displaying a pango file." % VERSION)
     print ()
     print ("Usage: " + myname + " [options] filename")
     print ()
