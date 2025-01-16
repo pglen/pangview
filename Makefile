@@ -20,12 +20,14 @@ copy:
 	cp  pangview.py ~/pgbin
 	cp -a panglib/ ~/pgbin
 
-install:
-	@./install.py
+clean:
+	@rm -f *.pyc
+	@rm -rf __pycache__
+	@rm -rf panglib/__pycache__
 
 git:
-	git add .
-	git commit -m auto
+	@git add .
+	@git commit -m auto
 	# git push
 
 # End of Makefile
