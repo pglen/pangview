@@ -1,12 +1,14 @@
-                                     README
+#                                     README
 
-  This utility was created to quickly display a formatted file. It was 
+## Document parser usring pango
+
+  This utility was created to quickly display a formatted file. It was
 embarrassing to wait 25 seconds till the browser starts, just to display
 a welcome screen.
 
  The pangview utility is fast, it displays a regular README file in less than a second.
 
- The format of the file is friendly, like pango, rich text or html. 
+ The format of the file is friendly, like pango, rich text or html.
 (but simpler) The parser was written in python, it is easy to extend.
 
  A quick intro:
@@ -15,7 +17,7 @@ a welcome screen.
      <b> Bold </b>      for bold text
      <r> Red </r>       for red text
      <xl>Large</xl>     for large text
-     
+
 Line that starts with a double hash is a comment.
 
 ## Comment
@@ -23,8 +25,10 @@ Text in <hid>hidden</hid> tags are hidden from display.
 
 For a full description of the Syntax see the SYNTAX file.
 
-Note that this text displays nicely both on terminals and on the pangview 
+Note that this text displays nicely both on terminals and on the pangview
 utility,
+
+![Demo](demo.png)
 
 This project is in the public domain.
 
