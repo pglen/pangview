@@ -242,36 +242,38 @@ class PangoView(Gtk.Window):
     def event_after(self, text_view, event):
         if event.type != Gdk.EventType.BUTTON_RELEASE:
             return False
-        if event.button != 1:
-            return False
+        #print("event", event)
+        #if event.button != 1:
+        #    return False
         buffer = text_view.get_buffer()
-
         # We should not follow a link if the user has selected something
         try:
             start, end = buffer.get_selection_bounds()
         except ValueError:
-            # If there is nothing selected, None is return
+            # If there is nothing selected ..
             pass
         else:
             if start.get_offset() != end.get_offset():
                 return False
-
         x, y = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET,
             int(event.x), int(event.y))
-        iter = text_view.get_iter_at_location(x, y)
-
+        #print("got", x, y)
+        iter = text_view.get_iter_at_location(x, y)[1]
+        #print("iter", iter)
         self.follow_if_link(text_view, iter)
         return False
 
     def follow_if_link(self, text_view, iter):
+
         ''' Looks at all tags covering the position of iter in the text view,
             and if one of them is a link, follow it by showing the page identified
             by the data attached to it.
         '''
+
         tags = iter.get_tags()
         for tag in tags:
-            #page = tag.get_data("link")
             page = tag.link
+            #print("page", page)
             if page != None:
                 #print ("Calling link ", page)
                 # Paint a new cursor

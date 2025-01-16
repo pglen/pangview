@@ -1,6 +1,6 @@
 <xl><c> Document Formatting Demo</c>
-</xl>   
-This is <i>Italic</i> text and <b> Bold </b> text, and this is <b><i> ItalicBold </i></b> text. 
+</xl>
+This is <i>Italic</i> text and <b> Bold </b> text, and this is <b><i> ItalicBold </i></b> text.
 This is <u>underline</u> text, this is <uu>double underline</uu> text, \
 this is <s>StrikeTrough</s> text. \
 This is line continuation.
@@ -10,7 +10,7 @@ This is line continuation.
 <c>And this is <i>centered</i> text.</c>
 And this left aligned (regular) text.</c>
 
-<c>This is centered text with <f>fixed (monospace) font</f></c> 
+<c>This is centered text with <f>fixed (monospace) font</f></c>
 
 <f>Monospace <b>bold</b> <i>Italic</i> <xl>Extra Large</xl> font</f>
 
@@ -30,7 +30,7 @@ This is <l> Large </l> text, this is <sm>Small</sm> text.
 (regular new line)
 
 This is <l><r> Red Large</r></l> text, this is <l><g>Green Large</g></l> text.
-This is <l><e>Blue Large <b>Bold</b> <i>Italic</i> </e></l> text. 
+This is <l><e>Blue Large <b>Bold</b> <i>Italic</i> </e></l> text.
 (large new line)<l>
 </l>
 This is <l><g> Green Large <b>Bold</b> <u>Underline</u> </g></l> text.
@@ -53,18 +53,20 @@ List item One.List item One.List item One.List item One.List item One.
 <in>\
  2.a) Sub item one
 <in>\
-Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item Text 
-Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item 
-Sub sub Item Text Sub Item Text Sub Item Text                    
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item Text
+Sub sub Item Text Sub Item Text Sub Item Text Sub Item Text Sub Item
+Sub sub Item Text Sub Item Text Sub Item Text
 Sub sub Item Text <xxl>Sub Item Text</xxl>
 </in>\
 2.b) Sub item
 </in>\
 
 3.) List item three <b>Bold Item</b>
-<in>List item three. <i>List item three.</i> List item three. List item three. List item three. 
+<in>List item three. <i>List item three.</i> List item three. List item three. List item three.
 <xl>Big item in list</xl>
 </in></in>
+
+<link name=bold.pango color=#0000aa> This is a link to bold</i>\
 
 <c>End of document.</c>
 

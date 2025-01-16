@@ -60,16 +60,16 @@ class xTextTag(Gtk.TextTag):
         #self.connect("event", self.clicked)
 
     def clicked(self, arg1, arg2, arg3, arg4):
-        print("Event", arg1, arg2,)
+        #print("Event", arg1, arg2,)
+        pass
 
     def do_event(self, arg1, arg2, arg3):
         if arg2.type == Gdk.EventType.MOTION_NOTIFY:
             return
-        if not self.link:
-            return
-
-        if arg2.type == Gdk.EventType.BUTTON_RELEASE:
-            print("Link event", self.link)
+        #if not self.link:
+        #    return
+        #if arg2.type == Gdk.EventType.BUTTON_RELEASE:
+        #    print("Link event", self.link)
 
 class CallBack():
 

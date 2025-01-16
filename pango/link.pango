@@ -1,11 +1,11 @@
-<xxl>Link text Demo</xxl><
+<xxl>Link text Demo</xxl>
 
 <link name=image.pango color = #ff0000>This is link in red (image.pango)</link>
-Embedded in text <link name=colors.pango> is a regular link (colors.pango)</link> here. 
+Embedded in text <link name=colors.pango> is a regular link (colors.pango)</link> here.
 Embedded in text <link name=colors.pango> <u>is a regular underlined \
-link (colors.pango)</u></link> here. 
+link (colors.pango)</u></link> here.
 Embedded in <xxl>LARGE text <link name=colors.pango><u>link to colors.pango\
-</u></link> </xxl>here. 
+</u></link> </xxl>here.
 <link name=formats.pango color=green>This is <b>another</b> link in green (formats.pango)</link>
 <link name=formatsx.pango>This is a broken link </link>
 <link name=justify.pango color=#6666ff><c>This is a centered light blue \
