@@ -23,6 +23,7 @@ copy:
 clean:
 	@rm -f *.pyc
 	@rm -rf __pycache__
+	@rm -rf panglib/*.pyc
 	@rm -rf panglib/__pycache__
 
 git:

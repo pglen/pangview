@@ -1,15 +1,15 @@
 #                                     README
-
-## Document parser usring pango
+## Document parser and display using pango
 
   This utility was created to quickly display a formatted file. It was
-embarrassing to wait 25 seconds till the browser starts, just to display
+embarrassing to wait 25 seconds until the browser starts, just to display
 a welcome screen.
 
- The pangview utility is fast, it displays a regular README file in less than a second.
+ The pangview utility displays a .pango file.
 
- The format of the file is friendly, like pango, rich text or html.
-(but simpler) The parser was written in python, it is easy to extend.
+ The format of the file is friendly, it is like a fusion of pango, rich
+ text and html. (but simpler) The parser was written in python, it is
+ easy to extend.
 
  A quick intro:
 
@@ -34,3 +34,4 @@ This project is in the public domain.
 
 Peter Glen
 
+# EOF

@@ -60,7 +60,8 @@ class PangoView(Gtk.Window):
         #self.set_border_width(0)
 
         img_dir = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(img_dir, "pangview.png")
+        #img_path = os.path.join(img_dir, "pangview.png")
+        img_path = os.path.join(img_dir, "pang.png")
 
         try:
             self.set_icon_from_file(img_path)
