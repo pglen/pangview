@@ -16,7 +16,7 @@ from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import GdkPixbuf
 
-VERSION = "0.98.0"
+VERSION = "1.0.0"
 
 # Our modules
 

@@ -13,7 +13,7 @@ all:
 help:
 	@echo
 	@echo "Targets:"
-	@echo "	 make install    -- Install pangview "
+	@echo "	 make git clean copy install "
 	@echo
 
 copy:
@@ -30,6 +30,10 @@ git:
 	@git add .
 	@git commit -m auto
 	git push
+
+install:
+	sudo cp    pangview.py /usr/local/bin
+	sudo cp -a panglib     /usr/local/bin
 
 # End of Makefile
 
