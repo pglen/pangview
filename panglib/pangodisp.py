@@ -3,7 +3,7 @@
 import sys, os, re
 import pygtk, gobject, gtk
 import pango
-        
+
 # XPM data for missing image
 
 xpm_data = [
@@ -50,7 +50,7 @@ class PangoView(gtk.Window):
 
         self.set_title(self.__class__.__name__)
         #self.set_border_width(0)
-    
+
         try:
             self.set_icon_from_file("/usr/share/pangview/pang.png")
         except:
@@ -58,7 +58,7 @@ class PangoView(gtk.Window):
 
         www = gtk.gdk.screen_width();
         hhh = gtk.gdk.screen_height();
-        
+
         #self.set_default_size(7*www/8, 7*hhh/8)
         if full:
             self.set_default_size(www, hhh)
@@ -88,7 +88,7 @@ class PangoView(gtk.Window):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        
+
         vpaned.add1(sw)
         sw.add(view1)
         self.iter = self.buffer_1.get_iter_at_offset(0)
@@ -107,7 +107,7 @@ class PangoView(gtk.Window):
     def clear(self):
         self.buffer_1.set_text("", 0)
         self.iter = self.buffer_1.get_iter_at_offset(0)
-        
+
     def add_pixbuf(self, pixbuf):
         self.buffer_1.insert_pixbuf(self.iter, pixbuf)
         self.waiting = False
@@ -120,12 +120,14 @@ class PangoView(gtk.Window):
     def add_text(self, text):
         self.buffer_1.insert(self.iter, text)
         self.waiting = False
-                
+
     def add_text_tag(self, text, tags):
+        print("add_text_tag", text, tags)
         self.buffer_1.insert_with_tags_by_name(self.iter, text, tags)
         self.waiting = False
 
-    def add_text_xtag(self, text, tags):        
+    def add_text_xtag(self, text, tags):
+        print("add_text_xtag", text, tags)
         self.buffer_1.get_tag_table().add(tags)
         self.buffer_1.insert_with_tags(self.iter, text, tags)
         self.waiting = False
@@ -138,13 +140,13 @@ class PangoView(gtk.Window):
             buffer = text_view.get_buffer()
             iter = buffer.get_iter_at_mark(buffer.get_insert())
             self.follow_if_link(text_view, iter)
-        elif event.keyval == gtk.keysyms.Tab: 
+        elif event.keyval == gtk.keysyms.Tab:
             #print "Tab"
             pass
-        elif event.keyval == gtk.keysyms.space: 
+        elif event.keyval == gtk.keysyms.space:
             #print "Space"
             pass
-        elif event.keyval == gtk.keysyms.BackSpace: 
+        elif event.keyval == gtk.keysyms.BackSpace:
             if self.bscallback:
                 self.bscallback()
         if event.keyval == gtk.keysyms.Escape or event.keyval == gtk.keysyms.q:

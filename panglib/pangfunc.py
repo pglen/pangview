@@ -587,8 +587,10 @@ class CallBack():
 
     def Image(self, vparser, token, tentry):
         self.emit( "<image>")
+        #print("Image")
 
     def Image2(self, vparser, token, tentry):
+        self.flush()
         xstack = stack.Stack()
         # Walk optionals:
         while True:
@@ -644,13 +646,14 @@ class CallBack():
                 pixbuf.scale(pixbuf2, 0, 0, www, hhh,
                     0, 0, float(www)/pixbuf.get_width(), float(hhh)/pixbuf.get_height(),
                         GdkPixbuf.InterpType.BILINEAR)
-                self.Mainview.add_pixbuf(pixbuf2, self.pvg.flag)
-            else:
-                self.Mainview.add_pixbuf(pixbuf, self.pvg.flag)
+                pixbuf = pixbuf2
+            self.Mainview.add_pixbuf(pixbuf, self.pvg.flag)
 
         except GObject.GError as error:
             #print ("Failed to load image file '" + vv + "'")
             self.Mainview.add_broken(self.pvg.flag)
+
+        #self.Mainview.add_text_xtag(" eimage ", xtag, self.pvg.flag)
 
         #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         self.emit( "<image2>")
@@ -728,6 +731,7 @@ class CallBack():
         self.TextState.center = False
         self.TextState.right = False
         self.TextState.ul = False
+        self.TextState.bold = False
 
         vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         self.emit ("<espan>" )
@@ -744,17 +748,4 @@ class CallBack():
         vparser.fstack.push([parser.KEYVAL, 1, stry2, vparser.strx])
         vparser.fsm = fsm2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# EOF

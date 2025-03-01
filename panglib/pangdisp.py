@@ -62,13 +62,12 @@ class PangoView(Gtk.Window):
         img_dir = os.path.dirname(os.path.abspath(__file__))
         #img_path = os.path.join(img_dir, "pangview.png")
         img_path = os.path.join(img_dir, "pang.png")
-
+        self.broken_img_path = os.path.join(img_dir, "broken.png")
         try:
             self.set_icon_from_file(img_path)
         except:
             #print ("Cannot load app icon.")
             pass
-
         #rect = self.get_allocation()
 
         disp2 = Gdk.Display()
@@ -173,21 +172,25 @@ class PangoView(Gtk.Window):
             self.iter = self.buffer_1.get_iter_at_offset(0)
 
     def add_pixbuf(self, pixbuf, flag=False):
+        print("pix beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert_pixbuf(self.iter2, pixbuf)
         else:
             self.buffer_1.insert_pixbuf(self.iter, pixbuf)
         self.waiting = False
+        print("pix end", self.iter.get_offset())
 
     def add_broken(self, flag=False):
-        pixbuf = Gdk.pixbuf_new_from_xpm_data(xpm_data)
-        if flag:
-            self.buffer_2.insert_pixbuf(self.iter2, pixbuf)
-        else:
-            self.buffer_1.insert_pixbuf(self.iter, pixbuf)
-        self.waiting = False
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.broken_img_path)
+        except:
+            print("insert broken", sys.exc_info())
+            self.waiting = False
+            return
+        self.add_pixbuf(pixbuf, flag)
 
     def add_text(self, text, flag=False):
+        print("txt beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert(self.iter2, text)
         else:
@@ -195,22 +198,27 @@ class PangoView(Gtk.Window):
         self.waiting = False
 
     def add_text_tag(self, text, tags, flag=False):
+        print("txt tag beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert_with_tags_by_name(self.iter2, text, tags)
         else:
             self.buffer_1.insert_with_tags_by_name(self.iter, text, tags)
+        #print("txtt end", self.iter.get_offset())
         self.waiting = False
 
     def add_text_xtag(self, text, tags, flag=False):
+        print("xtxt beg", self.iter.get_offset(), "text:", "'" + text + "'")
         if flag:
             try: self.buffer_2.get_tag_table().add(tags)
             except: pass
             self.buffer_2.insert_with_tags(self.iter2, text, tags)
         else:
             try: self.buffer_1.get_tag_table().add(tags)
-            except: pass
+            except: print("get_tag", sys.exc_info())
 
             self.buffer_1.insert_with_tags(self.iter, text, tags)
+        #self.iter.forward_char()
+        print("xtxt end", self.iter.get_offset())
         self.waiting = False
 
     # --------------------------------------------------------------------
