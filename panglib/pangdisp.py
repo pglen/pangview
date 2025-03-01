@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 
-import sys, os, re
+import sys, os, re, time
+
+import  panglib.parser as parser
+import  panglib.stack as stack
+import  panglib.lexer as lexer
+import  panglib.pangdisp as pangdisp
+import  panglib.pangfunc as pangfunc
+import  panglib.textstate as textstate
+
+ts = textstate.TextState()
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -12,6 +21,21 @@ from gi.repository import GObject
 from gi.repository import GdkPixbuf
 
 # XPM data for missing image
+
+#xstack = stack.Stack()
+
+# ------------------------------------------------------------------------
+# Accumulate output: (mostly for testing)
+_cummulate = ""
+
+def emit(strx):
+    global _cummulate;
+    _cummulate += " '" + strx + "' "
+
+def show_emit():
+    global _cummulate;
+    print (_cummulate)
+
 
 xpm_data = [
 "16 16 3 1",
@@ -50,7 +74,9 @@ class PangoView(Gtk.Window):
     # Create the toplevel window
     def __init__(self, pvg, parent=None):
 
+        self.lastfile = ""
         Gtk.Window.__init__(self)
+        self.cb = pangfunc.CallBack(ts, self, emit, pvg)
         try:
             self.set_screen(parent.get_screen())
         except AttributeError:
@@ -172,25 +198,25 @@ class PangoView(Gtk.Window):
             self.iter = self.buffer_1.get_iter_at_offset(0)
 
     def add_pixbuf(self, pixbuf, flag=False):
-        print("pix beg", self.iter.get_offset())
+        #print("pix beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert_pixbuf(self.iter2, pixbuf)
         else:
             self.buffer_1.insert_pixbuf(self.iter, pixbuf)
         self.waiting = False
-        print("pix end", self.iter.get_offset())
+        #print("pix end", self.iter.get_offset())
 
     def add_broken(self, flag=False):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.broken_img_path)
         except:
-            print("insert broken", sys.exc_info())
+            #print("insert broken", sys.exc_info())
             self.waiting = False
             return
         self.add_pixbuf(pixbuf, flag)
 
     def add_text(self, text, flag=False):
-        print("txt beg", self.iter.get_offset())
+        #print("txt beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert(self.iter2, text)
         else:
@@ -198,7 +224,7 @@ class PangoView(Gtk.Window):
         self.waiting = False
 
     def add_text_tag(self, text, tags, flag=False):
-        print("txt tag beg", self.iter.get_offset())
+        #print("txt tag beg", self.iter.get_offset())
         if flag:
             self.buffer_2.insert_with_tags_by_name(self.iter2, text, tags)
         else:
@@ -207,7 +233,7 @@ class PangoView(Gtk.Window):
         self.waiting = False
 
     def add_text_xtag(self, text, tags, flag=False):
-        print("xtxt beg", self.iter.get_offset(), "text:", "'" + text + "'")
+        #print("xtxt beg", self.iter.get_offset(), "text:", "'" + text + "'")
         if flag:
             try: self.buffer_2.get_tag_table().add(tags)
             except: pass
@@ -218,7 +244,7 @@ class PangoView(Gtk.Window):
 
             self.buffer_1.insert_with_tags(self.iter, text, tags)
         #self.iter.forward_char()
-        print("xtxt end", self.iter.get_offset())
+        #print("xtxt end", self.iter.get_offset())
         self.waiting = False
 
     # --------------------------------------------------------------------
@@ -239,8 +265,14 @@ class PangoView(Gtk.Window):
         elif event.keyval == Gdk.KEY_BackSpace:
             if self.bscallback:
                 self.bscallback()
+
         if event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
             sys.exit(0)
+
+        if event.keyval == Gdk.KEY_r:
+            #print("reload")
+            #self.set_title("Reloading ...")
+            self.showfile(self.lastfile)
 
         if event.state & Gdk.ModifierType.MOD1_MASK:
             if event.keyval == Gdk.KEY_x or event.keyval == Gdk.KEY_X:
@@ -435,21 +467,84 @@ class PangoView(Gtk.Window):
         else:
             text_view.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(self.regular_cursor)
 
+    def reset(self):
+        ''' Reset parser '''
+        self.clear(pvg.flag)
+        ts.clear()
+
+    def showfile(self, strx):
+
+        #global buf, xstack, pvg, ts
+
+        got_clock =  time.clock()
+
+        if pvg.verbose:
+            print ("Showing file:", strx)
+        try:
+            fh = open(strx)
+        except:
+            strerr = "File:  '" + strx + "'  must be an existing and readble file. "
+            print (strerr)
+            self.add_text(strerr)
+            return
+        try:
+            buf = fh.read();
+        except:
+            strerr2 =  "Cannot read file '" + strx + "'"
+            print (strerr2)
+            self.add_text(strerr2)
+            fh.close()
+            return
+        fh.close()
+
+        if pvg.show_timing:
+            print  ("loader:", time.clock() - got_clock)
+        if pvg.pgdebug > 5: print (buf)
+
+        if self.lastfile != strx:
+            pvg.lstack.push(strx)
+            self.lastfile = strx
+
+        self.set_title(strx)
+        self.reset()
+
+        xstack = stack.Stack()
+        lexer.Lexer(buf, xstack, parser.tokens)
+
+        if pvg.show_timing:
+            print  ("lexer:", time.clock() - got_clock)
+
+        if pvg.show_lexer:  # To show what the lexer did
+            xstack.dump()
+
+        parser.Parse(buf, xstack, pvg)
+        self.cb.flush()
+        self.showcur(False)
+
+        if pvg.show_timing:
+            print  ("parser:", time.clock() - got_clock)
+
+        # Output results
+        if pvg.emit:
+            show_emit()
+
+        self.buffer_1.place_cursor(self.buffer_1.get_start_iter())
+        self.buffer_2.place_cursor(self.buffer_2.get_start_iter())
+
 # Some globals read: (Pang View Globals):
 
 class pvg():
 
     buf = None; xstack = None; verbose = False
     pgdebug = False; show_lexer = False; full_screen = False
-    lstack = None;  fullpath = None; docroot = None
+    lstack = stack.Stack();  fullpath = None; docroot = None
     got_clock = 0; show_timing = False; second = ""
     xfull_screen = False; flag = False; show_parse = False
     emit = False; show_state = False; pane_pos = -1
 
-def main():
-    PangoView(pvg)
-    Gtk.main()
-
-if __name__ == '__main__':
-    main()
+#def main():
+#    PangoView(pvg)
+#    Gtk.main()
+#if __name__ == '__main__':
+#    main()
 

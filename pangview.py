@@ -16,15 +16,26 @@ from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import GdkPixbuf
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 # Our modules
 
 import  panglib.parser as parser
 import  panglib.stack as stack
+import  panglib.textstate as textstate
 import  panglib.lexer as lexer
 import  panglib.pangdisp as pangdisp
 import  panglib.pangfunc as pangfunc
+import  panglib.pangfunc as pangfunc
+
+# Our display object
+pvg = pangdisp.pvg
+ts = pangdisp.ts
+
+mainview = pangdisp.PangoView(pvg)
+myname = os.path.basename(sys.argv[0])
+
+cb = pangfunc.CallBack(ts, mainview, pangdisp.emit, pvg)
 
 import inspect
 if inspect.isbuiltin(time.process_time):
@@ -69,17 +80,6 @@ def parse_lookup(strx):
 def pl(strx):
     aa = parse_lookup(strx)
     return aa[0]
-
-# Some globals read: (Pang View Globals):
-
-class pvg():
-
-    buf = None; xstack = None; verbose = False
-    pgdebug = False; show_lexer = False; full_screen = False
-    lstack = None;  fullpath = None; docroot = None
-    got_clock = 0; show_timing = False; second = ""
-    xfull_screen = False; flag = False; show_parse = False
-    emit = False; show_state = False; pane_pos = -1
 
 # ------------------------------------------------------------------------
 # Token definitions:
@@ -393,21 +393,6 @@ STATEFMT = [parser.INIT,  parser.BOLD, parser.ITALIC, parser.RED,
             parser.RIGHT, parser.WRAP, parser.FILL, parser.INDENT,
             parser.SPANTXT, parser.FIXED, parser.MARGIN, parser.LMARGIN ]
 
-# Our display object
-mainview = pangdisp.PangoView(pvg)
-
-# ------------------------------------------------------------------------
-# Accumulate output: (mostly for testing)
-_cummulate = ""
-
-def emit(strx):
-    global _cummulate;
-    _cummulate += " '" + strx + "' "
-
-def show_emit():
-    global _cummulate;
-    print (_cummulate)
-
 # ------------------------------------------------------------------------
 # Parser functions that are called on parser events. Note the 'e' prefix
 # for the 'end' function -> bold() -> ebold()  (end bold)
@@ -416,49 +401,11 @@ def show_emit():
 from    panglib.utils import *
 
 # ------------------------------------------------------------------------
-# Text display state:
-
-class TextState():
-
-    def __init__(self):
-
-        self.font = ""
-        self.bold = False;  self.itbold = False;   self.italic = False
-        self.ul = False; self.dul = False
-        self.red = False;  self.blue = False; self.green = False
-        self.bgred = False;  self.bgblue = False; self.bggreen = False
-        self.strike = False; self.large = False; self.small = False; self.xsmall = False
-        self.xlarge = False; self.xxlarge = False; self.center = False
-        self.wrap = False; self.hidden = False; self.color =  ""; self.right = False
-        self.indent = 0; self.margin = 0; self.size = 0; self.font = "";
-        self.fixed = False; self.bgcolor = ""
-        self.sub = False; self.sup = False; self.image = ""; self.link = ""; self.lmargin = 0
-        self.fill = False; self.tab = 0
-
-    def clear(self):
-        for aa in self.__dict__:
-            if aa[:2] == "__":
-                continue
-            if isinstance(self.__dict__[aa], bool):
-                   self.__dict__[aa] = False
-            elif isinstance(self.__dict__[aa], int):
-                   self.__dict__[aa] = 0
-            elif isinstance(self.__dict__[aa], str):
-                   self.__dict__[aa] = ""
-            else:
-                print ("  Other", aa, type(self.__dict__[aa]))
-                pass
-
-# ------------------------------------------------------------------------
 # Class of tokens for simple alternates:
 
 # This token class is for generic text.
 TXTCLASS = pl("ident"), pl("eq"), pl("lt"), pl("str"), pl("str2"), \
              pl("str3"), pl("gt"), pl("nl"), pl("sp"), pl("any"),
-
-
-ts = TextState()
-cb = pangfunc.CallBack(ts, mainview, emit, pvg)
 
 #cb.Text("d", "dd", "ddd")
 
@@ -665,19 +612,15 @@ def main():
 
 def bslink():
 
-    if lstack.stacklen() == 1:
+    if pvg.lstack.stacklen() == 1:
         return
-
-    lstack.pop()
-    strx = lstack.last()
-
+    pvg.lstack.pop()
+    strx = pvg.lstack.last()
     #print ("backspace linking to:", strx)
-
     if strx == None or strx == "":
         return
-
     mainview.showcur(True)
-    showfile(strx)
+    mainview.showfile(strx)
 
 def link(strx):
 
@@ -690,7 +633,7 @@ def link(strx):
             "Cannot find file '%s'" % strx );
         return
     #print ("linking to:", strx)
-    showfile(strx)
+    mainview.showfile(strx)
 
 # ------------------------------------------------------------------------
 
@@ -705,64 +648,7 @@ def     message_dialog(title, strx):
 
 # ------------------------------------------------------------------------
 
-def showfile(strx):
-
-    global buf, xstack, mainview, pvg, ts
-
-    got_clock =  time.clock()
-
-    if pvg.verbose:
-        print ("Showing file:", strx)
-
-    try:
-        fh = open(strx)
-    except:
-        strerr = "File:  '" + strx + "'  must be an existing and readble file. "
-        print (strerr)
-        mainview.add_text(strerr)
-        return
-    try:
-        buf = fh.read();
-    except:
-        strerr2 =  "Cannot read file '" + strx + "'"
-        print (strerr2)
-        mainview.add_text(strerr2)
-        fh.close()
-        return
-    fh.close()
-
-    if pvg.show_timing:
-        print  ("loader:", time.clock() - got_clock)
-
-    if pvg.pgdebug > 5: print (buf)
-
-    lstack.push(strx)
-
-    mainview.clear(pvg.flag)
-    ts.clear()
-
-    xstack = stack.Stack()
-    lexer.Lexer(buf, xstack, parser.tokens)
-
-    if pvg.show_timing:
-        print  ("lexer:", time.clock() - got_clock)
-
-    if pvg.show_lexer:  # To show what the lexer did
-        xstack.dump()
-
-    parser.Parse(buf, xstack, pvg)
-    cb.flush()
-    mainview.showcur(False)
-
-    if pvg.show_timing:
-        print  ("parser:", time.clock() - got_clock)
-
-    # Output results
-    if pvg.emit:
-        show_emit()
-
 def help():
-    myname = os.path.basename(sys.argv[0])
     print()
     print (myname + ":", "Version %s - Utility for displaying a pango file." % VERSION)
     print ()
@@ -830,7 +716,8 @@ def mainfunc():
     try:
         strx = args[0]
     except:
-        help(); exit(1)
+        print ("Use: " + myname + " -h  for usage info.")
+        exit(1)
 
     global lstack
     lstack = stack.Stack()
@@ -852,10 +739,10 @@ def mainfunc():
         else:
             mainview.set_pane_position(250)
         pvg.flag = True
-        showfile(pvg.second)
+        mainview.showfile(pvg.second)
 
     pvg.flag = False
-    showfile(strx)
+    mainview.showfile(strx)
 
     main()
 
