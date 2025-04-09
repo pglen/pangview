@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #from __future__ import absolute_import
-from __future__ import print_function
+#from __future__ import print_function
 
 import sys, os, re, time
 import signal, pickle
@@ -16,7 +16,7 @@ from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import GdkPixbuf
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 # Our modules
 
@@ -25,7 +25,6 @@ import  panglib.stack as stack
 import  panglib.textstate as textstate
 import  panglib.lexer as lexer
 import  panglib.pangdisp as pangdisp
-import  panglib.pangfunc as pangfunc
 import  panglib.pangfunc as pangfunc
 
 # Our display object
@@ -704,7 +703,7 @@ def mainfunc():
             print (pvg.pane_pos)
 
         if aa[0] == "-h": help();  exit(1)
-        if aa[0] == "-v": pvg.verbose = True
+        if aa[0] == "-v": pvg.verbose += 1
         if aa[0] == "-x": pvg.show_lexer = True
         if aa[0] == "-f": pvg.full_screen = True
         if aa[0] == "-o": pvg.xfull_screen = True

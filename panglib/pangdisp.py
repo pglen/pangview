@@ -251,32 +251,79 @@ class PangoView(Gtk.Window):
     # Links can be activated by pressing Enter.
 
     def key_press_event(self, text_view, event):
+
+        if pvg.verbose > 1:
+            print("Key", event.keyval)
+
         if (event.keyval == Gdk.KEY_Return or
             event.keyval == Gdk.KEY_KP_Enter):
             buffer = text_view.get_buffer()
             iter = buffer.get_iter_at_mark(buffer.get_insert())
             self.follow_if_link(text_view, iter)
         elif event.keyval == Gdk.KEY_Tab:
-            #print ("Tab")
+            if pvg.verbose > 0:
+                print ("Tab")
+            return True
             pass
         elif event.keyval == Gdk.KEY_space:
-            #print ("Space")
+            if pvg.verbose > 0:
+                print ("Space")
+                # Imitate page down
+
             pass
         elif event.keyval == Gdk.KEY_BackSpace:
             if self.bscallback:
                 self.bscallback()
 
-        if event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
-            sys.exit(0)
-
-        if event.keyval == Gdk.KEY_r:
-            #print("reload")
-            #self.set_title("Reloading ...")
+        elif event.keyval == Gdk.KEY_r:
+            if pvg.verbose:
+                print("reload")
+            self.set_title("Reloading ...")
             self.showfile(self.lastfile)
 
-        if event.state & Gdk.ModifierType.MOD1_MASK:
+        elif event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
+            sys.exit(0)
+
+        elif event.state & Gdk.ModifierType.MOD1_MASK:
             if event.keyval == Gdk.KEY_x or event.keyval == Gdk.KEY_X:
                 sys.exit(0)
+        else:
+            if pvg.verbose > 1:
+                print("Dead key")
+
+        return False
+
+    def key_press_event2(self, text_view, event):
+
+        if (event.keyval == Gdk.KEY_Return or
+            event.keyval == Gdk.KEY_KP_Enter):
+            buffer = text_view.get_buffer()
+            iter = buffer.get_iter_at_mark(buffer.get_insert())
+            self.follow_if_link(text_view, iter)
+        elif event.keyval == Gdk.KEY_Tab:
+            #print ("Tab2")
+            pass
+        elif event.keyval == Gdk.KEY_space:
+            #print ("Space2")
+            pass
+        elif event.keyval == Gdk.KEY_BackSpace:
+            if self.bscallback:
+                self.bscallback()
+
+        elif event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
+            sys.exit(0)
+
+        elif event.keyval == Gdk.KEY_r:
+            print("reload2")
+            self.set_title("Reloading ...")
+            self.showfile(self.lastfile)
+
+        elif event.state & Gdk.ModifierType.MOD1_MASK:
+            if event.keyval == Gdk.KEY_x or event.keyval == Gdk.KEY_X:
+                sys.exit(0)
+        else:
+            pass
+
         return False
 
     # Links can also be activated by clicking.
@@ -381,29 +428,6 @@ class PangoView(Gtk.Window):
         self.set_cursor_if_appropriate (text_view, bx, by)
         return False
 
-    def key_press_event2(self, text_view, event):
-        if (event.keyval == Gdk.KEY_Return or
-            event.keyval == Gdk.KEY_KP_Enter):
-            buffer = text_view.get_buffer()
-            iter = buffer.get_iter_at_mark(buffer.get_insert())
-            self.follow_if_link(text_view, iter)
-        elif event.keyval == Gdk.KEY_Tab:
-            #print ("Tab")
-            pass
-        elif event.keyval == Gdk.KEY_space:
-            #print ("Space")
-            pass
-        elif event.keyval == Gdk.KEY_BackSpace:
-            if self.bscallback:
-                self.bscallback()
-        if event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
-            sys.exit(0)
-
-        if event.state & Gdk.ModifierType.MOD1_MASK:
-            if event.keyval == Gdk.KEY_x or event.keyval == Gdk.KEY_X:
-                sys.exit(0)
-
-        return False
 
     def event_after2(self, text_view, event):
         if event.type != Gdk.EventType.BUTTON_RELEASE:

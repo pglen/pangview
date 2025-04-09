@@ -140,12 +140,5 @@ class Parse():
 
 if __name__ == "__main__":
     print ("This module was not meant to operate as main.")
+
 # EOF
-
-
-
-
-
-
-
-

@@ -1,7 +1,0 @@
-<b>Bold</b> <span foreground="red" size="10" font="Sans 10">Red <i>red italic</i> red text </span>
-<span foreground="green" size="20" font="Sans 20">Green text </span><b>Bold</b> 
-<span foreground="blue" size="30" font="Mono 30">Blue Mono text 30 </span>
-<span fg="#ff00ff" size="40" font="Sans 40">Color #ff00ff <b>color</b> text size 40</span>
-<span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
-
