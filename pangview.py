@@ -180,6 +180,7 @@ parser.tokdef = \
          [parser.unique(), "nl"     ],      \
          [parser.unique(), "tab2"   ],      \
          [parser.unique(), "any"    ],      \
+         [parser.unique(), "colu"   ],      \
 
 # ------------------------------------------------------------------------
 # Lexer tokens. The lexer will search for the next token.

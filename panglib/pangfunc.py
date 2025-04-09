@@ -129,7 +129,7 @@ class CallBack():
             else:
                 TextState2 =  self.TextState
 
-            xtag2 =  self.parseTextState(TextState2)
+            accum, xtag2 =  self.parseTextState(accum, TextState2)
             self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
             accum = ""
 
@@ -169,11 +169,11 @@ class CallBack():
             #self.Mainview.add_text_xtag(stresc, xtag, self.pvg.flag)
             if enable_cache:
                 if self.oldstate:
-                    xtag2 = self.parseTextState(self.oldstate, vparser)
+                    accum, xtag2 = self.parseTextState(accum, self.oldstate, vparser)
                 else:
-                    xtag2 = self.parseTextState(self.TextState, vparser)
+                    accum, xtag2 = self.parseTextState(accum, self.TextState, vparser)
             else:
-                xtag2 = self.parseTextState(self.TextState, vparser)
+                accum, xtag2 = self.parseTextState(accum, self.TextState, vparser)
             self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
             accum = ""
         else:
@@ -184,9 +184,10 @@ class CallBack():
         #self.oldstate = dupstate(self.TextState)
         accum += stresc
         self.oldstate = copy.deepcopy(self.TextState)
+        self.TextState.tab = 0
 
     # --------------------------------------------------------------------
-    def parseTextState(self, TextState, vparser = None):
+    def parseTextState(self, text, TextState, vparser = None):
 
         xtag = xTextTag()
 
@@ -194,11 +195,13 @@ class CallBack():
             xtag.set_property("font", TextState.font)
 
         # This is one shot per count, reset tab
-        if vparser:
-            while  TextState.tab:
-                vparser.strx = "\t" + vparser.strx
-                #self.Mainview.add_text("\t")
-                TextState.tab -=1
+        #if vparser:
+        if TextState.tab:
+            #print(self.TextState.tab, "tab at", "\'" + text + "\'")
+            #xtag.set_property("tabs", Pango.TabArray.new(0, 200))
+            #vparser.strx = "-\t" + vparser.strx
+            xtag2 = xTextTag()
+            self.Mainview.add_text_xtag("\t", xtag2)
 
         SCALE_LARGE = 1.2
         SCALE_X_LARGE = 1.4
@@ -285,7 +288,7 @@ class CallBack():
         if TextState.lmargin > 0:
             xtag.set_property("left_margin", ind)
 
-        return xtag
+        return text, xtag
 
     def Bgred(self, vparser, token, tentry):
         self.TextState.bgred = True
