@@ -560,8 +560,7 @@ class PangoView(Gtk.Window):
         if self.pvg.show_lexer:  # To show what the lexer did
             xstack.dump()
 
-        parsetable = pangparse.setup_table()
-        ppp =  parser.Parser(parsetable, self.pvg)
+        ppp =  parser.Parser(pangparse.parsetable, self.pvg)
         ppp.parse(buf, xstack)
 
         pangparse.cb.flush()

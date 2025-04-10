@@ -11,12 +11,13 @@ class pvg():
 
     lstack = stack.Stack();
 
-    buf = None; xstack = None; verbose = False
-    pgdebug = False; show_lexer = False; full_screen = False
+    buf = None; xstack = None; pgdebug = 0;
     fullpath = None; docroot = None
-    got_clock = 0; show_timing = False; second = ""
+    verbose = False; show_lexer = False; full_screen = False
+    got_clock = False; show_timing = False; second = ""
     xfull_screen = False; flag = False; show_parse = False
-    emit = False; show_state = False; pane_pos = -1
+    emit = False; show_state = False;  show_state_change = False;
+    pane_pos = -1
     warnings = False; all = False
 
 # ------------------------------------------------------------------------

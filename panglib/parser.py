@@ -5,7 +5,8 @@ import sys, os, re
 # Our modules
 from . import stack, lexer
 
-import  panglib.pangparse as pangparse
+# Import your tables as parsedata, this way parser core stays the same
+import  panglib.pangparse as parsedata
 
 '''
 The parser needs several variables to operate.
@@ -40,13 +41,13 @@ class Parser():
 
         self.fstack = stack.Stack()
 
-        self.fsm = pangparse.INIT;
+        self.fsm = parsedata.INIT;
         self.contflag = 0
         self.pvg = pvg
         self.pardict = {}
 
         # Create parse dictionary:
-        for pt in pangparse.parsetable:
+        for pt in parsedata.parsetable:
             if pt[0] != None:
                 if pt[0][1] not in self.pardict:
                     self.pardict[pt[0][1]] = dict()     # Add if new
@@ -66,12 +67,20 @@ class Parser():
                         dd[ pt[2] ] = pt[:]
                     else:
                         self.add_class(dd, pt)
+        #self.dumptree()
+        #parsedata.dumpids()
+        #parsedata.dumptokens()
+        #parsedata.dumpptable()
 
-        '''for sss in self.pardict.iterkeys():
+    def dumptree(self):
+        for sss in self.pardict.keys():
             print ("Key:", sss)
-            for cc in self.pardict[sss].iterkeys():
-                print ("   Subkey:", cc)
-                print (self.pardict[sss][cc][2:])'''
+            for cc in self.pardict[sss].keys():
+                print ("   Subkey:", parsedata.rlookup(cc), "(", cc, ")")
+                print ("     ", self.pardict[sss][cc][:3])
+                print ("     ",)
+                for tttt in self.pardict[sss][cc][3:]:
+                    print (tttt, parsedata.rlookup(tttt), end =" ")
 
     def parse(self, data, xstack):
         while True:
@@ -89,6 +98,8 @@ class Parser():
 
     def parse_item(self, data, tt):
 
+        #print("tt", tt)
+
         mmm = tt[1];
         self.strx = data[mmm.start():mmm.end()]
 
@@ -104,8 +115,8 @@ class Parser():
             print ("no state on", tt[0], self.strx        )
         try:
             item = curr[tt[0][0]]
-            print("item", item)
             if self.pvg.show_parse:
+                print("item", item)
                 # show context
                 #bbb = mmm.start() - 5;  eee = mmm.end()+ 5
                 #cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
@@ -114,27 +125,33 @@ class Parser():
                         data[mmm.end():eee]
                 #print("Cont:" "'" + cont + "'")
         except:
-            #print ("Exc: no key on", tt[0], cont)
-            #return
+            print ("Exc: no key on", tt[0])
+            return
             pass
         #print ("item:", item)
         if item[4] != None:
             item[4](self, tt, item)
 
-        if item[5] == pangparse.REDUCE:
+        if item[5] == parsedata.REDUCE:
             # This is an actionless reduce ... rare
             self.reduce(tt)
-
-        elif item[5] == pangparse.IGNORE:
+        elif item[5] == parsedata.IGNORE:
             pass
         else:
-            #print (" Setting new state", pt[3], self.strx)
+            if self.pvg.show_state_change:
+                print (" pushstate", tt[0], self.strx)
             self.fstack.push([self.fsm, self.contflag, tt, self.strx])
             self.fsm = item[5]
             self.contflag = item[6]
 
     def popstate(self):
         self.fsm, self.contflag, self.ttt, self.stry = self.fstack.pop()
+        if self.pvg.show_state_change:
+            print(" popstate", self.fsm)
+
+    def reduce(self):
+        # Never called, just a p9laceholder
+        print("reduce called");
 
 if __name__ == "__main__":
     print ("This module was not meant to operate as main.")

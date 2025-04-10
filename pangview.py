@@ -79,15 +79,16 @@ def help():
     print ("            -d level  - Debug level (1-10)")
     print ("            -c file   - Contents file for left pane")
     print ("            -a pos    - Set pane position (pixels)")
-    print ("            -e        - Emit parse string")
     print ("            -w        - Display syntax warnings")
     print ("            -v        - Verbose")
     print ("            -f        - Full screen")
-    print ("            -s        - Show parser states"    )
     print ("            -o        - Cover all windows (Full screen)")
     print ("            -t        - Show timing")
     print ("            -x        - Show lexer output")
+    print ("            -g        - Show parser state changes")
+    print ("            -s        - Show parser states")
     print ("            -p        - Show parser messages")
+    print ("            -e        - Emit parse string")
     print ("            -l        - Show all parser messages")
     print ("            -h        - Help")
     print ()
@@ -100,7 +101,7 @@ def mainfunc():
 
     opts = []; args = []
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "d:c:a:hvxftopeswl")
+        opts, args = getopt.getopt(sys.argv[1:], "d:c:a:hvxftopeswlg")
     except getopt.GetoptError as err:
         print ("Invalid option(s) on command line:", err)
         sys.exit(1)
@@ -135,8 +136,10 @@ def mainfunc():
         if aa[0] == "-e": pvg.emit = True
         if aa[0] == "-p": pvg.show_parse  = True
         if aa[0] == "-s": pvg.show_state  = True
+        if aa[0] == "-c": pvg.show_state_change  = True
         if aa[0] == "-w": pvg.warnings = True
         if aa[0] == "-l": pvg.all = True
+        if aa[0] == "-g": pvg.show_state_change = True
 
     try:
         strx = args[0]

@@ -12,7 +12,7 @@ tokdef = []
 
 _gl_cnt = 0
 def unique():             # create a unique temporary number
-    global _gl_cnt; _gl_cnt+= 10
+    global _gl_cnt; _gl_cnt += 1
     return _gl_cnt
 
 # Connect parser token to lexer item. This way the definitions are synced
@@ -41,6 +41,26 @@ def lookup(strx):
         print ("Token '" + strx + "' not found, please correct it.")
 
     return aa
+
+def rlookup(idn):
+    ret =  "none"
+    for aa in tokdef:
+        #print("idx =", idn, "aa =", aa)
+        if idn == aa[0]:
+            ret = aa[1]
+            break
+    return ret
+
+def dumpids():
+    cnt = 0
+    for aa in tokdef:
+        strx = str(aa[0]) + " = " + aa[1]
+        xlen = 18 - len(strx)
+        print(strx, end = " " * xlen)
+        cnt += 1
+        if cnt % 4 == 0:
+            print()
+    print()
 
 # The short verion, returning the num only
 def pl(strx):
@@ -162,6 +182,17 @@ if len(tokens) != len(tokdef):
 
 tokens +=  token_alias
 
+def dumptokens():
+    cnt = 0
+    for aa in tokens:
+        strx = str(aa[0]) + " = " + aa[1]
+        xlen = 40 - len(strx)
+        print(strx, end = " " * xlen)
+        cnt += 1
+        if cnt % 2 == 0:
+            print()
+    print()
+
 '''
 # We initialize parser variables in the context of the parser module.
 #
@@ -280,6 +311,9 @@ ENCOL = [unique(),        "encol"]
 NBGCOL  = [unique(),      "nbgcol"]
 ENBNCOL = [unique(),      "enbgcol"]
 
+def dumpstates():
+    pass
+
 # Color instructions: (not used)
 
 STATECOL = [RED, GREEN, BLUE]
@@ -343,173 +377,182 @@ TXTCLASS = pl("ident"), pl("eq"), pl("lt"), pl("str"), pl("str2"), \
 #
 # This table specifies a grammar for text processing, similar to Pango
 #
-#     -- State -- StateClass -- Token -- TokenClass -- Function -- newState -- cont. flag
+# -State -StateClass -Token -TokenClass -Function -newState -contFlag
 
-def setup_table():
+parsetable = [
+    [ None,    STATEFMT,  pl("span"),     None,   cb.Span,      SPAN, 0 ],
+    [ None,    STATEFMT,  pl("bold"),     None,   cb.Bold,      BOLD, 0 ],
+    [ None,    STATEFMT,  pl("it"),       None,   cb.Italic,    ITALIC, 0 ],
+    [ None,    STATEFMT,  pl("itbold"),   None,   cb.ItBold,    ITBOLD, 0 ],
+    [ None,    STATEFMT,  pl("ul"),       None,   cb.Underline, UL, 0 ],
+    [ None,    STATEFMT,  pl("dul"),      None,   cb.Dunderline,DUL, 0 ],
+    [ None,    STATEFMT,  pl("red"),      None,   cb.Red,       RED, 0 ],
+    [ None,    STATEFMT,  pl("bgred"),    None,   cb.Bgred,     BGRED, 0 ],
+    [ None,    STATEFMT,  pl("blue"),     None,   cb.Blue,      BLUE, 0 ],
+    [ None,    STATEFMT,  pl("bgblue"),   None,   cb.Bgblue,    BGBLUE, 0 ],
+    [ None,    STATEFMT,  pl("green"),    None,   cb.Green,     GREEN, 0 ],
+    [ None,    STATEFMT,  pl("bggreen"),  None,   cb.Bggreen,   BGGREEN, 0 ],
+    [ None,    STATEFMT,  pl("strike"),   None,   cb.Strike,    STRIKE, 0 ],
+    [ None,    STATEFMT,  pl("large"),    None,   cb.Large,     LARGE, 0 ],
+    [ None,    STATEFMT,  pl("xlarge"),   None,   cb.Xlarge,    XLARGE, 0 ],
+    [ None,    STATEFMT,  pl("xxlarge"),  None,   cb.Xxlarge,   XXLARGE, 0 ],
+    [ None,    STATEFMT,  pl("small"),    None,   cb.Small,     SMALL, 0 ],
+    [ None,    STATEFMT,  pl("xsmall"),   None,   cb.Xsmall,    XSMALL, 0 ],
+    [ None,    STATEFMT,  pl("cent"),     None,   cb.Center,    CENT, 0 ],
+    [ None,    STATEFMT,  pl("right"),    None,   cb.Right,     RIGHT, 0 ],
+    [ None,    STATEFMT,  pl("wrap"),     None,   cb.Wrap,      WRAP, 0 ],
+    [ None,    STATEFMT,  pl("link"),     None,   cb.Link,      LINK, 0 ],
+    [ None,    STATEFMT,  pl("image"),    None,   cb.Image,     IMAGE, 0 ],
+    [ None,    STATEFMT,  pl("sub"),      None,   cb.Sub,       SUB, 0 ],
+    [ None,    STATEFMT,  pl("sup"),      None,   cb.Sup,       SUP, 0 ],
+    [ None,    STATEFMT,  pl("fill"),     None,   cb.Fill,      FILL, 0 ],
+    [ None,    STATEFMT,  pl("fixed"),    None,   cb.Fixed,     FIXED, 0 ],
+    [ None,    STATEFMT,  pl("indent"),   None,   cb.Indent,    INDENT, 0 ],
+    [ None,    STATEFMT,  pl("margin"),   None,   cb.Margin,    MARGIN, 0 ],
+    [ None,    STATEFMT,  pl("lmargin"),  None,   cb.Lmargin,   LMARGIN, 0 ],
+    [ None,    STATEFMT,  pl("hid"),      None,   cb.Hid,       HID, 0 ],
+    [ None,    STATEFMT,  pl("ncol"),     None,   cb.Ncol,      NCOL, 0 ],
+    [ None,    STATEFMT,  pl("ncol2"),    None,   cb.Ncol2,     NCOL, 0 ],
+    [ None,    STATEFMT,  pl("nbgcol"),   None,   cb.Nbgcol,    NBGCOL, 0 ],
 
-    global parsetable
+    [ INIT,     None,    None,       TXTCLASS,    cb.Text,   IGNORE, 0 ],
 
-    parsetable = [
-    [ None,    STATEFMT,     pl("span"),     None,   cb.Span,       SPAN, 0 ],
-    [ None,    STATEFMT,     pl("bold"),     None,   cb.Bold,    BOLD, 0 ],
-    [ None,    STATEFMT,     pl("it"),       None,   cb.Italic,  ITALIC, 0 ],
-    [ None,    STATEFMT,     pl("itbold"),   None,   cb.ItBold,     ITBOLD, 0 ],
-    [ None,    STATEFMT,     pl("ul"),       None,   cb.Underline,  UL, 0 ],
-    [ None,    STATEFMT,     pl("dul"),      None,   cb.Dunderline, DUL, 0 ],
-    [ None,    STATEFMT,     pl("red"),      None,   cb.Red,        RED, 0 ],
-    [ None,    STATEFMT,     pl("bgred"),    None,   cb.Bgred,      BGRED, 0 ],
-    [ None,    STATEFMT,     pl("blue"),     None,   cb.Blue,       BLUE, 0 ],
-    [ None,    STATEFMT,     pl("bgblue"),   None,   cb.Bgblue,     BGBLUE, 0 ],
-    [ None,    STATEFMT,     pl("green"),    None,   cb.Green,      GREEN, 0 ],
-    [ None,    STATEFMT,     pl("bggreen"), None,    cb.Bggreen,    BGGREEN, 0 ],
-    [ None,    STATEFMT,     pl("strike"),   None,   cb.Strike,     STRIKE, 0 ],
-    [ None,    STATEFMT,     pl("large"),    None,   cb.Large,      LARGE, 0 ],
-    [ None,    STATEFMT,     pl("xlarge"),   None,   cb.Xlarge,     XLARGE, 0 ],
-    [ None,    STATEFMT,     pl("xxlarge"), None,    cb.Xxlarge,    XXLARGE, 0 ],
-    [ None,    STATEFMT,     pl("small"),    None,   cb.Small,      SMALL, 0 ],
-    [ None,    STATEFMT,     pl("xsmall"),    None,  cb.Xsmall,     XSMALL, 0 ],
-    [ None,    STATEFMT,     pl("cent"),     None,   cb.Center,     CENT, 0 ],
-    [ None,    STATEFMT,     pl("right"),    None,   cb.Right,      RIGHT, 0 ],
-    [ None,    STATEFMT,     pl("wrap"),     None,   cb.Wrap,       WRAP, 0 ],
-    [ None,    STATEFMT,     pl("link"),     None,   cb.Link,       LINK, 0 ],
-    [ None,    STATEFMT,     pl("image"),     None,  cb.Image,      IMAGE, 0 ],
-    [ None,    STATEFMT,     pl("sub"),     None,    cb.Sub,        SUB, 0 ],
-    [ None,    STATEFMT,     pl("sup"),     None,    cb.Sup,        SUP, 0 ],
-    [ None,    STATEFMT,     pl("fill"),     None,   cb.Fill,       FILL, 0 ],
-    [ None,    STATEFMT,     pl("fixed"),    None,   cb.Fixed,      FIXED, 0 ],
-    [ None,    STATEFMT,     pl("indent"),   None,   cb.Indent,     INDENT, 0 ],
-    [ None,    STATEFMT,     pl("margin"),   None,   cb.Margin,     MARGIN, 0 ],
-    [ None,    STATEFMT,     pl("lmargin"),   None,  cb.Lmargin,    LMARGIN, 0 ],
-    [ None,    STATEFMT,     pl("hid"),      None,   cb.Hid,        HID, 0 ],
-    [ None,    STATEFMT,     pl("ncol"),     None,   cb.Ncol,       NCOL, 0 ],
-    [ None,    STATEFMT,     pl("ncol2"),     None,  cb.Ncol2,       NCOL, 0 ],
-    [ None,    STATEFMT,     pl("nbgcol"),   None,   cb.Nbgcol,     NBGCOL, 0 ],
+    [ None,   STATEFMT,   pl("tab"),      None,   cb.Tab,       IGNORE, 0 ],
+    [ None,   STATEFMT,   pl("comm"),     None,   cb.Comm,      IGNORE, 0 ],
+    [ None,   STATEFMT,   pl("comm2"),     None,  cb.Comm2,     IGNORE, 0 ],
+    [ None,   STATEFMT,   pl("bsnl"),     None,   None,         IGNORE, 0 ],
 
-    [ INIT,   None,   None,           TXTCLASS, cb.Text,       IGNORE, 0 ],
+    [ SPAN,   None,     pl("ident"),    None,     None,     KEY, 1 ],
+    [ KEYVAL, None,     pl("ident"),    None,     cb.Keyval,   KEY, 1 ],
+    [ KEY,    None,     pl("eq"),       None,     None,     VAL, 1 ],
+    [ VAL,    None,     pl("ident"),    None,     cb.Keyval,   IGNORE, 0 ],
+    [ VAL,    None,     pl("str"),      None,     cb.Keyval,   IGNORE, 0 ],
+    [ VAL,    None,     pl("str2"),     None,     cb.Keyval,   IGNORE, 0 ],
+    [ VAL,    None,     pl("str4"),     None,     cb.Keyval,   IGNORE, 0 ],
+    [ SPAN,   None,     pl("gt"),       None,     cb.Span2,    SPANTXT, 0 ],
+    [ SPAN,   None,     pl("sp"),       None,     None,     IGNORE, 0 ],
 
-    [ None,   STATEFMT,   pl("tab"),      None,   cb.Tab,      IGNORE, 0 ],
-    [ None,   STATEFMT,   pl("comm"),     None,   cb.Comm,     IGNORE, 0 ],
-    [ None,   STATEFMT,   pl("comm2"),     None,   cb.Comm2,     IGNORE, 0 ],
-    [ None,   STATEFMT,   pl("bsnl"),     None,   None,      IGNORE, 0 ],
+    [ IMAGE,   None,    pl("ident"),    None,     None,     KEY, 1 ],
+    [ IMAGE,   None,    pl("gt"),       None,     cb.Image2,   IGNORE, 0 ],
+    [ IMAGE,   None,    pl("sp"),       None,     None,     IGNORE, 0 ],
 
-    [ SPAN,   None,   pl("ident"),    None,     None,     KEY, 1 ],
-    [ KEYVAL, None,   pl("ident"),    None,     cb.Keyval,   KEY, 1 ],
-    [ KEY,    None,   pl("eq"),       None,     None,     VAL, 1 ],
-    [ VAL,    None,   pl("ident"),    None,     cb.Keyval,   IGNORE, 0 ],
-    [ VAL,    None,   pl("str"),      None,     cb.Keyval,   IGNORE, 0 ],
-    [ VAL,    None,   pl("str2"),     None,     cb.Keyval,   IGNORE, 0 ],
-    [ VAL,    None,   pl("str4"),     None,     cb.Keyval,   IGNORE, 0 ],
-    [ SPAN,   None,   pl("gt"),       None,     cb.Span2,    SPANTXT, 0 ],
-    [ SPAN,   None,   pl("sp"),       None,     None,     IGNORE, 0 ],
+    [ LINK,   None,     pl("ident"),    None,     None,     KEY, 1 ],
+    [ LINK,   None,     pl("gt"),       None,     cb.Link2,    SPANTXT, 0 ],
+    [ LINK,   None,     pl("sp"),       None,     None,     IGNORE, 0 ],
 
-    [ IMAGE,   None,   pl("ident"),    None,     None,     KEY, 1 ],
-    [ IMAGE,   None,   pl("gt"),       None,     cb.Image2,   IGNORE, 0 ],
-    [ IMAGE,   None,   pl("sp"),       None,     None,     IGNORE, 0 ],
+    [ SPANTXT, None,    pl("espan"),    None,     cb.eSpan,      INIT, 0 ],
+    [ SPANTXT, None,    pl("elink"),    None,     cb.eLink,      IGNORE, 0 ],
 
-    [ LINK,   None,   pl("ident"),    None,     None,     KEY, 1 ],
-    [ LINK,   None,   pl("gt"),       None,     cb.Link2,    SPANTXT, 0 ],
-    [ LINK,   None,   pl("sp"),       None,     None,     IGNORE, 0 ],
+    [ SPANTXT, None,    pl("bold"),     None,     cb.Bold,   BOLD, 0 ],
+    [ SPANTXT, None,    pl("it"),       None,     cb.Italic, ITALIC, 0 ],
+    [ SPANTXT, None,    None,       TXTCLASS,     cb.Text,   IGNORE, 0 ],
 
-    [ SPANTXT, None,  pl("espan"),    None,     cb.eSpan,      INIT, 0 ],
-    [ SPANTXT, None,  pl("elink"),    None,     cb.eLink,      IGNORE, 0 ],
+    [ ITALIC,   None, None,       TXTCLASS,       cb.Text,       IGNORE, 0 ],
+    [ ITALIC,   None,  pl("eit"),      None,      cb.eItalic,    IGNORE, 0 ],
 
-    [ SPANTXT, None,  pl("bold"),     None,     cb.Bold,   BOLD, 0 ],
-    [ SPANTXT, None,  pl("it"),       None,     cb.Italic, ITALIC, 0 ],
-    [ SPANTXT, None, None,       TXTCLASS,      cb.Text,   IGNORE, 0 ],
+    [ BOLD,     None, None,       TXTCLASS,       cb.Text,   IGNORE, 0 ],
+    [ BOLD,     None,  pl("ebold"),    None,      cb.eBold,  IGNORE, 0 ],
 
-    [ ITALIC,   None, None,       TXTCLASS,     cb.Text,       IGNORE, 0 ],
-    [ ITALIC,   None,  pl("eit"),      None,    cb.eItalic,    IGNORE, 0 ],
+    [ ITBOLD,   None,   None,       TXTCLASS,     cb.Text,       IGNORE, 0 ],
+    [ ITBOLD,   None,   pl("eitbold"), None,      cb.eItBold,    IGNORE, 0 ],
 
-    [ BOLD,     None, None,       TXTCLASS,     cb.Text,   IGNORE, 0 ],
-    [ BOLD,     None,  pl("ebold"),    None,    cb.eBold,  IGNORE, 0 ],
+    [ UL,       None,   None,       TXTCLASS,     cb.Text,         IGNORE, 0 ],
+    [ UL,       None,  pl("eul"),       None,     cb.eUnderline,   IGNORE, 0 ],
 
-    [ ITBOLD,   None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ ITBOLD,   None,   pl("eitbold"), None,    cb.eItBold,    IGNORE, 0 ],
+    [ DUL,       None,   None,       TXTCLASS,    cb.Text,   IGNORE, 0 ],
+    [ DUL,       None,  pl("edul"),       None,   cb.eDunderline,   IGNORE, 0 ],
 
-    [ UL,       None,   None,       TXTCLASS,   cb.Text,         IGNORE, 0 ],
-    [ UL,       None,  pl("eul"),       None,   cb.eUnderline,   IGNORE, 0 ],
+    [ RED,      None,   None,       TXTCLASS,     cb.Text,        IGNORE, 0 ],
+    [ RED,      None,   pl("ered"),     None,     cb.eRed,        IGNORE, 0 ],
 
-    [ DUL,       None,   None,       TXTCLASS,   cb.Text,   IGNORE, 0 ],
-    [ DUL,       None,  pl("edul"),       None,  cb.eDunderline,   IGNORE, 0 ],
+    [ BGRED,    None,   None,       TXTCLASS,     cb.Text,        IGNORE, 0 ],
+    [ BGRED,    None,   pl("ebgred"),     None,   cb.eBgred,      IGNORE, 0 ],
 
-    [ RED,      None,   None,       TXTCLASS,    cb.Text,        IGNORE, 0 ],
-    [ RED,      None,   pl("ered"),     None,    cb.eRed,        IGNORE, 0 ],
-
-    [ BGRED,    None,   None,       TXTCLASS,    cb.Text,        IGNORE, 0 ],
-    [ BGRED,    None,   pl("ebgred"),     None,  cb.eBgred,      IGNORE, 0 ],
-
-    [ BLUE,     None,    None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ BLUE,     None,   pl("eblue"),     None,   cb.eBlue,       IGNORE, 0 ],
+    [ BLUE,     None,    None,       TXTCLASS,    cb.Text,       IGNORE, 0 ],
+    [ BLUE,     None,   pl("eblue"),     None,    cb.eBlue,       IGNORE, 0 ],
 
     [ BGBLUE,     None,    None,       TXTCLASS,  cb.Text,       IGNORE, 0 ],
     [ BGBLUE,     None,  pl("ebgblue"),    None,  cb.eBgblue,       IGNORE, 0 ],
 
-    [ GREEN,    None,    None,       TXTCLASS,   cb.Text,      IGNORE, 0 ],
-    [ GREEN,    None,   pl("egreen"),     None,  cb.eGreen,    IGNORE, 0 ],
+    [ GREEN,    None,    None,       TXTCLASS,    cb.Text,      IGNORE, 0 ],
+    [ GREEN,    None,   pl("egreen"),     None,   cb.eGreen,    IGNORE, 0 ],
 
     [ BGGREEN,    None,    None,       TXTCLASS,  cb.Text,      IGNORE, 0 ],
     [ BGGREEN,    None,   pl("ebggreen"),     None,    cb.eBggreen,    IGNORE, 0 ],
 
-    [ STRIKE,   None,   None,       TXTCLASS,   cb.Text,      IGNORE, 0 ],
-    [ STRIKE,   None,   pl("estrike"), None,       cb.eStrike,   IGNORE, 0 ],
+    [ STRIKE,   None,   None,       TXTCLASS,     cb.Text,      IGNORE, 0 ],
+    [ STRIKE,   None,   pl("estrike"), None,      cb.eStrike,   IGNORE, 0 ],
 
-    [ LARGE,    None,   None,       TXTCLASS,   cb.Text,      IGNORE, 0 ],
-    [ LARGE,    None,   pl("elarge"),    None,      cb.eLarge,    IGNORE, 0 ],
+    [ LARGE,    None,   None,       TXTCLASS,     cb.Text,      IGNORE, 0 ],
+    [ LARGE,    None,   pl("elarge"),    None,    cb.eLarge,    IGNORE, 0 ],
 
-    [ XLARGE,    None,   None,       TXTCLASS,  cb.Text,      IGNORE, 0 ],
-    [ XLARGE,    None,   pl("exlarge"),    None,    cb.eXlarge,    IGNORE, 0 ],
+    [ XLARGE,    None,   None,       TXTCLASS,    cb.Text,      IGNORE, 0 ],
+    [ XLARGE,    None,   pl("exlarge"),    None,  cb.eXlarge,    IGNORE, 0 ],
 
-    [ XXLARGE,    None,   None,       TXTCLASS, cb.Text,      IGNORE, 0 ],
+    [ XXLARGE,    None,   None,       TXTCLASS,   cb.Text,      IGNORE, 0 ],
     [ XXLARGE,    None,   pl("exxlarge"),    None,  cb.eXxlarge,    IGNORE, 0 ],
 
-    [ SMALL,     None,   None,       TXTCLASS,  cb.Text,      IGNORE, 0 ],
-    [ SMALL,     None,  pl("esmall"),    None,     cb.eSmall,    IGNORE, 0 ],
+    [ SMALL,     None,   None,       TXTCLASS,    cb.Text,      IGNORE, 0 ],
+    [ SMALL,     None,  pl("esmall"),    None,    cb.eSmall,    IGNORE, 0 ],
 
-    [ XSMALL,     None,   None,       TXTCLASS,  cb.Text,      IGNORE, 0 ],
-    [ XSMALL,     None,  pl("exsmall"),    None,     cb.eXsmall,    IGNORE, 0 ],
+    [ XSMALL,     None,   None,       TXTCLASS,   cb.Text,      IGNORE, 0 ],
+    [ XSMALL,     None,  pl("exsmall"),    None,  cb.eXsmall,    IGNORE, 0 ],
 
-    [ CENT,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ CENT,     None,  pl("ecent"),    None,        cb.eCenter,     IGNORE, 0 ],
+    [ CENT,     None,   None,       TXTCLASS,     cb.Text,       IGNORE, 0 ],
+    [ CENT,     None,  pl("ecent"),    None,      cb.eCenter,     IGNORE, 0 ],
 
-    [ RIGHT,     None,   None,      TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ RIGHT,     None,  pl("eright"),    None,      cb.eRight,     IGNORE, 0 ],
+    [ RIGHT,     None,   None,      TXTCLASS,     cb.Text,       IGNORE, 0 ],
+    [ RIGHT,     None,  pl("eright"),    None,    cb.eRight,     IGNORE, 0 ],
 
-    [ WRAP,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ WRAP,     None,  pl("ewrap"),    None,        cb.eWrap,      IGNORE, 0 ],
+    [ WRAP,     None,   None,       TXTCLASS,     cb.Text,       IGNORE, 0 ],
+    [ WRAP,     None,  pl("ewrap"),    None,      cb.eWrap,      IGNORE, 0 ],
 
-    [ SUB,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ SUB,     None,  pl("esub"),      None,        cb.eSub,      IGNORE, 0 ],
+    [ SUB,     None,   None,       TXTCLASS,      cb.Text,       IGNORE, 0 ],
+    [ SUB,     None,  pl("esub"),      None,      cb.eSub,      IGNORE, 0 ],
 
-    [ SUP,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ SUP,     None,  pl("esup"),      None,        cb.eSup,      IGNORE, 0 ],
+    [ SUP,     None,   None,       TXTCLASS,      cb.Text,       IGNORE, 0 ],
+    [ SUP,     None,  pl("esup"),      None,      cb.eSup,      IGNORE, 0 ],
 
-    [ FILL,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ FILL,     None,  pl("efill"),    None,        cb.eFill,      IGNORE, 0 ],
+    [ FILL,     None,   None,       TXTCLASS,     cb.Text,       IGNORE, 0 ],
+    [ FILL,     None,  pl("efill"),    None,      cb.eFill,      IGNORE, 0 ],
 
-    [ FIXED,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
-    [ FIXED,     None,  pl("efixed"),    None,     cb.eFixed,      IGNORE, 0 ],
+    [ FIXED,     None,   None,       TXTCLASS,    cb.Text,       IGNORE, 0 ],
+    [ FIXED,     None,  pl("efixed"),    None,    cb.eFixed,      IGNORE, 0 ],
 
-    [ INDENT,     None,   None,       TXTCLASS, cb.Text,       IGNORE, 0 ],
-    [ INDENT,     None,  pl("eindent"),    None,    cb.eIndent,  IGNORE, 0 ],
+    [ INDENT,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
+    [ INDENT,     None,  pl("eindent"),    None,  cb.eIndent,  IGNORE, 0 ],
 
-    [ MARGIN,     None,   None,       TXTCLASS, cb.Text,       IGNORE, 0 ],
-    [ MARGIN,     None,  pl("emargin"),    None,    cb.eMargin,  IGNORE, 0 ],
+    [ MARGIN,     None,   None,       TXTCLASS,   cb.Text,       IGNORE, 0 ],
+    [ MARGIN,     None,  pl("emargin"),    None,  cb.eMargin,  IGNORE, 0 ],
 
-    [ LMARGIN,     None,   None,       TXTCLASS, cb.Text,       IGNORE, 0 ],
-    [ LMARGIN,     None,  pl("elmargin"),    None,   cb.eLmargin,  IGNORE, 0 ],
+    [ LMARGIN,     None,   None,       TXTCLASS,  cb.Text,       IGNORE, 0 ],
+    [ LMARGIN,     None,  pl("elmargin"),  None,  cb.eLmargin,  IGNORE, 0 ],
 
-    [ HID,     None,   None,       TXTCLASS,    None,     IGNORE, 0 ],
-    [ HID,     None,  pl("ehid"),    None,          cb.eHid,     IGNORE, 0 ],
+    [ HID,     None,   None,       TXTCLASS,      None,     IGNORE, 0 ],
+    [ HID,     None,  pl("ehid"),    None,        cb.eHid,     IGNORE, 0 ],
 
-    [ NCOL,     None,   None,     TXTCLASS,     cb.Text,      IGNORE, 0 ],
-    [ NCOL,     None,  pl("encol"),    None,        cb.eNcol,    IGNORE, 0 ],
+    [ NCOL,     None,   None,     TXTCLASS,       cb.Text,      IGNORE, 0 ],
+    [ NCOL,     None,  pl("encol"),    None,      cb.eNcol,    IGNORE, 0 ],
 
     [ NBGCOL,     None,   None,     TXTCLASS,     cb.Text,      IGNORE, 0 ],
-    [ NBGCOL,     None,  pl("enbgcol"),    None,      cb.eNbgcol,    IGNORE, 0 ],
+    [ NBGCOL,     None,  pl("enbgcol"),    None,  cb.eNbgcol,    IGNORE, 0 ],
     ]
 
-    #    [ None,   STATEFMT,   pl("tab2"),     None,   cb.Tab,      IGNORE, 0 ],
+    #    [ None,   STATEFMT,   pl("tab2"),  None, cb.Tab,      IGNORE, 0 ],
 
-    return parsetable
+def _printrow(row):
+    for aa in row:
+        if type(aa) == type(cb.Text):
+            print("Func:", str(aa)[13:30], end = " ")
+        else:
+            print(aa, end = " ")
+    print()
+
+def dumpptable():
+    cnt = 0
+    for aa in parsetable:
+        print("Row", cnt, ":", _printrow(aa))
+        cnt += 1
+    print()
 
 # EOF
