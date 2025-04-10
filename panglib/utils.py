@@ -2,6 +2,23 @@
 
 import sys, os, re, time, stat
 
+import  panglib.stack as stack
+
+
+# Some globals read: (Pang View Globals):
+
+class pvg():
+
+    lstack = stack.Stack();
+
+    buf = None; xstack = None; verbose = False
+    pgdebug = False; show_lexer = False; full_screen = False
+    fullpath = None; docroot = None
+    got_clock = 0; show_timing = False; second = ""
+    xfull_screen = False; flag = False; show_parse = False
+    emit = False; show_state = False; pane_pos = -1
+    warnings = False; all = False
+
 # ------------------------------------------------------------------------
 # Convert octal string to integer
 

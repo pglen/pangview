@@ -16,19 +16,6 @@ class TextState():
         self.indent = 0; self.margin = 0; self.size = 0; self.font = "";
         self.fixed = False; self.bgcolor = ""
         self.sub = False; self.sup = False; self.image = ""; self.link = ""; self.lmargin = 0
-        self.fill = False; self.tab = 0
+        self.fill = False; self.tab = 0; self.skip = 0; self.comm2 = 0
 
-    def clear(self):
-        for aa in self.__dict__:
-            if aa[:2] == "__":
-                continue
-            if isinstance(self.__dict__[aa], bool):
-                   self.__dict__[aa] = False
-            elif isinstance(self.__dict__[aa], int):
-                   self.__dict__[aa] = 0
-            elif isinstance(self.__dict__[aa], str):
-                   self.__dict__[aa] = ""
-            else:
-                print ("  Other", aa, type(self.__dict__[aa]))
-                pass
-
+# EOF

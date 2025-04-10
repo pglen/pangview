@@ -2,7 +2,7 @@
 <b>Head <tab> <tab> Foot</b>
 -------------------------------------------\
 
-This is text table  <tab> | <tab>Col 2 2 <tab> | col3
-This is text table2 <tab> | <tab>Col 2 3 <tab> | col3 5
-This is text table3 <tab> | <tab>Col 2 4 <tab> | col3 6
+This is text table  <tab> | <tab>Col 2 2 | <tab> a <tab>| col3
+This is text table2 <tab> | <tab>Col 2 3 | <tab> | col3 5
+This is text table3 <tab> | <tab>Col 2 4 | <tab> | col3 6
 

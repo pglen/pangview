@@ -17,9 +17,8 @@ class _LexIter():
             mmm = dd.match(strx, pos)
             if mmm:
                 #print (mmm.end() - mmm.start(), strx[mmm.start():mmm.end()])
-                tt = bb, mmm, strx[mmm.start():mmm.end()]
+                tt = bb, mmm, strx[mmm.start():mmm.end()], mmm.start(), mmm.end()
                 return tt
-
         return None;
 
 class Lexer():

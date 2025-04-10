@@ -8,6 +8,7 @@ import  panglib.lexer as lexer
 import  panglib.pangdisp as pangdisp
 import  panglib.pangfunc as pangfunc
 import  panglib.textstate as textstate
+import  panglib.pangparse as pangparse
 
 ts = textstate.TextState()
 
@@ -24,11 +25,13 @@ from gi.repository import GdkPixbuf
 
 #xstack = stack.Stack()
 
+rcnt = 1
 # ------------------------------------------------------------------------
 # Accumulate output: (mostly for testing)
 _cummulate = ""
 
-def emit(strx):
+def emit_one(strx):
+    #return
     global _cummulate;
     _cummulate += " '" + strx + "' "
 
@@ -60,6 +63,16 @@ xpm_data = [
 "                "
 ]
 
+mv = None
+
+# imitate: self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
+
+def add_one(accum, xtag2):
+
+    if mw:
+        mw.add_text_xtag(accum, xtag2)
+
+
 class PangoView(Gtk.Window):
 
     hovering_over_link = False
@@ -74,9 +87,12 @@ class PangoView(Gtk.Window):
     # Create the toplevel window
     def __init__(self, pvg, parent=None):
 
+        global mw
+        mw = self
+        self.pvg = pvg
         self.lastfile = ""
         Gtk.Window.__init__(self)
-        self.cb = pangfunc.CallBack(ts, self, emit, pvg)
+        self.cb = pangfunc.CallBack(ts, self, emit_one)
         try:
             self.set_screen(parent.get_screen())
         except AttributeError:
@@ -110,7 +126,7 @@ class PangoView(Gtk.Window):
         #hhh = rect.height;
 
         #self.set_default_size(7*www/8, 7*hhh/8)
-        if pvg.full_screen:
+        if self.pvg.full_screen:
             self.set_default_size(www, hhh)
         else:
             #self.set_default_size(3*www/4, 3*hhh/4)
@@ -252,7 +268,7 @@ class PangoView(Gtk.Window):
 
     def key_press_event(self, text_view, event):
 
-        if pvg.verbose > 1:
+        if self.pvg.verbose > 1:
             print("Key", event.keyval)
 
         if (event.keyval == Gdk.KEY_Return or
@@ -261,12 +277,12 @@ class PangoView(Gtk.Window):
             iter = buffer.get_iter_at_mark(buffer.get_insert())
             self.follow_if_link(text_view, iter)
         elif event.keyval == Gdk.KEY_Tab:
-            if pvg.verbose > 0:
+            if self.pvg.verbose > 0:
                 print ("Tab")
             return True
             pass
         elif event.keyval == Gdk.KEY_space:
-            if pvg.verbose > 0:
+            if self.pvg.verbose > 0:
                 print ("Space")
                 # Imitate page down
 
@@ -276,10 +292,11 @@ class PangoView(Gtk.Window):
                 self.bscallback()
 
         elif event.keyval == Gdk.KEY_r:
-            if pvg.verbose:
+            if self.pvg.verbose:
                 print("reload")
-            self.set_title("Reloading ...")
-            self.showfile(self.lastfile)
+            global rcnt
+            rcnt += 1
+            self.showfile(self.lastfile, rcnt)
 
         elif event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
             sys.exit(0)
@@ -288,7 +305,7 @@ class PangoView(Gtk.Window):
             if event.keyval == Gdk.KEY_x or event.keyval == Gdk.KEY_X:
                 sys.exit(0)
         else:
-            if pvg.verbose > 1:
+            if self.pvg.verbose > 1:
                 print("Dead key")
 
         return False
@@ -314,8 +331,8 @@ class PangoView(Gtk.Window):
             sys.exit(0)
 
         elif event.keyval == Gdk.KEY_r:
-            print("reload2")
-            self.set_title("Reloading ...")
+            if self.pvg.verbose:
+                print("reload2")
             self.showfile(self.lastfile)
 
         elif event.state & Gdk.ModifierType.MOD1_MASK:
@@ -493,16 +510,17 @@ class PangoView(Gtk.Window):
 
     def reset(self):
         ''' Reset parser '''
-        self.clear(pvg.flag)
-        ts.clear()
+        self.clear(self.pvg.flag)
+        #ts.clear()
+        ts = textstate.TextState()
 
-    def showfile(self, strx):
+    def showfile(self, strx, reload = 1):
 
-        #global buf, xstack, pvg, ts
+        #global buf, xstack, self.pvg, ts
 
         got_clock =  time.clock()
 
-        if pvg.verbose:
+        if self.pvg.verbose:
             print ("Showing file:", strx)
         try:
             fh = open(strx)
@@ -521,54 +539,47 @@ class PangoView(Gtk.Window):
             return
         fh.close()
 
-        if pvg.show_timing:
+        if self.pvg.show_timing:
             print  ("loader:", time.clock() - got_clock)
-        if pvg.pgdebug > 5: print (buf)
+
+        if self.pvg.pgdebug > 5:
+            print (buf)
 
         if self.lastfile != strx:
-            pvg.lstack.push(strx)
+            self.pvg.lstack.push(strx)
             self.lastfile = strx
 
-        self.set_title(strx)
         self.reset()
 
         xstack = stack.Stack()
-        lexer.Lexer(buf, xstack, parser.tokens)
+        lexer.Lexer(buf, xstack, pangparse.tokens)
 
-        if pvg.show_timing:
+        if self.pvg.show_timing:
             print  ("lexer:", time.clock() - got_clock)
 
-        if pvg.show_lexer:  # To show what the lexer did
+        if self.pvg.show_lexer:  # To show what the lexer did
             xstack.dump()
 
-        parser.Parse(buf, xstack, pvg)
-        self.cb.flush()
+        parsetable = pangparse.setup_table()
+        ppp =  parser.Parser(parsetable, self.pvg)
+        ppp.parse(buf, xstack)
+
+        pangparse.cb.flush()
         self.showcur(False)
 
-        if pvg.show_timing:
+        if self.pvg.show_timing:
             print  ("parser:", time.clock() - got_clock)
 
         # Output results
-        if pvg.emit:
+        if self.pvg.emit:
             show_emit()
+
+        self.set_title("%s -- %d" % (strx, reload))
 
         self.buffer_1.place_cursor(self.buffer_1.get_start_iter())
         self.buffer_2.place_cursor(self.buffer_2.get_start_iter())
 
-# Some globals read: (Pang View Globals):
+    def main(self):
+        Gtk.main()
 
-class pvg():
-
-    buf = None; xstack = None; verbose = False
-    pgdebug = False; show_lexer = False; full_screen = False
-    lstack = stack.Stack();  fullpath = None; docroot = None
-    got_clock = 0; show_timing = False; second = ""
-    xfull_screen = False; flag = False; show_parse = False
-    emit = False; show_state = False; pane_pos = -1
-
-#def main():
-#    PangoView(pvg)
-#    Gtk.main()
-#if __name__ == '__main__':
-#    main()
-
+# EOF

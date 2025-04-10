@@ -5,37 +5,27 @@ import sys, os, re
 # Our modules
 from . import stack, lexer
 
+import  panglib.pangparse as pangparse
+
 '''
 The parser needs several variables to operate.
   Quick summary of variables:
-     Token definitions, Lexer tokens, Parser functions,
-      Parser states, Parse state table.
-See pangparser.py for documentation and examples.
+    Token definitions, Lexer tokens, Parser functions,
+    Parser states, Parse state table.
+    See  pangparse.py for an example of required definitions.
 '''
 
-# Quick into: The lexer creates a stack of tokens. The parser scans
+# Quick intro: The lexer creates a stack of tokens. The parser scans
 # the tokens, and walks the state machine for matches. If match
 # is encountered, the parser calls the function in the state table,
 # and / or changes state. Reduce is called after the state has been
 # successfully digested. For more info see lex / yacc literature.
-
-_gl_cnt = 0
-def unique():             # create a unique temporary number
-    global _gl_cnt; _gl_cnt+= 10
-    return _gl_cnt
 
 # This variable controls the display of the default action.
 # The default action is executed when there is no rule for the
 # expression. Mostly useful for debugging the grammar.
 
 _show_default_action = False
-
-# May be redefined, included here for required initial states:
-
-ANYSTATE    = [-2, "anystate"]
-REDUCE      = [-1, "reduce"]
-IGNORE      = [unique(), "ignore"]
-INIT        = [unique(), "init"]
 
 # ------------------------------------------------------------------------
 # This parser creates no error conditions. Bad for languages, good
@@ -44,17 +34,19 @@ INIT        = [unique(), "init"]
 # The parser is not fully recursive, so states need to be nested by
 # hand. The flat parser is an advantage for text processing.
 
-class Parse():
+class Parser():
 
-    def __init__(self, data, xstack, pvg = None):
+    def __init__(self, ptable, pvg = None):
 
         self.fstack = stack.Stack()
-        self.fsm = INIT; self.contflag = 0
+
+        self.fsm = pangparse.INIT;
+        self.contflag = 0
         self.pvg = pvg
         self.pardict = {}
 
         # Create parse dictionary:
-        for pt in parsetable:
+        for pt in pangparse.parsetable:
             if pt[0] != None:
                 if pt[0][1] not in self.pardict:
                     self.pardict[pt[0][1]] = dict()     # Add if new
@@ -81,11 +73,12 @@ class Parse():
                 print ("   Subkey:", cc)
                 print (self.pardict[sss][cc][2:])'''
 
+    def parse(self, data, xstack):
         while True:
             tt = xstack.get2()  # Gen Next token
             if not tt:
                 break
-            self.parse_item2(data, tt)
+            self.parse_item(data, tt)
 
     def add_class(self, dd, pt):
         for aa in pt[3]:
@@ -94,11 +87,14 @@ class Parse():
     # This is the new routine, dictionary driven
     # About ten times as fast
 
-    def parse_item2(self, data, tt):
+    def parse_item(self, data, tt):
 
-        #print ("parse_item", data, tt[0], tt[1].start(), tt[1].end())
         mmm = tt[1];
         self.strx = data[mmm.start():mmm.end()]
+
+        if self.pvg.all:
+            print ("parse_item", "'" + self.strx + "'")
+
         #print ("parser:", tt[0], "=", "'" + self.strx + "'"        )
         if self.pvg.show_state:
             print ("state:", self.fsm, "str:", "'" + self.strx + "' token:", tt[0]    )
@@ -108,26 +104,28 @@ class Parse():
             print ("no state on", tt[0], self.strx        )
         try:
             item = curr[tt[0][0]]
-        except:
+            print("item", item)
             if self.pvg.show_parse:
                 # show context
-                bbb = mmm.start() - 5;  eee = mmm.end()+ 5
+                #bbb = mmm.start() - 5;  eee = mmm.end()+ 5
+                #cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
+                #        data[mmm.end():eee]
                 cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
                         data[mmm.end():eee]
-
-                print ("no key on", tt[0], cont)
-            return
-
+                #print("Cont:" "'" + cont + "'")
+        except:
+            #print ("Exc: no key on", tt[0], cont)
+            #return
+            pass
         #print ("item:", item)
-
         if item[4] != None:
             item[4](self, tt, item)
 
-        if item[5] == REDUCE:
+        if item[5] == pangparse.REDUCE:
             # This is an actionless reduce ... rare
             self.reduce(tt)
 
-        elif item[5] == IGNORE:
+        elif item[5] == pangparse.IGNORE:
             pass
         else:
             #print (" Setting new state", pt[3], self.strx)

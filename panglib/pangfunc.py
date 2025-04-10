@@ -14,12 +14,14 @@ from gi.repository import GdkPixbuf
 import copy
 import panglib.stack as stack
 import panglib.parser as parser
-
-from    panglib.utils import *
+import panglib.utils as utils
 
 old_stresc = ""
 accum = ""
 old_xtag = None
+fontstack = stack.Stack()
+
+#MainView = None
 
 # ------------------------------------------------------------------------
 # Hack for caching interaction with the pango subsystem.
@@ -45,12 +47,6 @@ def chkstate(obj_1, obj_2):
             break
     return ret
 
-# Callback class, extraction of callback functions from the pangview parser.
-# The class TextState is the format controlling class, Mainview is the target
-# window, and the Emit() function is to aid debug. These funtions may also
-# manipulate the parser stack. Note the naming convention like Bold() for
-# bold start, eBold() for bold end.
-
 class xTextTag(Gtk.TextTag):
 
     def __init__(self):
@@ -71,25 +67,42 @@ class xTextTag(Gtk.TextTag):
         #if arg2.type == Gdk.EventType.BUTTON_RELEASE:
         #    print("Link event", self.link)
 
+# Callback class, extraction of callback functions from the pangview parser.
+# The class TextState is the format controlling class, Mainview is the target
+# window, and the Emit() function is to aid debug. These funtions may also
+# manipulate the parser stack. Note the naming convention like Bold() for
+# bold start, eBold() for bold end.
+
 class CallBack():
 
-    def __init__(self, TextState, Mainview, Emit, Pvg):
+    def __init__(self, TextState, mainadd, mainemit):
         self.TextState = TextState
-        self.Mainview = Mainview
-        self.emit = Emit
-        self.pvg = Pvg
+        self.TextStateOrg = copy.deepcopy(self.TextState)
+
+        self.gl_mainadd = mainadd
+        self.gl_emit = mainemit
+        self.pvg =  utils.pvg
         self.oldstate = None
 
-    def Span(self, vparser, token, tentry):
-        self.emit("<span ")
+    def emit(self, strx):
+        self.flush()
+        self.gl_emit(strx)
+
+    def Comm(self, vparser, token, tentry):
+        #print ("textstate comm", vparser.strx)
+        self.TextState.skip = 1
+        self.emit( "<comm>")
+
+    def Comm2(self, vparser, token, tentry):
+        self.TextState.comm2 = 1
+        self.emit( "<comm2>")
 
     def Tab(self, vparser, token, tentry):
-        #print ("textstate tab", vparser.strx)
-        # Erase current token str
-        #vparser.strx = ""
+        print ("textstate tab", vparser.strx)
         self.TextState.tab += 1
-        #self.Mainview.add_text("\t")
         self.emit( "<tab>")
+        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
+        #self.flush()
 
     def Strike(self, vparser, token, tentry):
         self.TextState.strike = True
@@ -119,10 +132,15 @@ class CallBack():
     def eItalic(self, vparser, token, tentry):
         self.TextState.italic = False
         vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
-        self.emit ( "<eitalic>")
+        self.emit ("<eitalic>")
 
     def flush(self):
+        #return
         global oldstate, accum
+
+        if self.pvg.verbose > 3:
+            print("flush:", accum)
+
         if accum != "":
             if self.oldstate:
                 TextState2 = self.oldstate
@@ -130,7 +148,7 @@ class CallBack():
                 TextState2 =  self.TextState
 
             accum, xtag2 =  self.parseTextState(accum, TextState2)
-            self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
+            self.gl_mainadd(accum, xtag2)
             accum = ""
 
     # --------------------------------------------------------------------
@@ -139,7 +157,7 @@ class CallBack():
         global oldstate, accum, old_stresc
 
         self.emit(vparser.strx)
-        stresc = unescape(vparser.strx)
+        stresc = utils.unescape(vparser.strx)
         # If wrapping, output one space only
         if self.TextState.wrap:
             if stresc == " ":
@@ -150,58 +168,77 @@ class CallBack():
                 old_stresc = ""
 
         # Enable / Disable caching
-        enable_cache = True
-        if enable_cache:
-            if not chkstate(self.oldstate, self.TextState) and len(accum) < 1000:
-                #print ("caching: '" + accum + "'")
-                accum += stresc
-                return
-                pass
-            else:
-                #print ("printing: '" +  accum + "'")
-                pass
-        else:
-            accum += stresc
+        enable_cache = False #True
+        #if enable_cache:
+        #    if not chkstate(self.oldstate, self.TextState) and len(accum) < 1000:
+        #        #print ("caching: '" + accum + "'")
+        #        accum += stresc
+        #        pass
+        #    else:
+        #        #print ("printing: '" +  accum + "'")
+        #        pass
+        #else:
+        #    accum += stresc
 
+        fff = False
         # Materialize text
         if not self.TextState.hidden:
             #print   ("func", self.pvg.flag)
-            #self.Mainview.add_text_xtag(stresc, xtag, self.pvg.flag)
+            #self.mainadd(stresc, xtag, self.pvg.flag)
+            textstate2 = self.TextState
             if enable_cache:
                 if self.oldstate:
-                    accum, xtag2 = self.parseTextState(accum, self.oldstate, vparser)
-                else:
-                    accum, xtag2 = self.parseTextState(accum, self.TextState, vparser)
-            else:
-                accum, xtag2 = self.parseTextState(accum, self.TextState, vparser)
-            self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
+                    textstate2 = self.oldstate
+            accum, xtag2 = self.parseTextState(accum, textstate2, vparser)
+            self.gl_mainadd(accum, xtag2)
             accum = ""
         else:
             if self.pvg.verbose:
-                print ("Hidden:", accum)
+                print ("Hidden text:", accum)
 
         # Save tag state
         #self.oldstate = dupstate(self.TextState)
         accum += stresc
         self.oldstate = copy.deepcopy(self.TextState)
-        self.TextState.tab = 0
+
+    def show_textstate_diff(self, TextState):
+        print("show_textstate_diff:")
+        for aa in dir(TextState):
+            if aa[:2] != "__":
+                val = getattr(TextState, aa)
+                if getattr(self.TextStateOrg, aa) != val:
+                    print("diff =", aa, val)
+        print
 
     # --------------------------------------------------------------------
-    def parseTextState(self, text, TextState, vparser = None):
+    def parseTextState(self, text2, TextState, vparser = None):
 
         xtag = xTextTag()
 
-        if TextState.font != "":
-            xtag.set_property("font", TextState.font)
+        #print("textstate on ", "'" + text2 + "'")
+        #self.show_textstate_diff(TextState)
+
+        if self.TextState.comm2:
+            print(self.TextState.comm2, "comm2", "\'" + text2 + "\'")
+            if text2 == "\n":
+                self.TextState.comm2 = 0
+                #return "", xtag
+            return "@" + text2, xtag
+
+        if self.TextState.skip:
+            print(self.TextState.skip, "skip at", "\'" + text2 + "\'")
+            if text2 == "\n":
+                self.TextState.skip = 0
+            return "", xtag
 
         # This is one shot per count, reset tab
-        #if vparser:
-        if TextState.tab:
-            #print(self.TextState.tab, "tab at", "\'" + text + "\'")
-            #xtag.set_property("tabs", Pango.TabArray.new(0, 200))
-            #vparser.strx = "-\t" + vparser.strx
-            xtag2 = xTextTag()
-            self.Mainview.add_text_xtag("\t", xtag2)
+        while  self.TextState.tab:
+            self.TextState.tab -= 1
+            #print(self.TextState.tab, "tab at", "\'" + text2 + "\'")
+            text2 += "\t"
+
+        if TextState.font != "":
+            xtag.set_property("font", TextState.font)
 
         SCALE_LARGE = 1.2
         SCALE_X_LARGE = 1.4
@@ -288,7 +325,8 @@ class CallBack():
         if TextState.lmargin > 0:
             xtag.set_property("left_margin", ind)
 
-        return text, xtag
+        return text2, xtag
+
 
     def Bgred(self, vparser, token, tentry):
         self.TextState.bgred = True
@@ -640,7 +678,7 @@ class CallBack():
                             fname = "~/" + vv
 
         # Exec collected stuff
-        self.Mainview.add_text_xtag(" ", xtag, self.pvg.flag)
+        self.mainadd(" ", xtag)
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(fname)
             if www and hhh:
@@ -656,7 +694,7 @@ class CallBack():
             #print ("Failed to load image file '" + vv + "'")
             self.Mainview.add_broken(self.pvg.flag)
 
-        #self.Mainview.add_text_xtag(" eimage ", xtag, self.pvg.flag)
+        #self.mainadd(" eimage ", xtag, self.pvg.flag)
 
         #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         self.emit( "<image2>")
@@ -664,6 +702,10 @@ class CallBack():
     def eImage(self, vparser, token, tentry):
         vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         self.emit( "<eimage>")
+
+    def Span(self, vparser, token, tentry):
+        fontstack.push(copy.deepcopy(self.TextState))
+        self.emit("<span ")
 
     def Span2(self, vparser, token, tentry):
         xstack = stack.Stack()
@@ -720,21 +762,30 @@ class CallBack():
                 elif vvv == "center":
                     #print (" centering")
                     self.TextState.center = True
+            else:
+                if self.pvg.warnings:
+                   print("span - invalid argument:", "'" + kk + "'")
 
         self.emit(" spantxt >");
 
-
     def eSpan(self, vparser, token, tentry):
         #print ("called span", parser.strx)
-        self.TextState.color = ""
-        self.TextState.bgcolor = ""
-        self.TextState.size = 0
-        self.TextState.font = ""
-        self.TextState.left = False
-        self.TextState.center = False
-        self.TextState.right = False
-        self.TextState.ul = False
-        self.TextState.bold = False
+
+        #self.TextState = copy.deepcopy(self.oldstate)
+        #self.show_textstate_diff(self.TextState)
+        old_state = fontstack.pop()
+        #self.show_textstate_diff(old_state)
+        self.TextState = copy.deepcopy(old_state)
+
+        #self.TextState.color = ""
+        #self.TextState.bgcolor = ""
+        #self.TextState.size = 0
+        #self.TextState.font = ""
+        #self.TextState.left = False
+        #self.TextState.center = False
+        #self.TextState.right = False
+        #self.TextState.ul = False
+        #self.TextState.bold = False
 
         vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         self.emit ("<espan>" )
