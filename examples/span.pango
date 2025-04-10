@@ -1,7 +1,8 @@
-##
+<b>Hello
 <span foreground='blue' size="50">Blue text</span> is cool</span>
-Here <b>BOLD
-<span foreground='blue' size="50">Blue text</span> is <i>cool</i> Still Bold</span>
 </b> back to norm
-<span >Hello</span>
-EOF
+## Comment
+##Here <b>BOLD
+##<span foreground='blue' size="50">Blue text</span> is <i>cool</i> Still Bold</span>
+##<span >Hello</span>
+##EOF

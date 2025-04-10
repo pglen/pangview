@@ -27,19 +27,15 @@ def lookup(strx):
             ret = aa
             break
     if ret == None:
-        #print ("Token '" + strx + "' not found, please correct it.")
-        #sys.exit(1)
+        #print ("Token '" + strx + "' not found, adding ... ", end = " " )
         tokdef.append((unique(), strx))
-
-    for aa in tokdef:
-        if strx == aa[1]:
-            #print "found", aa
-            ret = aa
-            break
-
-    if ret == None:
-        print ("Token '" + strx + "' not found, please correct it.")
-
+        for aa in tokdef:
+            if strx == aa[1]:
+                #print(aa)
+                ret = aa
+                break
+        if ret == None:
+            print ("Token '" + strx + "' not found, please correct it.")
     return aa
 
 def rlookup(idn):
@@ -333,7 +329,7 @@ STATEFMT = [INIT,  BOLD, ITALIC, RED,
             LARGE, XLARGE, XXLARGE,
             SUB, SUP, LINK, CENT,
             RIGHT, WRAP, FILL, INDENT,
-            SPANTXT, FIXED, MARGIN, LMARGIN ]
+            SPAN, SPANTXT, FIXED, MARGIN, LMARGIN ]
 
 # ------------------------------------------------------------------------
 # Parser functions that are called on parser events. Note the 'e' prefix

@@ -553,13 +553,10 @@ class PangoView(Gtk.Window):
 
         xstack = stack.Stack()
         lexer.Lexer(buf, xstack, pangparse.tokens)
-
         if self.pvg.show_timing:
             print  ("lexer:", time.clock() - got_clock)
-
         if self.pvg.show_lexer:  # To show what the lexer did
             xstack.dump()
-
         ppp =  parser.Parser(pangparse.parsetable, self.pvg)
         ppp.parse(buf, xstack)
 

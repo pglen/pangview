@@ -14,7 +14,7 @@ class TextState():
         self.xlarge = False; self.xxlarge = False; self.center = False
         self.wrap = False; self.hidden = False; self.color =  ""; self.right = False
         self.indent = 0; self.margin = 0; self.size = 0; self.font = "";
-        self.fixed = False; self.bgcolor = ""
+        self.fixed = False; self.bgcolor = ""; self.left = False;
         self.sub = False; self.sup = False; self.image = ""; self.link = ""; self.lmargin = 0
         self.fill = False; self.tab = 0; self.skip = 0; self.comm2 = ""
 

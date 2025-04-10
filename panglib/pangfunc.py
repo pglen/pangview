@@ -807,23 +807,24 @@ class CallBack():
         self.emit(" spantxt >");
 
     def eSpan(self, vparser, token, tentry):
-        #print ("called span", parser.strx)
-
+        self.show_textstate_diff(self.TextState)
+        #print ("called espan", vparser.strx)
         #self.TextState = copy.deepcopy(self.oldstate)
         #self.show_textstate_diff(self.TextState)
         old_state = fontstack.pop()
-        #self.show_textstate_diff(old_state)
-        self.TextState = copy.deepcopy(old_state)
+        self.show_textstate_diff(old_state)
+        #self.TextState = copy.deepcopy(old_state)
 
-        #self.TextState.color = ""
-        #self.TextState.bgcolor = ""
-        #self.TextState.size = 0
-        #self.TextState.font = ""
-        #self.TextState.left = False
-        #self.TextState.center = False
-        #self.TextState.right = False
-        #self.TextState.ul = False
-        #self.TextState.bold = False
+        self.TextState.color    = old_state.color
+        self.TextState.bgcolor  = old_state.bgcolor
+        self.TextState.size     = old_state.size
+        self.TextState.font     = old_state.font
+        self.TextState.left     = old_state.left
+        self.TextState.center   = old_state.center
+        self.TextState.right    = old_state.right
+        self.TextState.ul       = old_state.ul
+        self.TextState.bold     = old_state.bold
+        self.show_textstate_diff(self.TextState)
 
         #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
