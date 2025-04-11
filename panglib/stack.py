@@ -25,6 +25,11 @@ class Stack():
         item = self._store[0]
         return item
 
+    def peek(self):
+        if len(self._store) <= 0: return None
+        item = self._store[len(self._store) - 1]
+        return item
+
     def pop(self):
         if len(self._store) == 0: return None
         item = self._store.pop(len(self._store) - 1)
@@ -33,6 +38,11 @@ class Stack():
     def get(self):
         if len(self._store) == 0: return None
         item = self._store.pop(0)
+        return item
+
+    def value(self, pos):
+        if len(self._store) == 0: return None
+        item = self._store[pos]
         return item
 
     # Non destructive pop

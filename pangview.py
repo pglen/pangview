@@ -80,7 +80,7 @@ def help():
     print ("            -c file   - Contents file for left pane")
     print ("            -a pos    - Set pane position (pixels)")
     print ("            -w        - Display syntax warnings")
-    print ("            -v        - Verbose")
+    print ("            -v        - Verbose. (repeat -v for more)")
     print ("            -f        - Full screen")
     print ("            -o        - Cover all windows (Full screen)")
     print ("            -t        - Show timing")

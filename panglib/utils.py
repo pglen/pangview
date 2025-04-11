@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, re, time, stat
+import sys, os, re, time, stat, traceback
 
 import  panglib.stack as stack
 
@@ -74,6 +74,50 @@ def uni(xtab):
         pass
 
     return ccc
+
+def esc(strx):
+
+    ''' erase new line as \\n '''
+
+    #print (" x[" + strx + "]x ")
+
+    retx = u""; pos = 0; lenx = len(strx)
+
+    while True:
+        if pos >= lenx:
+            break
+        chh = strx[pos]
+        if(chh == '\n'):
+            retx += '\\n'
+        elif(chh == '\r'):
+            retx += '\\r'
+        elif(chh == '\a'):
+            retx += '\\a'
+        elif(chh == '\\'):
+            retx += '\\\\'
+        else:
+            retx += chh
+        pos += 1
+    return retx
+
+# ------------------------------------------------------------------------
+# Print( an exception as the system would print it)
+
+def put_exc(xstr):
+    cumm = xstr + " "
+    a,b,c = sys.exc_info()
+    if a != None:
+        cumm += str(a) + " " + str(b) + "\n"
+        try:
+            #cumm += str(traceback.format_tb(c, 10))
+            ttt = traceback.extract_tb(c)
+            for aa in ttt:
+                cumm += "File: " + os.path.basename(aa[0]) + \
+                        " Line: " + str(aa[1]) + "\n" +  \
+                    "   Context: " + aa[2] + " -> " + aa[3] + "\n"
+        except:
+            print("Could not print trace stack. ", sys.exc_info())
+    print(cumm, end = "")
 
 # ------------------------------------------------------------------------
 # Unescape unicode into displayable sequence
@@ -176,6 +220,8 @@ def isTrue(strx):
     if uuu == "FALSE": return False
     if uuu == "Y": return True
     if uuu == "N": return False
+    if uuu == "YES": return True
+    if uuu == "NO": return False
     return False
 
 # ------------------------------------------------------------------------

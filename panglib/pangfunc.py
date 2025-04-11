@@ -78,7 +78,7 @@ class CallBack():
 
     def __init__(self, TextState, mainadd, mainemit):
         self.TextState = TextState
-        self.TextStateOrg = copy.deepcopy(self.TextState)
+        self.TextStateOrg = copy.copy(self.TextState)
 
         self.gl_mainadd = mainadd
         self.gl_emit = mainemit
@@ -102,8 +102,6 @@ class CallBack():
         #print ("textstate tab", vparser.strx)
         self.TextState.tab += 1
         self.emit( "<tab>")
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
-        #self.flush()
 
     def Strike(self, vparser, token, tentry):
         self.TextState.strike = True
@@ -111,7 +109,6 @@ class CallBack():
 
     def eStrike(self, vparser, token, tentry):
         self.TextState.strike = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<estrike>")
 
@@ -123,8 +120,8 @@ class CallBack():
     def eBold(self, vparser, token, tentry):
         #print ("got ebold")
         self.TextState.bold = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
+        #vparser.popstate()
         self.emit( "<ebold>")
 
     def Italic(self, vparser, token, tentry):
@@ -134,7 +131,6 @@ class CallBack():
 
     def eItalic(self, vparser, token, tentry):
         self.TextState.italic = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit ("<eitalic>")
 
@@ -206,14 +202,14 @@ class CallBack():
         accum += stresc
         self.oldstate = copy.deepcopy(self.TextState)
 
-    def show_textstate_diff(self, TextState):
-        print("show_textstate_diff:")
+    def show_textstate_diff(self, TextState, strx):
+        print(strx, "textstate:", end = " ")
         for aa in dir(TextState):
             if aa[:2] != "__":
                 val = getattr(TextState, aa)
                 if getattr(self.TextStateOrg, aa) != val:
-                    print("diff =", aa, val)
-        print
+                    print("diff =", aa, val, end = " ")
+        print()
 
     # --------------------------------------------------------------------
     def parseTextState(self, text2, TextState, vparser = None):
@@ -224,17 +220,11 @@ class CallBack():
         #self.show_textstate_diff(TextState)
 
         if self.TextState.comm2 != "":
-
             # Split
             pos = self.TextState.comm2.find("##")
-            print("pos", pos)
-
-            print(self.TextState.comm2[:pos], " comm2", "\'" + text2 + "\'")
-                #return "", xtag
+            #print(self.TextState.comm2[:pos], " comm2", "\'" + text2 + "\'")
             text2 = "\n" + self.TextState.comm2[:pos]
-
             self.TextState.comm2 = ""
-            #return text2, xtag
 
         if self.TextState.skip:
             #print(self.TextState.skip, "skip at", "\'" + text2 + "\'")
@@ -345,7 +335,6 @@ class CallBack():
 
     def eBgred(self, vparser, token, tentry):
         self.TextState.bgred = False
-        #    vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ebgred>")
 
@@ -355,7 +344,6 @@ class CallBack():
 
     def eBggreen(self, vparser, token, tentry):
         self.TextState.bggreen = False
-        #    vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ebggreen>")
 
@@ -365,7 +353,6 @@ class CallBack():
 
     def eBgblue(self, vparser, token, tentry):
         self.TextState.bgblue = False
-        #    vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ebgblue>")
 
@@ -375,7 +362,6 @@ class CallBack():
 
     def eXlarge(self, vparser, token, tentry):
         self.TextState.xlarge = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<exlarge>")
 
@@ -385,7 +371,6 @@ class CallBack():
 
     def eLarge(self, vparser, token, tentry):
         self.TextState.large = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<elarge>")
 
@@ -395,7 +380,6 @@ class CallBack():
 
     def eDunderline(self, vparser, token, tentry):
         self.TextState.dul = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<edunderline>")
 
@@ -405,7 +389,6 @@ class CallBack():
 
     def eUnderline(self, vparser, token, tentry):
         self.TextState.ul = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eunderline>")
 
@@ -415,7 +398,6 @@ class CallBack():
 
     def eItBold(self, vparser, token, tentry):
         self.TextState.itbold = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eitbold>")
 
@@ -425,7 +407,6 @@ class CallBack():
 
     def eGreen(self, vparser, token, tentry):
         self.TextState.green = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<egreen>")
 
@@ -435,7 +416,6 @@ class CallBack():
 
     def eBlue(self, vparser, token, tentry):
         self.TextState.blue = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eblue>")
 
@@ -445,7 +425,6 @@ class CallBack():
 
     def eRed(self, vparser, token, tentry):
         self.TextState.red = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ered>")
 
@@ -455,7 +434,6 @@ class CallBack():
 
     def eCenter(self, vparser, token, tentry):
         self.TextState.center = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ecenter>")
 
@@ -465,7 +443,6 @@ class CallBack():
 
     def eRight(self, vparser, token, tentry):
         self.TextState.right = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eright>")
 
@@ -475,7 +452,6 @@ class CallBack():
 
     def eXsmall(self, vparser, token, tentry):
         self.TextState.xsmall = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<exsmall>")
 
@@ -485,7 +461,6 @@ class CallBack():
 
     def eSmall(self, vparser, token, tentry):
         self.TextState.small = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<esmall>")
 
@@ -495,7 +470,6 @@ class CallBack():
 
     def eXxlarge(self, vparser, token, tentry):
         self.TextState.xxlarge = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<exxlarge>")
 
@@ -506,7 +480,6 @@ class CallBack():
     def eMargin(self, vparser, token, tentry):
         if self.TextState.margin > 0:
             self.TextState.margin -= 1
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<emargin>")
 
@@ -517,7 +490,6 @@ class CallBack():
     def eLmargin(self, vparser, token, tentry):
         if self.TextState.lmargin > 0:
             self.TextState.lmargin -= 1
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<emargin>")
 
@@ -527,7 +499,6 @@ class CallBack():
 
     def eFixed(self, vparser, token, tentry):
         self.TextState.fixed = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<efixed>")
 
@@ -537,7 +508,6 @@ class CallBack():
 
     def eSup(self, vparser, token, tentry):
         self.TextState.sup = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<esup>")
 
@@ -547,7 +517,6 @@ class CallBack():
 
     def eSub(self, vparser, token, tentry):
         self.TextState.sub = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<esub>")
 
@@ -557,7 +526,6 @@ class CallBack():
 
     def eHid(self, vparser, token, tentry):
         self.TextState.hidden = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ehid>")
 
@@ -568,7 +536,6 @@ class CallBack():
     def eIndent(self, vparser, token, tentry):
         if self.TextState.indent > 0:
             self.TextState.indent -= 1
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eindent>")
 
@@ -578,7 +545,6 @@ class CallBack():
 
     def eWrap(self, vparser, token, tentry):
         self.TextState.wrap = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<ewrap>")
 
@@ -588,7 +554,6 @@ class CallBack():
 
     def eFill(self, vparser, token, tentry):
         self.TextState.fill = False
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<efill>")
 
@@ -597,7 +562,6 @@ class CallBack():
         self.TextState.bgcolor = vparser.strx[3:len(vparser.strx)-1]
 
     def eNbgcol(self, vparser, token, tentry):
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.TextState.bgcolor = ""
         self.emit( "<enbgcol> ")
@@ -611,7 +575,6 @@ class CallBack():
         self.TextState.color = vparser.strx[3:len(vparser.strx)-1]
 
     def eNcol(self, vparser, token, tentry):
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.TextState.color = ""
         self.emit( "<encol> ")
@@ -624,7 +587,7 @@ class CallBack():
         # Walk optionals:
         while True:
             vparser.popstate()
-            if vparser.fsm == parsedata.KEYVAL:
+            if vparser.fsm == parsedata.st.KEYVAL:
                 #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
                 xstack.push([vparser.ttt, "=", vparser.stry])
             if vparser.contflag == 0:
@@ -641,11 +604,11 @@ class CallBack():
             if kk == "file" or kk == "name":
                 # Try docroot - current dir - home dir
                 fname = self.pvg.docroot + "/" + vv
-                if not isfile(fname):
+                if not utils.isfile(fname):
                     fname = vv
-                    if not isfile(fname):
+                    if not utils.isfile(fname):
                         fname = "~/" + vv
-                        if not isfile(fname):
+                        if not utils.isfile(fname):
                             fname = vv
 
                 self.TextState.link = fname
@@ -658,7 +621,6 @@ class CallBack():
     def eLink(self, vparser, token, tentry):
         self.TextState.link = ""
         self.TextState.color = ""
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<elink>")
 
@@ -672,7 +634,7 @@ class CallBack():
         # Walk optionals:
         while True:
             vparser.popstate()
-            if vparser.fsm == parser.KEYVAL:
+            if vparser.fsm == parsedata.st.KEYVAL:
                 #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
                 xstack.push([vparser.ttt, "=", vparser.stry])
             if vparser.contflag == 0:
@@ -706,11 +668,11 @@ class CallBack():
             if kk == "name" or kk == "file":
                 # Try docroot - curr dir - home/Pictures - home
                 fname = self.pvg.docroot + "/" + vv
-                if not isfile(fname):
+                if not utils.isfile(fname):
                     fname = vv
-                    if not isfile(fname):
+                    if not utils.isfile(fname):
                         fname = "~/Pictures" + vv
-                        if not isfile(fname):
+                        if not utils.isfile(fname):
                             fname = "~/" + vv
 
         # Exec collected stuff
@@ -732,39 +694,42 @@ class CallBack():
 
         #self.mainadd(" eimage ", xtag, self.pvg.flag)
 
-        ##vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<image2>")
 
     def eImage(self, vparser, token, tentry):
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit( "<eimage>")
 
     def Span(self, vparser, token, tentry):
-        fontstack.push(copy.deepcopy(self.TextState))
-        self.emit("<span ")
+        fontstack.push(copy.copy(self.TextState))
+        self.emit("<span >")
 
     def Span2(self, vparser, token, tentry):
-        xstack = stack.Stack()
-        # Walk optionals:
+
+        #vparser.pushstate(token)
+
+        xstack2 = stack.Stack()
+        # Walk keyvals and optionals:
         while True:
-            fsm, contflag, ttt, stry = vparser.fstack.pop()
-            if fsm == parsedata.KEYVAL:
-                #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
-                xstack.push([ttt, "=", stry])
+            fsm, contflag, ttt, stry = vparser.fstack.peek()
+            if fsm == parsedata.st.KEYVAL:
+                fsm, contflag, ttt, stry = vparser.fstack.pop()
+                #print (" pop      ", fsm, contflag, ttt, stry)
+                xstack2.push([ttt, "=", stry])
+            else:
+                break
             if contflag == 0:
                 break
 
         # Set font parameters:
         while True:
-            xkey = xstack.pop()
+            xkey = xstack2.pop()
             if not xkey:
                 break
             kk, ee, vv = xkey;
             vv = vv.replace("\"",""); vv = vv.replace("\'","")
-
-            #print ("key ",kk, vv)
+            #print ("key: ",kk, vv)
             if kk == "background" or kk == "bg" or kk == "bgcolor":
                 self.TextState.bgcolor = vv
             if kk == "foreground" or kk == "fg" or kk == "color":
@@ -774,19 +739,19 @@ class CallBack():
             elif kk == "font":
                 self.TextState.font = vv
             elif kk == "bold":
-                if isTrue(vv):
+                if utils.isTrue(vv):
                     self.TextState.bold = True
                 else:
                     self.TextState.bold = False
 
             elif kk == "italic":
-                if isTrue(vv):
+                if utils.isTrue(vv):
                     self.TextState.italic = True
                 else:
                     self.TextState.italic = False
 
             elif kk == "under" or kk == "underline":
-                if isTrue(vv):
+                if utils.isTrue(vv):
                     self.TextState.ul = True
                 else:
                     self.TextState.ul = False
@@ -800,46 +765,50 @@ class CallBack():
                 elif vvv == "center":
                     #print (" centering")
                     self.TextState.center = True
+                elif vvv == "middle":
+                    #print (" centering")
+                    self.TextState.center = True
             else:
                 if self.pvg.warnings:
                    print("span - invalid argument:", "'" + kk + "'")
 
-        self.emit(" spantxt >");
+        vparser.popstate()
+        self.emit("<spantxt >");
 
     def eSpan(self, vparser, token, tentry):
-        self.show_textstate_diff(self.TextState)
-        #print ("called espan", vparser.strx)
-        #self.TextState = copy.deepcopy(self.oldstate)
-        #self.show_textstate_diff(self.TextState)
+        #self.show_textstate_diff(self.TextState, "Org")
         old_state = fontstack.pop()
-        self.show_textstate_diff(old_state)
-        #self.TextState = copy.deepcopy(old_state)
+        if old_state:
+            self.TextState = copy.copy(old_state)
+            #self.show_textstate_diff(old_state, "Rest")
 
-        self.TextState.color    = old_state.color
-        self.TextState.bgcolor  = old_state.bgcolor
-        self.TextState.size     = old_state.size
-        self.TextState.font     = old_state.font
-        self.TextState.left     = old_state.left
-        self.TextState.center   = old_state.center
-        self.TextState.right    = old_state.right
-        self.TextState.ul       = old_state.ul
-        self.TextState.bold     = old_state.bold
-        self.show_textstate_diff(self.TextState)
+        #self.TextState.color    = old_state.color
+        #self.TextState.bgcolor  = old_state.bgcolor
+        #self.TextState.size     = old_state.size
+        #self.TextState.font     = old_state.font
+        #self.TextState.left     = old_state.left
+        #self.TextState.center   = old_state.center
+        #self.TextState.right    = old_state.right
+        #self.TextState.ul       = old_state.ul
+        #self.TextState.bold     = old_state.bold
+        #self.show_textstate_diff(self.TextState)
 
-        #vparser.fsm, vparser.contflag, ttt, vparser.stry = vparser.fstack.pop()
         vparser.popstate()
         self.emit ("<espan>" )
 
     def Keyval(self, vparser, token, tentry):
 
-        #print ("called keyval", vparser.fsm, token, vparser.strx)
+        #print ("called keyval", vparser.fsm, "strx =", vparser.strx)
 
         # Pop two items, create keyval
         fsm, contflag, ttt, stry = vparser.fstack.pop()      # EQ
+        #print("pop:", stry, "fsm:", fsm)
         fsm2, contflag2, ttt2, stry2 = vparser.fstack.pop()  # Key
+        #print("pop2:", stry2, "fsm:", fsm2)
 
         # Push back summed item (reduce)
-        vparser.fstack.push([parsedata.KEYVAL, 1, stry2, vparser.strx])
+        #print("push key:", parsedata.st.KEYVAL, contflag, "name:", stry2, "val:", vparser.strx)
+        vparser.fstack.push([parsedata.st.KEYVAL, contflag, stry2, vparser.strx])
         vparser.fsm = fsm2
 
 # EOF

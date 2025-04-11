@@ -518,8 +518,6 @@ class PangoView(Gtk.Window):
 
         #global buf, xstack, self.pvg, ts
 
-        got_clock =  time.clock()
-
         if self.pvg.verbose:
             print ("Showing file:", strx)
         try:
@@ -539,9 +537,6 @@ class PangoView(Gtk.Window):
             return
         fh.close()
 
-        if self.pvg.show_timing:
-            print  ("loader:", time.clock() - got_clock)
-
         if self.pvg.pgdebug > 5:
             print (buf)
 
@@ -550,17 +545,8 @@ class PangoView(Gtk.Window):
             self.lastfile = strx
 
         self.reset()
-
-        xstack = stack.Stack()
-        lexer.Lexer(buf, xstack, pangparse.tokens)
-        if self.pvg.show_timing:
-            print  ("lexer:", time.clock() - got_clock)
-        if self.pvg.show_lexer:  # To show what the lexer did
-            xstack.dump()
-        ppp =  parser.Parser(pangparse.parsetable, self.pvg)
-        ppp.parse(buf, xstack)
-
-        pangparse.cb.flush()
+        got_clock =  time.clock()
+        parser.Parser(self.pvg).process(buf)
         self.showcur(False)
 
         if self.pvg.show_timing:
