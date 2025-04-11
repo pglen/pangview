@@ -3,20 +3,19 @@
 <image name=pinguin.xpm align=center>
 
 <c><inc file=header.pango></inc></c>
+##<c>\
+##<link name=index.pango> [ <u>Index</u> ] </link> \
+##<link name=install.pango> [ <u>Installation</u> ] </link>\
+##<link name=troubleshoot.pango> [ <u>Troubleshoting</u> ] </link>\
+##<link name=tech.pango> [ <u>Technical Details</u> ] </link>
+##<link name=install.pango> [ <u>Create ComLin Drive</u> ] </link>
+##</c>
 
-<c>\
-<link name=index.pango> [ <u>Index</u> ] </link> \
-<link name=install.pango> [ <u>Installation</u> ] </link>\
-<link name=troubleshoot.pango> [ <u>Troubleshoting</u> ] </link>\
-<link name=tech.pango> [ <u>Technical Details</u> ] </link>
-<link name=install.pango> [ <u>Create ComLin Drive</u> ] </link>
-</c>
-<w><j>
-
+<w><j>\
 <sp><sp><sp><sp><i>Community Linux</i> is a <e>Personal Class</e> Linux Distribution that boots from a <r>USB</r> drive. \
 It has all the features of hard a drive installation, boasting comparable performance. <i>Community Linux</i> is derived from sources freely available, as provided by the Linux community. Where applicable, ComLin conforms fully to <#008800>existing Linux standards</#>.
 
-  <i>Community Linux</i> is simple. Just insert the jump drive into a <r>USB</r> slot, and within minutes, a fully functional Graphical User Interface appears.
+  <sp><sp><i>Community Linux</i> is simple. Just insert the jump drive into a <r>USB</r> slot, and within minutes, a fully functional Graphical User Interface appears.
 
 <b>Features:</b>
 <i>Community Linux</i> has numerous advantages, including a speedy USB boot, simple deployment and portability. It allows system integrator(s) to build a hard drive less solution, so Linux can be deployed in harsh environments, and in places it <i>could not boldly go before</i>. It is also a premier platform for system  rescue disks. The major application platform for ComLin is intelligent embedded designs like image recognition platform for security systems.

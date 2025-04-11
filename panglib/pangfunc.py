@@ -280,11 +280,14 @@ class CallBack():
         if TextState.bgblue:   xtag.set_property("background", "blue")
 
         if TextState.strike:   xtag.set_property("strikethrough", True)
+
         if TextState.wrap:     xtag.set_property("wrap_mode", Gtk.WrapMode.WORD)
+        else:                  xtag.set_property("wrap_mode", Gtk.WrapMode.NONE)
 
         if TextState.center:   xtag.set_property("justification", Gtk.Justification.CENTER)
-        if TextState.right:    xtag.set_property("justification", Gtk.Justification.RIGHT)
-        if TextState.fill:     xtag.set_property("justification", Gtk.Justification.FILL)
+        elif TextState.right:  xtag.set_property("justification", Gtk.Justification.RIGHT)
+        elif TextState.fill:   xtag.set_property("justification", Gtk.Justification.FILL)
+        else:                  xtag.set_property("justification", Gtk.Justification.LEFT)
 
         #print ("bgcolor:",  TextState.bgcolor )
         if TextState.bgcolor != "":
@@ -559,6 +562,15 @@ class CallBack():
         vparser.popstate()
         self.emit( "<ewrap>")
 
+    def Left(self, vparser, token, tentry):
+        self.TextState.left = True
+        self.emit( "<left>")
+
+    def eLeft(self, vparser, token, tentry):
+        self.TextState.fill = False
+        vparser.popstate()
+        self.emit( "<eleft>")
+
     def Fill(self, vparser, token, tentry):
         self.TextState.fill = True
         self.emit( "<fill>")
@@ -628,6 +640,7 @@ class CallBack():
                 #print ("setting color in link")
                 self.TextState.color = vv
 
+        vparser.popstate()
         self.emit( "<link2>")
 
     def eLink(self, vparser, token, tentry):
