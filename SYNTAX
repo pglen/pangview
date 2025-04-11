@@ -9,11 +9,11 @@ Syntactic elements:
 
     <i> text </i>       italic text
     <b> text </b>       bold text
-    <u> text </u>       underline text 
-    <uu> text </uu>     double underline text 
+    <u> text </u>       underline text
+    <uu> text </uu>     double underline text
     <s> text </s>       strike through text
 
-    <xs> text </xs>     extra small text 
+    <xs> text </xs>     extra small text
     <sm> text </sm>     small text
     <l> text </l>       large text
     <xl> text </xl>     extra large text
@@ -22,19 +22,20 @@ Syntactic elements:
     <sub> text </sub>   subscript
     <sup> text </sup>   superscript
 
-    <f> text </f>       fixed (monospace) font text *
+    <f> text </f>           fixed (monospace) font text *
+    <fixed> text </fixed>   fixed (monospace) font text *
 
     <r> text </r>       Red text
     <g> text </g>       Green text
     <e> text </e>       bluE text
-    <#num>text</#>      fg color spec 
-    <fg#num>text</#>    alias: fg color spec 
+    <#num>text</#>      fg color spec
+    <fg#num>text</#>    alias: fg color spec
 
     <rb> text </rb>     Red background
     <gb> text </gb>     Green  background
     <eb> text </eb>     bluE  background
-    <bg#num>text</#bg>    bg color spec 
-    
+    <bg#num>text</#bg>    bg color spec
+
     <c> text </c>       Center text
     <t> text </t>       righT align text
     <j> text </j>       justify (fill) text
@@ -42,26 +43,27 @@ Syntactic elements:
     <w> text </w>       wrap text
     <m#pix> text </m>   margin with number of pixels
     <m> text </m>       margin (both in)
-    <lm> text </lm>     left margin 
+    <lm> text </lm>     left margin
     <in> text </in>     indent (cummulative)
     \t                  insert TAB
     <tab>               insert TAB
-    
+    <sp>                insert SPACE
+
  Text hiding instructions:
 
     <hid> text </hid>   hidden text (removed from output)
-    ##                  comment (double hash at the beginning 
+    ##                  comment (double hash at the beginning
                         of the line) (removed from output)
 
-    space, tab, newline operate in their original meaning unless 'wrap' 
+    space, tab, newline operate in their original meaning unless 'wrap'
     is in effect.
 
   SPAN:
-    
+
 ##    <span formatting_instructions> text </span>
 
         Formatting Instructions:
-    
+
         font = name             name of the font ex. Mono, Times, System
         face  = name            alias: name of the font
         size  = num             size of the font in pixels
@@ -78,44 +80,44 @@ Syntactic elements:
         super   = true          superscript
         wrap = true             wrap text (ignore new line, collapse space)
         align = alignment       left / right / center
-    
+
     When wrap not in effect, space, tab, newline operate in their
     original meaning. If wrap is in effect spaces are collapsed and
     newline is ignored.
-    
-    Colorspec: 
-        
+
+    Colorspec:
+
         1.) Standard X color names (red. green, purple, ...)
         2.) Hex string starting with '#'  #ffffff (white) #000000 (black)
-                
+
     IMAGE:
-        
+
         <image image_instructions>
-        
+
         Image instructions:
 
             file = filename         image file name
             name = filename         alias: image file name
             align = alignment       left / right / center
-            width = num             image display width            
+            width = num             image display width
             height = num            image display height
-         
+
         Image size defaults to image's original size
 
      ESCAPES:
 
         \[0-9].             octal character number \140 = 'a'
-       
+
         A single backslash at the end of line is line continuation.
-    
+
     LINK:
 
         <link link_instructions>Link text</link>
 
         Link Instructions:
-            
-            file = filename         file to jump to 
-            name = filename         alias: file to jump to 
+
+            file = filename         file to jump to
+            name = filename         alias: file to jump to
             anc = name              anchor to jump to
             anchor = name           alias:  anchor to jump to
             color                   link color
@@ -124,8 +126,8 @@ Syntactic elements:
  Syntax: Text attributes remain in effect if no closing tag applied or
 closing tag is not properly nested.
 
- Most attributes are recursive, however the text rendering engine cannot 
-do red and blue text at the same time. Thus the conflicting items will 
+ Most attributes are recursive, however the text rendering engine cannot
+do red and blue text at the same time. Thus the conflicting items will
 be applied as their priority dictates. (usually: the last one prevails)
 
 

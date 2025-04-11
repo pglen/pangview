@@ -157,7 +157,7 @@ class Parser():
                 #print("Cont:" "'" + cont + "'")
                 pass
         except:
-            print ("no item on", "tt = ",  tt, sys.exc_info())
+            #print ("no item on", "tt = ",  tt, sys.exc_info())
             #utils.put_exc("no item on:")
             #print("curr", curr[tt[0]])
             #for aa in curr:
@@ -186,7 +186,13 @@ class Parser():
 
     def popstate(self):
         old = self.fsm
-        self.fsm, self.contflag, self.ttt, self.stry = self.fstack.pop()
+        try:
+            self.fsm, self.contflag, self.ttt, self.stry = self.fstack.pop()
+        except:
+            if self.pvg.warnings:
+                print("Stack underflow", self.fsm)
+            pass
+
         if self.pvg.show_state_change:
             print("  popstate", old, "->", self.fsm, self.stry)
 

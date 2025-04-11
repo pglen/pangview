@@ -1,0 +1,52 @@
+<image name=pinguin.xpm align=center> \
+<xxl>Welcome to Community Linux.</xxl> \
+<image name=pinguin.xpm align=center>
+
+<c>\
+<link name=index.pango> [ <u>Index</u> ] </link> \
+<link name=install.pango> [ <u>Installation</u> ] </link>\
+<link name=troubleshoot.pango> [ <u>Troubleshoting</u> ] </link>\
+<link name=tech.pango> [ <u>Technical Details</u> ] </link>
+<link name=install.pango> [ <u>Create ComLin Drive</u> ] </link>
+</c>
+<w><j>
+
+<sp><i>Community Linux</i> is a <e>Personal Class</e> Linux Distribution that boots from a <r>USB</r> drive. \
+It has all the features of hard a drive installation, boasting comparable performance. <i>Community Linux</i> is derived from sources freely available, as provided by the Linux community. Where applicable, ComLin conforms fully to <#008800>existing Linux standards</#>.
+
+  <i>Community Linux</i> is simple. Just insert the jump drive into a <r>USB</r> slot, and within minutes, a fully functional Graphical User Interface appears.
+
+<b>Features:</b>
+<i>Community Linux</i> has numerous advantages, including a speedy USB boot, simple deployment and portability. It allows system integrator(s) to build a hard drive less solution, so Linux can be deployed in harsh environments, and in places it <i>could not boldly go before</i>. It is also a premier platform for system  rescue disks. The major application platform for ComLin is intelligent embedded designs like image recognition platform for security systems.
+
+<b>Easy Deployment:</b>
+
+<i>Community Linux</i> is easy to install. Just copy the image data to a new jump drive, and execute the boot install script(s). Insert that jump drive into a USB slot on the target machine, and boot. (Make sure to set the BIOS to boot from jump drive) The distro will boot into its graphical user interface without intervention. Initially, the distro runs as 'user', so make sure your first action is to change the passwords. Please read the <link name=install.pango>installation</link> section for more info.
+
+<b>Fast Boot:</b>
+
+  <i>Community Linux</i> boots directly from the USB drive, and uses the drive's free space to store your data. It does not need any hard drives, and will work with most commonly available hardware. During bootup it will prompt you at different stages of boot for a key press. (with a timeout) Left alone, the distro will continue booting, but by pressing the enter key, the boot process can be suspended to a shell. This can be used as a troubleshooting tool.
+  See <a href=help.html> help </a> for further details.
+
+<b>Lots of apps:</b>
+
+  <i>Community Linux</i> includes most mainstream applications, including FireFox, Thunderbird, Open Office, Terminal, Secure Shell, File Manager ... etc. A host of other tools and utilities are installed by default, including the full 'C' compiler suit to be able to build programs.
+
+<b>Secure, Private:</b>
+
+  <i>Community Linux</i> is secure. We included a pre-configured encrypted folder, all you need to do is change the encryption password to your personal preference. Make sure you remember the password, as no recovery is passible, and the data is encrypted with an industrial strength encryption.
+
+<b>Open Source:</b>
+
+  The parent distribution is CentOS 6.3, and the repositories are configured and enabled. Overall there are about ten thousand packages available from the core distro. Make sure to read the disclaimer on the package you wish to install. (for stability, robustness, security information)
+
+<i>Community Linux</i> is created and developed by <i>Peter Glen</i>. It is designed to be an application deployment platform, but can be used by any Linux user, including system administrators, network administrators, enterprise users, managers, core Linux contributors and Linux enthusiasts. Contributions are added to it from around the world.
+
+<i>Community Linux</i> is maintained by Peter Glen. The project is funded by donations, please consider contributing. Contributions are accepted on <#ff0000>PayPal</#> Account: <i>peterglen99@gmail.com</i>
+</w></j>
+\
+<c>The <b>"ComLin"</b> name and <b>"Community Linux"</b> name is (C) Copyright Peter Glen.<xs>
+  </xs>
+<i>This document is displayed by the pangview utility.</i>
+</c>
+

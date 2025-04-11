@@ -76,11 +76,11 @@ class xTextTag(Gtk.TextTag):
 
 class CallBack():
 
-    def __init__(self, TextState, mainadd, mainemit):
+    def __init__(self, TextState, mainadd, mainimg, mainemit):
         self.TextState = TextState
         self.TextStateOrg = copy.copy(self.TextState)
-
         self.gl_mainadd = mainadd
+        self.gl_mainimg = mainimg
         self.gl_emit = mainemit
         self.pvg =  utils.pvg
         self.oldstate = None
@@ -186,7 +186,7 @@ class CallBack():
                 print ("Hidden text:", accum)
         else:
             #print   ("func", self.pvg.flag)
-            #self.mainadd(stresc, xtag, self.pvg.flag)
+            #self.gl_mainadd(stresc, xtag, self.pvg.flag)
             textstate2 = self.TextState
 
             #if enable_cache:
@@ -584,22 +584,23 @@ class CallBack():
 
     def Link2(self, vparser, token, tentry):
         xstack = stack.Stack()
-        # Walk optionals:
+        # Walk link optionals:
         while True:
-            vparser.popstate()
-            if vparser.fsm == parsedata.st.KEYVAL:
+            fsm, contflag, ttt, stry = vparser.fstack.peek()
+            if fsm == parsedata.st.KEYVAL:
+                fsm, contflag, ttt, stry = vparser.fstack.pop()
                 #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
-                xstack.push([vparser.ttt, "=", vparser.stry])
+                xstack.push([ttt, "=", stry])
+            else:
+                break
             if vparser.contflag == 0:
                 break
-
         while True:
             xkey = xstack.pop()
             if not xkey:
                 break
             kk, ee, vv = xkey;
             vv = vv.replace("\"",""); vv = vv.replace("\'","")
-
             #print ("link key: '" + kk + "' val: '" + vv + "'")
             if kk == "file" or kk == "name":
                 # Try docroot - current dir - home dir
@@ -633,15 +634,15 @@ class CallBack():
         xstack = stack.Stack()
         # Walk optionals:
         while True:
-            vparser.popstate()
-            if vparser.fsm == parsedata.st.KEYVAL:
-                #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
-                xstack.push([vparser.ttt, "=", vparser.stry])
+            fsm, contflag, ttt, stry = vparser.fstack.peek()
+            if fsm == parsedata.st.KEYVAL:
+                fsm, contflag, ttt, stry = vparser.fstack.pop()
+                xstack.push([ttt, "=", stry])
+            else:
+                break
             if vparser.contflag == 0:
                 break
-
         xtag = xTextTag();  fname = ""; www = 0; hhh = 0
-
         while True:
             xkey = xstack.pop()
             if not xkey:
@@ -676,7 +677,7 @@ class CallBack():
                             fname = "~/" + vv
 
         # Exec collected stuff
-        self.mainadd(" ", xtag)
+        self.gl_mainadd(" ", xtag)
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(fname)
             if www and hhh:
@@ -686,18 +687,18 @@ class CallBack():
                     0, 0, float(www)/pixbuf.get_width(), float(hhh)/pixbuf.get_height(),
                         GdkPixbuf.InterpType.BILINEAR)
                 pixbuf = pixbuf2
-            self.Mainview.add_pixbuf(pixbuf, self.pvg.flag)
+            self.gl_mainimg(pixbuf)
 
         except GObject.GError as error:
             #print ("Failed to load image file '" + vv + "'")
-            self.Mainview.add_broken(self.pvg.flag)
-
-        #self.mainadd(" eimage ", xtag, self.pvg.flag)
+            self.gl_mainimg(None)
+            pass
 
         vparser.popstate()
         self.emit( "<image2>")
 
     def eImage(self, vparser, token, tentry):
+        print("eimage")
         vparser.popstate()
         self.emit( "<eimage>")
 

@@ -48,24 +48,13 @@ def link(strx):
     if strx == None or strx == "":
         return
 
-    if not isfile(strx):
+    if not utils.isfile(strx):
         mainview.showcur(False)
-        message_dialog("Missing or broken link",
+        pangdisp.message_dialog("Missing or broken link",
             "Cannot find file '%s'" % strx );
         return
     #print ("linking to:", strx)
     mainview.showfile(strx)
-
-# ------------------------------------------------------------------------
-
-def     message_dialog(title, strx):
-
-    dialog = Gtk.MessageDialog(mainview,
-            Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-            Gtk.MESSAGE_INFO, Gtk.BUTTONS_OK, strx)
-    dialog.set_title(title);
-    dialog.run()
-    dialog.destroy()
 
 # ------------------------------------------------------------------------
 

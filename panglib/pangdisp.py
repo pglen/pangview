@@ -65,13 +65,18 @@ xpm_data = [
 
 mv = None
 
-# imitate: self.Mainview.add_text_xtag(accum, xtag2, self.pvg.flag)
+# This was necessary to separate presentation
 
-def add_one(accum, xtag2):
-
+def add_text(accum, xtag2):
     if mw:
         mw.add_text_xtag(accum, xtag2)
 
+def add_image(pixbuf):
+    if mw:
+        if pixbuf:
+            mw.add_pixbuf(pixbuf)
+        else:
+            mw.add_broken()
 
 class PangoView(Gtk.Window):
 
@@ -92,7 +97,7 @@ class PangoView(Gtk.Window):
         self.pvg = pvg
         self.lastfile = ""
         Gtk.Window.__init__(self)
-        self.cb = pangfunc.CallBack(ts, self, emit_one)
+        self.cb = pangfunc.CallBack(ts, add_text, add_image, emit_one)
         try:
             self.set_screen(parent.get_screen())
         except AttributeError:
@@ -512,6 +517,7 @@ class PangoView(Gtk.Window):
         ''' Reset parser '''
         self.clear(self.pvg.flag)
         #ts.clear()
+        global ts
         ts = textstate.TextState()
 
     def showfile(self, strx, reload = 1):
@@ -563,5 +569,20 @@ class PangoView(Gtk.Window):
 
     def main(self):
         Gtk.main()
+
+# ------------------------------------------------------------------------
+
+def     message_dialog(title, strx):
+
+    dialog = Gtk.MessageDialog()
+    #mw,
+    #        Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+    #        Gtk.MESSAGE_INFO, Gtk.BUTTONS_OK, strx)
+
+    dialog.set_title(title);
+    dialog.set_markup(strx);
+    dialog.add_button("OK", 0)
+    dialog.run()
+    dialog.destroy()
 
 # EOF

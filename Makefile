@@ -32,9 +32,9 @@ git:
 	git push
 
 install:
-	@echo Local install only
-	sudo cp    pangview.py ~/pgbin
-	sudo cp -a panglib     ~/pgbin
+	@echo Local install only:
+	cp    pangview.py ~/pgbin
+	cp -a panglib     ~/pgbin
 
 # End of Makefile
 
