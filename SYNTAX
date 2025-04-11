@@ -36,18 +36,19 @@ Syntactic elements:
     <eb> text </eb>     bluE  background
     <bg#num>text</#bg>    bg color spec
 
-    <c> text </c>       Center text
-    <t> text </t>       righT align text
-    <j> text </j>       justify (fill) text
+    <c> text </c>           Center text
+    <t> text </t>           righT align text
+    <j> text </j>           justify (fill) text
 
-    <w> text </w>       wrap text
-    <m#pix> text </m>   margin with number of pixels
-    <m> text </m>       margin (both in)
-    <lm> text </lm>     left margin
-    <in> text </in>     indent (cummulative)
-    \t                  insert TAB
-    <tab>               insert TAB
-    <sp>                insert SPACE
+    <w> text </w>           wrap text
+    <m#pix> text </m>       margin with number of pixels
+    <m> text </m>           margin (both in)
+    <lm> text </lm>         left margin
+    <in> text </in>         indent (cummulative)
+    \t                      insert TAB
+    <tab>                   insert TAB
+    <sp>                    insert SPACE
+    <inc> filename </inc>   Include file at current point
 
  Text hiding instructions:
 

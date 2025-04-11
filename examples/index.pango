@@ -2,6 +2,8 @@
 <xxl>Welcome to Community Linux.</xxl> \
 <image name=pinguin.xpm align=center>
 
+<c><inc file=header.pango></inc></c>
+
 <c>\
 <link name=index.pango> [ <u>Index</u> ] </link> \
 <link name=install.pango> [ <u>Installation</u> ] </link>\
@@ -11,7 +13,7 @@
 </c>
 <w><j>
 
-<sp><i>Community Linux</i> is a <e>Personal Class</e> Linux Distribution that boots from a <r>USB</r> drive. \
+<sp><sp><sp><sp><i>Community Linux</i> is a <e>Personal Class</e> Linux Distribution that boots from a <r>USB</r> drive. \
 It has all the features of hard a drive installation, boasting comparable performance. <i>Community Linux</i> is derived from sources freely available, as provided by the Linux community. Where applicable, ComLin conforms fully to <#008800>existing Linux standards</#>.
 
   <i>Community Linux</i> is simple. Just insert the jump drive into a <r>USB</r> slot, and within minutes, a fully functional Graphical User Interface appears.

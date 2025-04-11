@@ -103,6 +103,11 @@ class CallBack():
         self.TextState.tab += 1
         self.emit( "<tab>")
 
+    def Sp(self, vparser, token, tentry):
+        #print ("textstate xsp", vparser.strx)
+        self.TextState.xsp += 1
+        self.emit( "<xsp>")
+
     def Strike(self, vparser, token, tentry):
         self.TextState.strike = True
         self.emit( "<strike>")
@@ -231,6 +236,12 @@ class CallBack():
             if text2 == "\n":
                 self.TextState.skip = 0
             return "", xtag
+
+        # This is one shot per count, reset tab
+        while  self.TextState.xsp:
+            self.TextState.xsp -= 1
+            #print(self.TextState.xsp, "space at", "\'" + text2 + "\'")
+            text2 += " "
 
         # This is one shot per count, reset tab
         while  self.TextState.tab:
@@ -698,6 +709,60 @@ class CallBack():
         self.emit( "<image2>")
 
     def eImage(self, vparser, token, tentry):
+        print("eimage")
+        vparser.popstate()
+        self.emit( "<eimage>")
+
+    def Inc(self, vparser, token, tentry):
+        self.emit( "<inc>")
+        #print("Inc")
+
+    def Inc2(self, vparser, token, tentry):
+        #print("Inc2")
+        self.flush()
+        xstack = stack.Stack()
+        # Walk optionals:
+        while True:
+            fsm, contflag, ttt, stry = vparser.fstack.peek()
+            if fsm == parsedata.st.KEYVAL:
+                fsm, contflag, ttt, stry = vparser.fstack.pop()
+                xstack.push([ttt, "=", stry])
+            else:
+                break
+            if vparser.contflag == 0:
+                break
+        xtag = xTextTag();  fname = ""; www = 0; hhh = 0
+        while True:
+            xkey = xstack.pop()
+            if not xkey:
+                break
+            kk, ee, vv = xkey;
+            vv = vv.replace("\"",""); vv = vv.replace("\'","")
+            #print ("inc key: '" + kk + "' val: '" + vv + "'")
+            if kk == "name" or kk == "file":
+                # Try docroot - curr dir - home/Pictures - home
+                fname = self.pvg.docroot + "/" + vv
+                if not utils.isfile(fname):
+                    fname = vv
+                    if not utils.isfile(fname):
+                        fname = "~/Pictures" + vv
+                        if not utils.isfile(fname):
+                            fname = "~/" + vv
+
+        #print("fname", fname)
+        try:
+            fp = open(fname, "r")
+            buff = fp.read()
+            fp.close()
+            #print(buff)
+            parser.Parser(self.pvg).process(buff)
+        except:
+            print("Cannot process file", fname)
+
+        vparser.popstate()
+        self.emit( "<inc2>")
+
+    def eInc(self, vparser, token, tentry):
         print("eimage")
         vparser.popstate()
         self.emit( "<eimage>")

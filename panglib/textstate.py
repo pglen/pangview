@@ -17,5 +17,6 @@ class TextState():
         self.fixed = False; self.bgcolor = ""; self.left = False;
         self.sub = False; self.sup = False; self.image = ""; self.link = ""; self.lmargin = 0
         self.fill = False; self.tab = 0; self.skip = 0; self.comm2 = ""
+        self.xsp = 0
 
 # EOF
