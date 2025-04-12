@@ -89,7 +89,7 @@ class PangoView(Gtk.Window):
     hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
     regular_cursor = Gdk.Cursor(Gdk.CursorType.XTERM)
     wait_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
-    callback = None
+    link_callback = None
     bscallback = None
 
     # Create the toplevel window
@@ -204,10 +204,9 @@ class PangoView(Gtk.Window):
 
     def showcur(self, flag):
         #return
-        self.waiting = flag
+        #self.waiting = flag
         #wx, wy, modx = self.view.window.get_pointer()
         wx, wy = self.view.get_pointer()
-
         bx, by = self.view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
         self.set_cursor_if_appropriate (self.view, bx, by)
         #self.view.window.get_pointer()
@@ -295,8 +294,15 @@ class PangoView(Gtk.Window):
                 print ("Space")
                 # Imitate page down
 
-            pass
         elif event.keyval == Gdk.KEY_BackSpace:
+            if self.bscallback:
+                self.bscallback()
+
+        elif event.keyval == Gdk.KEY_Left:
+            if self.bscallback:
+                self.bscallback()
+
+        elif event.keyval == Gdk.KEY_b:
             if self.bscallback:
                 self.bscallback()
 
@@ -327,10 +333,12 @@ class PangoView(Gtk.Window):
             iter = buffer.get_iter_at_mark(buffer.get_insert())
             self.follow_if_link(text_view, iter)
         elif event.keyval == Gdk.KEY_Tab:
-            #print ("Tab2")
+            if self.pvg.verbose > 1:
+                print ("Tab2")
             pass
         elif event.keyval == Gdk.KEY_space:
-            #print ("Space2")
+            if self.pvg.verbose > 1:
+                print ("Space2")
             pass
         elif event.keyval == Gdk.KEY_BackSpace:
             if self.bscallback:
@@ -388,13 +396,13 @@ class PangoView(Gtk.Window):
         for tag in tags:
             page = tag.link
             #prinpage", page)
-            if page != None:
+            if page != "":
                 #print ("Calling link ", page)
                 # Paint a new cursor
-                self.waiting = True
-                wx, wy = text_view.get_pointer()
-                bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
-                self.set_cursor_if_appropriate (text_view, bx, by)
+                #self.waiting = True
+                #wx, wy = text_view.get_pointer()
+                #bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
+                #self.set_cursor_if_appropriate (text_view, bx, by)
                 #text_view.window.get_pointer()
                 if self.callback:
                     self.callback(page)

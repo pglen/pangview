@@ -45,6 +45,9 @@ def bslink():
 
 def link(strx):
 
+    if pvg.verbose:
+        print ("linking to:", "'" + strx + "'")
+
     if strx == None or strx == "":
         return
 
@@ -53,7 +56,6 @@ def link(strx):
         pangdisp.message_dialog("Missing or broken link",
             "Cannot find file '%s'" % strx );
         return
-    #print ("linking to:", strx)
     mainview.showfile(strx)
 
 # ------------------------------------------------------------------------
