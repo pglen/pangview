@@ -93,6 +93,8 @@ tokens =  (
     (lookup("hid"),       "<hid>"               ),
     (lookup("ehid"),      "</hid>"              ),
     (lookup("bold"),      "<b>"                 ),
+    (lookup("tabx"),      "<tab "               ),
+    (lookup("etabx"),     "</tab"               ),
     (lookup("tab"),       "<tab>"               ),
     (lookup("ebold"),     "</b>"                ),
     (lookup("itbold"),    "<ib>"                ),
@@ -296,6 +298,8 @@ class st():
     EINC        = [unique(),    "einc"]
     IMAGE       = [unique(),    "image"]
     EIMAGE      = [unique(),    "eimage"]
+    TABX        = [unique(),    "tabx"]
+    ETABX       = [unique(),    "etabx"]
     SUB         = [unique(),    "sup"]
     ESUB        = [unique(),    "esup"]
     SUP         = [unique(),    "sub"]
@@ -422,6 +426,7 @@ parsetable = (
 
     ( None,   STATEFMT,   pl("xsp"),      None,   cb.Sp,       st.IGNORE, 0 ),
     ( None,   STATEFMT,   pl("tab"),      None,   cb.Tab,      st.IGNORE, 0 ),
+    ( None,   STATEFMT,   pl("tabx"),     None,   cb.Tabx,     st.TABX, 0 ),
     ( None,   STATEFMT,   pl("comm"),     None,   cb.Comm,     st.IGNORE, 0 ),
     ( None,   STATEFMT,   pl("comm2"),     None,  cb.Comm2,    st.IGNORE, 0 ),
     ( None,   STATEFMT,   pl("bsnl"),     None,   None,        st.IGNORE, 0 ),
@@ -436,13 +441,13 @@ parsetable = (
     ( st.SPAN,   None,     pl("gt"),       None,     cb.Span2,    st.SPANTXT, 0 ),
     ( st.SPAN,   None,     pl("sp"),       None,     None,        st.IGNORE, 0 ),
 
-    ( st.IMAGE,   None,    pl("ident"),    None,     None,         st.KEY, 1 ),
-    ( st.IMAGE,   None,    pl("gt"),       None,     cb.Image2,    st.IGNORE, 0 ),
-    ( st.IMAGE,   None,    pl("sp"),       None,     None,         st.IGNORE, 0 ),
+    ( st.INC,   None,     pl("ident"),    None,      None,         st.KEY, 1 ),
+    ( st.INC,   None,     pl("gt"),       None,      cb.Inc2,      st.IGNORE, 0 ),
+    ( st.INC,   None,     pl("sp"),       None,      None,         st.IGNORE, 0 ),
 
-    ( st.INC,   None,     pl("ident"),    None,     None,         st.KEY, 1 ),
-    ( st.INC,   None,     pl("gt"),       None,     cb.Inc2,      st.IGNORE, 0 ),
-    ( st.INC,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
+    ( st.TABX,   None,     pl("ident"),    None,     None,         st.KEY, 1 ),
+    ( st.TABX,   None,     pl("gt"),       None,     cb.Tabx2,      st.IGNORE, 0 ),
+    ( st.TABX,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
 
     ( st.LINK,   None,     pl("ident"),    None,     None,          st.KEY, 1 ),
     ( st.LINK,   None,     pl("gt"),       None,     cb.Link2,      st.SPANTXT, 0 ),
@@ -548,8 +553,6 @@ parsetable = (
     ( st.NBGCOL,     None,   None,     TXTCLASS,     cb.Text,      st.IGNORE, 0 ),
     ( st.NBGCOL,     None,  pl("enbgcol"),    None,  cb.eNbgcol,    st.IGNORE, 0 ),
     )
-
-    #    [ None,   STATEFMT,   pl("tab2"),  None, cb.Tab,      st.IGNORE, 0 ],
 
 def _printrow(row):
 

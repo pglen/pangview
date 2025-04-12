@@ -793,6 +793,46 @@ class CallBack():
         vparser.popstate()
         self.emit( "<eimage>")
 
+    def Tabx(self, vparser, token, tentry):
+        self.emit( "<tabx>")
+        #print("Tabx")
+
+    def Tabx2(self, vparser, token, tentry):
+        #print("Tab2")
+        self.flush()
+        xstack = stack.Stack()
+        # Walk optionals:
+        while True:
+            fsm, contflag, ttt, stry = vparser.fstack.peek()
+            if fsm == parsedata.st.KEYVAL:
+                fsm, contflag, ttt, stry = vparser.fstack.pop()
+                xstack.push([ttt, "=", stry])
+            else:
+                break
+            if vparser.contflag == 0:
+                break
+        xtag = xTextTag();  fname = ""; www = 0; hhh = 0
+        while True:
+            xkey = xstack.pop()
+            if not xkey:
+                break
+            kk, ee, vv = xkey;
+            vv = vv.replace("\"",""); vv = vv.replace("\'","")
+            #print ("key: '" + kk + "' val: '" + vv + "'")
+            if kk == "count" or kk == "repeat":
+                count = vv
+        #print("tabx count", count)
+        for aa in range(int(count)):
+            #print("add tab")
+            self.TextState.tab += 1
+        vparser.popstate()
+        self.emit( "<tabx2>")
+
+    def eTabx(self, vparser, token, tentry):
+        print("einc")
+        vparser.popstate()
+        self.emit( "<tabx>")
+
     def Span(self, vparser, token, tentry):
         fontstack.push(copy.copy(self.TextState))
         self.emit("<span >")

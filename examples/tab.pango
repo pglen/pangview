@@ -4,3 +4,7 @@ a<tab><tab>b<tab><tab>c<tab><tab>d
 01234567890123456789012345678901
 a<tab>b<tab>c<tab>d
 </f>
+
+a<tab count=4>b
+
+end
