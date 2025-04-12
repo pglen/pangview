@@ -4,41 +4,46 @@
 </xs><inc name=menu.pango></inc><xs>
 
 </xs><w><j>\
-<sp> <sp> The boot process can be troubleshooted from the GRUB command line. When  \
-starting up, press the 'e' key at the grub prompt for editing the command line.  \
-Select the <u>Community Linux 64</u> boot line and press the 'e' key again.\
-Edit the command line, press enter key when done.
-Press the 'b' key to boot.
-</w>
-  The following options are available on the kernel command line:
+<sp> <sp> In case there are any difficutlies, Comlin64 is very troubleshoot \
+friendly. Most things can be troubleshooted from the GRUB command line.
+
+<sp> <sp>The ComLin boot process can be interrupted from the GRUB \
+command line. When the system is starting up, press the 'e' key at the \
+grub prompt for editing the command line.  \
+Select the <i>Community Linux 64</i> boot line and press the 'e' key again. \
+Edit the command line, press enter key then the 'b' key \
+(or Ctrl-x key combination) when done.
+  The following variables are available on the kernel command line:
 
 <b>Variables:</b>
 
-<in>\
-        verbose=lev     Verbosity level (lev) Values: 0 ... 10
-        isleep=sec      Sleep (sec) after commands for visual observation\
-</in>
+<m>\
+    verbose=lev             <tab> <tab> Verbosity level (lev) Values: 0 ... 10
+    isleep=sec <sp> <sp>  <tab> <tab> Sleep (sec) after commands for visual observation\
+</m>
 
-<b>Break boot init items:</b>
-<w><m>
+The following options are available on the kernel command line:
+
+<b>Break BOOT items:</b>
+<w>
 The break items suspend the execution of the startup process, and drop  \
 to a shell.
-
-    rbreak=cmdline          <tab> <tab>  "Break at the beginning of script"
-    rbreak=systemd          <tab> <tab>  "Break before systemd"
-    rbreak=pre-mount        <tab> <tab>  "Break pre-mount"
-    rbreak=pre-overlay      <tab> <tab>  "Break before overlay"
-    rbreak=pre-del <sp><sp> <tab> <tab>  "Break before init_ram"
-    rbreak=pre-chroot       <tab> <tab>  "Break before init_ram"
-</m>
-<b>Break items:</b>
 <m>
-   The break items suspend the execution of the startup process, and drop \
-to a shell. (for examination) The execution continues when exiting the shell \
-via the 'exit' command or Ctrl-D keyboard sequence.
+    rbreak=cmdline          <tab> <tab>  Break at the beginning of script
+    rbreak=systemd          <tab> <tab>  Break before systemd
+    rbreak=pre-mount        <tab> <tab>  Break pre-mount
+    rbreak=pre-overlay      <tab> <tab>  Break before overlay
+    rbreak=pre-del <sp><sp> <tab> <tab>  Break before init_ram
+    rbreak=pre-chroot       <tab> <tab>  Break before init_ram
+</m>
+<b>Break INIT items:</b>
 
-    ibreak=all         <tab> Stop at all break points
-    ibreak=start       <tab> Stop at the start of script.
+   The break items suspend the execution of the startup (INIT) process, \
+and drop to a shell. (for examination) The execution continues when \
+exiting the shell via the 'exit' command or Ctrl-D keyboard sequence.
+<m>
+    ibreak=all  <sp> <sp> <sp> <tab> <tab> Stop at all break points
+    ibreak=start          <tab> <tab> Stop at the start of script.
 
     ibreak=device
     ibreak=vt
@@ -64,5 +69,5 @@ via the 'exit' command or Ctrl-D keyboard sequence.
     ibreak=pre-gui
     ibreak=post-gui
     ibreak=post-cleanup
-</m></j>
+</w></m></j>
 <inc name=footer.pango>

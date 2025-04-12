@@ -39,6 +39,9 @@ def show_emit():
     global _cummulate;
     print (_cummulate)
 
+def reset_state():
+    if mw:
+        mw.reset()
 
 xpm_data = [
 "16 16 3 1",
@@ -516,9 +519,8 @@ class PangoView(Gtk.Window):
     def reset(self):
         ''' Reset parser '''
         self.clear(self.pvg.flag)
-        #ts.clear()
         global ts
-        ts = textstate.TextState()
+        ts.reset()
 
     def showfile(self, strx, reload = 1):
 

@@ -1,8 +1,17 @@
-<w><j>\
-<sp> <sp> <b>Community Linux</b> is maintained by Peter Glen. The project is funded \
-by donations, please consider contributing. \
-Contributions are accepted on <r>Paypal;</r> account: \
-<i>peterglen99@gmail.com</i> The <b>ComLin</b> and \
-<b>Community Linux 64</b> names are Copyright by Peter Glen.
+<sp> <sp> Communit Linux is designed to be an <b>EMBEDDED</b> application deployment \
+and development platform, but can be used by any Linux user, including system \
+administrators, network administrators, enterprise users, managers, \
+core Linux contributors and Linux enthusiasts.\
+Contributions are added to it from around the world.
+
+<w>\
+<sp> <sp> Community Linux is created and developed by Peter Glen. \
+<sp>The project is funded by donations, please consider contributing. \
+Contributions are accepted on the <#00ff00>PayPal</#> Account: \
+"peterglen99@gmail.com". Please consider contributing.
+
+<c>The <b>"ComLin"</b> name and <b>"Community Linux 64"</b> \
+(C) Copyright Peter Glen.<c> \
+</w></j>
 <sm>
 <c>This document is displayed by the pangview utility.</c></sm>

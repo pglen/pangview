@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#import pygtk, gobject, gtk, pango
+import os, sys
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -16,6 +16,7 @@ import panglib.stack as stack
 import panglib.parser as parser
 import panglib.utils as utils
 import panglib.pangparse as parsedata
+import panglib.pangdisp as pangdisp
 
 old_stresc = ""
 accum = ""
@@ -768,9 +769,10 @@ class CallBack():
             buff = fp.read()
             fp.close()
             #print(buff)
+            #pangdisp.reset_state()
             parser.Parser(self.pvg).process(buff)
         except:
-            print("Cannot process file", fname)
+            print("Cannot process file", fname, sys.exc_info())
 
         vparser.popstate()
         self.emit( "<inc2>")
