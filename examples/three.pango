@@ -1,2 +1,6 @@
 Simple text
 with     multiple spaces
+<w>
+Simple text
+with     no multiple spaces in wrap
+</w>

@@ -1,2 +1,6 @@
-Quoted "text" and double \\ escaped \"quotes\" 'quote  "in" str'
-
+Quoted "text" and double \\ escaped \\"quotes\\"
+<l>\
+'quote  enclosed "in" str'
+"quote  enclosed 'in' str"
+single quote ' here
+double quote " here

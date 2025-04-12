@@ -19,6 +19,8 @@ class TextState():
         self.sub = False; self.sup = False; self.image = ""; self.link = ""; self.lmargin = 0
         self.fill = False; self.tab = 0; self.skip = 0; self.comm2 = ""
         self.xsp = 0
+        self.xxxlarge = False;
+
 
         for aa in self.__dict__:
             self.org[aa] = self.__dict__[aa]

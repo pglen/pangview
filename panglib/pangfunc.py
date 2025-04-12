@@ -253,9 +253,10 @@ class CallBack():
         if TextState.font != "":
             xtag.set_property("font", TextState.font)
 
-        SCALE_LARGE = 1.2
-        SCALE_X_LARGE = 1.4
-        SCALE_XX_LARGE = 1.8
+        SCALE_LARGE = 1.4
+        SCALE_X_LARGE = 1.8
+        SCALE_XX_LARGE = 2.2
+        SCALE_XXX_LARGE = 2.6
         SCALE_SMALL = 0.8
         SCALE_X_SMALL = 0.6
 
@@ -267,6 +268,7 @@ class CallBack():
         if TextState.large:    xtag.set_property("scale", SCALE_LARGE)
         if TextState.xlarge:   xtag.set_property("scale", SCALE_X_LARGE)
         if TextState.xxlarge:  xtag.set_property("scale", SCALE_XX_LARGE)
+        if TextState.xxxlarge: xtag.set_property("scale", SCALE_XXX_LARGE)
         if TextState.small:    xtag.set_property("scale", SCALE_SMALL)
         if TextState.xsmall:    xtag.set_property("scale", SCALE_X_SMALL)
         if TextState.ul:       xtag.set_property("underline", Pango.Underline.SINGLE)
@@ -487,6 +489,15 @@ class CallBack():
         self.TextState.xxlarge = False
         vparser.popstate()
         self.emit( "<exxlarge>")
+
+    def Xxxlarge(self, vparser, token, tentry):
+        self.TextState.xxxlarge = True
+        self.emit( "<xxxlarge>")
+
+    def eXxxlarge(self, vparser, token, tentry):
+        self.TextState.xxxlarge = False
+        vparser.popstate()
+        self.emit( "<exxxlarge>")
 
     def Margin(self, vparser, token, tentry):
         self.TextState.margin += 1
@@ -778,7 +789,7 @@ class CallBack():
         self.emit( "<inc2>")
 
     def eInc(self, vparser, token, tentry):
-        print("eimage")
+        print("einc")
         vparser.popstate()
         self.emit( "<eimage>")
 

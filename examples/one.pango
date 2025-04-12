@@ -5,13 +5,8 @@
 <span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
 <span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
 <span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
-<span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
-<span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
-<span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
-<span foreground="#00ffff" size="50" font="Times">Color #00ffff <i>color </i> text size 50</span>
-<span foreground="#dddd00" size="40" font="Sans">Color #dddd00 numbers text 40</span>
+<span foreground="#dddd00" size="60" font="Sans">Color #dddd00 numbers text 40</span>
+<span foreground="#00ffff" size="70" font="Times">Color #00ffff <i>color </i> text size 50</span>
+<span foreground="#dddd00" size="80" font="Sans">Color #dddd00 numbers text 40</span>
+<span foreground="#00ffff" size="90" font="Times">Color #00ffff <i>color </i> text size 50</span>
 

@@ -18,6 +18,7 @@ Syntactic elements:
     <l> text </l>       large text
     <xl> text </xl>     extra large text
     <xxl> text </xxl>   extra extra large text
+    <xxxl> text </xxxl> extra extra extra large text
 
     <sub> text </sub>   subscript
     <sup> text </sup>   superscript
@@ -31,10 +32,10 @@ Syntactic elements:
     <#num>text</#>      fg color spec
     <fg#num>text</#>    alias: fg color spec
 
-    <rb> text </rb>     Red background
-    <gb> text </gb>     Green  background
-    <eb> text </eb>     bluE  background
-    <bg#num>text</#bg>    bg color spec
+    <rb> text </rb>         Red Background
+    <gb> text </gb>         Green  Background
+    <eb> text </eb>         bluE  background
+    <bg#num>text</#bg>      bg color spec
 
     <c> text </c>           Center text
     <t> text </t>           righT align text
@@ -61,7 +62,7 @@ Syntactic elements:
 
   SPAN:
 
-##    <span formatting_instructions> text </span>
+    <span formatting_instructions> text </span>
 
         Formatting Instructions:
 
@@ -105,7 +106,7 @@ Syntactic elements:
 
         Image size defaults to image's original size
 
-     ESCAPES:
+    ESCAPES:
 
         \[0-9].             octal character number \140 = 'a'
 
@@ -131,4 +132,6 @@ closing tag is not properly nested.
 do red and blue text at the same time. Thus the conflicting items will
 be applied as their priority dictates. (usually: the last one prevails)
 
+ See examples directory for use cases.
 
+# EOF

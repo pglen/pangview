@@ -1,8 +1,8 @@
 ## Sat 12.Apr.2025
 <c><inc name=header.pango></inc></c>
 <c><b><xl>Main Page</xl></b></c><xs>
-
-</xs><c><inc name=menu.pango></inc></c>
+</xs>
+<c><inc name=menu.pango></inc></c>
 
 <w><j>\
 <sp><sp><sp><sp><i>Community Linux</i> is a <e>Personal Class</e> \

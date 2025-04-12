@@ -97,6 +97,7 @@ class PangoView(Gtk.Window):
 
         global mw
         mw = self
+        self.old_time = time.time()
         self.pvg = pvg
         self.lastfile = ""
         Gtk.Window.__init__(self)
@@ -386,7 +387,7 @@ class PangoView(Gtk.Window):
         tags = iter.get_tags()
         for tag in tags:
             page = tag.link
-            #print("page", page)
+            #prinpage", page)
             if page != None:
                 #print ("Calling link ", page)
                 # Paint a new cursor
@@ -395,7 +396,6 @@ class PangoView(Gtk.Window):
                 bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
                 self.set_cursor_if_appropriate (text_view, bx, by)
                 #text_view.window.get_pointer()
-
                 if self.callback:
                     self.callback(page)
                 break
@@ -406,42 +406,41 @@ class PangoView(Gtk.Window):
 
     def set_cursor_if_appropriate(self, text_view, x, y):
 
-        '''hovering = False
         buffer = text_view.get_buffer()
-        #iter = text_view.get_iter_at_location(x, y)
-        iter = text_view.get_iter_at_position(x, y)
-        tags = iter.get_tags()
+        iterx = text_view.get_iter_at_position(x, y)
+        tags = iterx[1].get_tags()
+        hovering = False
         for tag in tags:
-            page = tag.get_data("link")
+            page = tag.link
             #if page != 0:
-            if page != None:
+            if page != "":
+                #print("tag link:", page)
                 hovering = True
                 break
 
-        if hovering != self.hovering_over_link:
-            self.hovering_over_link = hovering
-        '''
-
         if self.waiting:
             cur = self.wait_cursor
-        elif self.hovering_over_link:
+        elif hovering:
             cur = self.hand_cursor
         else:
             cur = self.regular_cursor
-
         try:
-            text_view.get_window(Gtk.TextWindowType.TEXT).set_cursor()
+            text_view.get_window(Gtk.TextWindowType.TEXT).set_cursor(cur)
         except:
             print (sys.exc_info())
 
     # Update the cursor image if the pointer moved.
 
     def motion_notify_event(self, text_view, event):
+
+        # Throttle it
+        now = time.time()
+        if  now - self.old_time < .1:
+            return
+        self.old_time = now
         x, y = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET,
-            int(event.x), int(event.y))
+                int(event.x), int(event.y))
         self.set_cursor_if_appropriate(text_view, x, y)
-        #text_view.window.get_pointer()
-        return False
 
     # Also update the cursor image if the window becomes visible
     # (e.g. when a window covering it got iconified).
@@ -452,7 +451,6 @@ class PangoView(Gtk.Window):
 
         self.set_cursor_if_appropriate (text_view, bx, by)
         return False
-
 
     def event_after2(self, text_view, event):
         if event.type != Gdk.EventType.BUTTON_RELEASE:
@@ -493,32 +491,8 @@ class PangoView(Gtk.Window):
         #text_view.window.get_pointer()
         return False
 
-    def set_cursor_if_appropriate2(self, text_view, x, y):
-
-        hovering = False
-        buffer = text_view.get_buffer()
-        iter = text_view.get_iter_at_location(x, y)
-        tags = iter.get_tags()
-        for tag in tags:
-            page = tag.get_data("link")
-            #if page != 0:
-            if page != None:
-                hovering = True
-                break
-
-        if hovering != self.hovering_over_link:
-            self.hovering_over_link = hovering
-
-        if self.waiting:
-            text_view.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(self.wait_cursor)
-        elif self.hovering_over_link:
-            text_view.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(self.hand_cursor)
-        else:
-            text_view.get_window(Gtk.TEXT_WINDOW_TEXT).set_cursor(self.regular_cursor)
-
     def reset(self):
         ''' Reset parser '''
-        self.clear(self.pvg.flag)
         global ts
         ts.reset()
 
@@ -552,13 +526,10 @@ class PangoView(Gtk.Window):
             self.pvg.lstack.push(strx)
             self.lastfile = strx
 
+        self.clear()
         self.reset()
-        got_clock =  time.clock()
         parser.Parser(self.pvg).process(buf)
         self.showcur(False)
-
-        if self.pvg.show_timing:
-            print  ("parser:", time.clock() - got_clock)
 
         # Output results
         if self.pvg.emit:

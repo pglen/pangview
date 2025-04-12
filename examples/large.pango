@@ -1,12 +1,19 @@
-<c><xl>Test Size Demo</xl></c>
+<c><xxl>Test Size Demo</xxl></c>
 
-Regular text, <l>large text, </l><xl>Extra large text. 
-                 </xl><xxl>Extra extra large text</xxl>
-<b>Regular Bold text, <l>large Bold text, </l><xl>Extra large Bold text.
-                 </xl><xxl>Extra extra large Bold text</xxl></b>
-<i>Regular Italic text, <l>large text, </l><xl>Extra large text. </xl>
-                <xxl>Extra extra large text</xxl></i>
-<b><i>Regular Bold Italic text, <l>large text, </l> <xl>Extra large text. </xl>
-                <xxl>Extra extra large text</xxl></i></b>
+Regular text, <l>Large text, </l><xl>Extra Large text.</xl>
+<xxl>Extra extra Large text</xxl>
+<xxxl>Extra extra extra Large text</xxxl>
+
+<b>Regular Bold text, <l>Large Bold text, </l><xl>Extra Large Bold text.</xl>
+<xxl>Extra extra Large Bold text</xxl>
+<xxxl>Extra extra extra Large Bold text</xxxl></b>
+
+<i>Regular Italic text, <l>Large text, </l><xl>Extra Large italic text. </xl>
+<i><xxl>Extra extra Large text</xxl></i>
+<i><xxxl>Extra extra extra Large text</xxxl></i>
+
+<b><i>Regular Bold Italic text, <l>Large text, </l> <xl>Extra Large  bold italic text. </xl>
+<xxl>Extra extra Large text</xxl>
+<xxxl>Extra extra extra extra Large text</xxxl></i></b>
 
 

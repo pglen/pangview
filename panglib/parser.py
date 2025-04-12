@@ -98,7 +98,7 @@ class Parser():
         self.got_clock =  time.clock()
         lexer.Lexer(self.data, self.xstack, parsedata.tokens)
         if self.pvg.show_timing:
-            print  ("lexer:", time.clock() - self.got_clock)
+            print (" lexer: %.2f ms" % ((time.clock()-self.got_clock)*1000))
 
         if self.pvg.show_lexer:  # To show what the lexer did
             for aa in range(self.xstack.stacklen()):
@@ -115,6 +115,9 @@ class Parser():
                 break
             self.parse_item(self.data, tt)
         parsedata.cb.flush()
+        if self.pvg.show_timing:
+            print ("parser: %.2f ms" % ((time.clock()-self.got_clock)*1000))
+
         #self.dumptree("bb")
 
     def add_class(self, dd, pt):
