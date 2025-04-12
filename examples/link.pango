@@ -14,5 +14,7 @@ Embedded in <xxl>LARGE text <link name=colors.pango><u>link to colors.pango\
 <link name=formats.pango color=#0000aa> This is <i>another</i>\
  link in dark blue with <bg#ffff00> <u>yellow background</u> </bg#> (formats.pango)</link>
 
-You may press backspace to go to previous page.
+<link name=LICENSE color=#0000aa> This is a large file  (LICENSE)
+
+You may press backspace, the 'b' key and left arrow to go to previous page.
 

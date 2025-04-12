@@ -89,8 +89,6 @@ class PangoView(Gtk.Window):
     hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
     regular_cursor = Gdk.Cursor(Gdk.CursorType.XTERM)
     wait_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
-    link_callback = None
-    bscallback = None
 
     # Create the toplevel window
     def __init__(self, pvg, parent=None):
@@ -109,6 +107,7 @@ class PangoView(Gtk.Window):
 
         self.set_title(self.__class__.__name__)
         #self.set_border_width(0)
+        #self.loadname = ""
 
         img_dir = os.path.dirname(os.path.abspath(__file__))
         #img_path = os.path.join(img_dir, "pangview.png")
@@ -156,10 +155,11 @@ class PangoView(Gtk.Window):
         view1.connect("event-after", self.event_after)
         view1.connect("motion-notify-event", self.motion_notify_event)
         view1.connect("visibility-notify-event", self.visibility_notify_event)
+        #view1.connect("realize", self.realized)
 
         view1.set_editable(False)
         view1.set_cursor_visible(False)
-        self.view = view1
+        self.view1 = view1
 
         self.buffer_1 = view1.get_buffer()
         sw = Gtk.ScrolledWindow()
@@ -202,14 +202,20 @@ class PangoView(Gtk.Window):
         hhh = Gdk.screen_height();
         self.resize(www, hhh)
 
-    def showcur(self, flag):
-        #return
-        #self.waiting = flag
-        #wx, wy, modx = self.view.window.get_pointer()
-        wx, wy = self.view.get_pointer()
-        bx, by = self.view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
-        self.set_cursor_if_appropriate (self.view, bx, by)
-        #self.view.window.get_pointer()
+    def showcursor(self, flag):
+
+        self.waiting = flag
+        if self.waiting:
+            #print("Wait cursor on")
+            cur = self.wait_cursor
+        else:
+            cur = self.regular_cursor
+
+        self.view1.get_window(Gtk.TextWindowType.TEXT).set_cursor(cur)
+
+        wx, wy = self.view1.get_pointer()
+        bx, by = self.view1.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
+        self.set_cursor_if_appropriate (self.view1, bx, by)
 
     # We manipulate the buffers through these functions:
 
@@ -295,22 +301,23 @@ class PangoView(Gtk.Window):
                 # Imitate page down
 
         elif event.keyval == Gdk.KEY_BackSpace:
-            if self.bscallback:
-                self.bscallback()
+            if self.bs_callback:
+                self.bs_callback()
 
         elif event.keyval == Gdk.KEY_Left:
-            if self.bscallback:
-                self.bscallback()
+            if self.bs_callback:
+                self.bs_callback()
 
         elif event.keyval == Gdk.KEY_b:
-            if self.bscallback:
-                self.bscallback()
+            if self.bs_callback:
+                self.bs_callback()
 
         elif event.keyval == Gdk.KEY_r:
             if self.pvg.verbose:
                 print("reload")
             global rcnt
             rcnt += 1
+
             self.showfile(self.lastfile, rcnt)
 
         elif event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
@@ -341,8 +348,8 @@ class PangoView(Gtk.Window):
                 print ("Space2")
             pass
         elif event.keyval == Gdk.KEY_BackSpace:
-            if self.bscallback:
-                self.bscallback()
+            if self.bs_callback:
+                self.bs_callback()
 
         elif event.keyval == Gdk.KEY_Escape or event.keyval == Gdk.KEY_q:
             sys.exit(0)
@@ -399,13 +406,12 @@ class PangoView(Gtk.Window):
             if page != "":
                 #print ("Calling link ", page)
                 # Paint a new cursor
-                #self.waiting = True
-                #wx, wy = text_view.get_pointer()
-                #bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
-                #self.set_cursor_if_appropriate (text_view, bx, by)
-                #text_view.window.get_pointer()
-                if self.callback:
-                    self.callback(page)
+                self.waiting = True
+                wx, wy = text_view.get_pointer()
+                bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
+                self.set_cursor_if_appropriate (text_view, bx, by)
+                if self.link_callback:
+                    self.link_callback(page)
                 break
 
     # Looks at all tags covering the position (x, y) in the text view,
@@ -427,6 +433,7 @@ class PangoView(Gtk.Window):
                 break
 
         if self.waiting:
+            #print("Wait cursor on")
             cur = self.wait_cursor
         elif hovering:
             cur = self.hand_cursor
@@ -450,10 +457,16 @@ class PangoView(Gtk.Window):
                 int(event.x), int(event.y))
         self.set_cursor_if_appropriate(text_view, x, y)
 
+    def realized(self, win):
+        # Load file
+        #print("realized")
+        pass
+
     # Also update the cursor image if the window becomes visible
     # (e.g. when a window covering it got iconified).
 
     def visibility_notify_event(self, text_view, event):
+
         wx, wy = text_view.get_pointer()
         bx, by = text_view.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, wx, wy)
 
@@ -505,8 +518,13 @@ class PangoView(Gtk.Window):
         ts.reset()
 
     def showfile(self, strx, reload = 1):
+        #self.loadname = strx
+        GLib.timeout_add(300, self._showfile, strx)
+
+    def _showfile(self, strx, reload = 1):
 
         #global buf, xstack, self.pvg, ts
+        self.showcursor(True)
 
         if self.pvg.verbose:
             print ("Showing file:", strx)
@@ -537,7 +555,7 @@ class PangoView(Gtk.Window):
         self.clear()
         self.reset()
         parser.Parser(self.pvg).process(buf)
-        self.showcur(False)
+        self.showcursor(False)
 
         # Output results
         if self.pvg.emit:

@@ -40,7 +40,7 @@ def bslink():
     #print ("backspace linking to:", strx)
     if strx == None or strx == "":
         return
-    mainview.showcur(True)
+    mainview.showcursor(True)
     mainview.showfile(strx)
 
 def link(strx):
@@ -52,7 +52,7 @@ def link(strx):
         return
 
     if not utils.isfile(strx):
-        mainview.showcur(False)
+        mainview.showcursor(False)
         pangdisp.message_dialog("Missing or broken link",
             "Cannot find file '%s'" % strx );
         return
@@ -149,8 +149,8 @@ def mainfunc():
     elif pvg.full_screen:
         mainview.set_fullscreen()
 
-    mainview.callback = link
-    mainview.bscallback = bslink
+    mainview.link_callback = link
+    mainview.bs_callback = bslink
 
     if pvg.second != "":
         if pvg.pane_pos >= 0:
@@ -158,7 +158,7 @@ def mainfunc():
         else:
             mainview.set_pane_position(250)
         pvg.flag = True
-        mainview.showfile(pvg.second)
+        #mainview.showfile(pvg.second)
 
     pvg.flag = False
     mainview.showfile(strx)
