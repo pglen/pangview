@@ -445,6 +445,10 @@ parsetable = (
     ( st.INC,   None,     pl("gt"),       None,      cb.Inc2,      st.IGNORE, 0 ),
     ( st.INC,   None,     pl("sp"),       None,      None,         st.IGNORE, 0 ),
 
+    ( st.IMAGE,   None,     pl("ident"),    None,     None,         st.KEY, 1 ),
+    ( st.IMAGE,   None,     pl("gt"),       None,     cb.Image2,    st.IGNORE, 0 ),
+    ( st.IMAGE,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
+
     ( st.TABX,   None,     pl("ident"),    None,     None,         st.KEY, 1 ),
     ( st.TABX,   None,     pl("gt"),       None,     cb.Tabx2,      st.IGNORE, 0 ),
     ( st.TABX,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),

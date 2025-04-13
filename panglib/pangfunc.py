@@ -618,24 +618,13 @@ class CallBack():
         self.emit( "<link>")
 
     def Link2(self, vparser, token, tentry):
-        xstack = stack.Stack()
-        # Walk link optionals:
-        while True:
-            fsm, contflag, ttt, stry = vparser.fstack.peek()
-            if fsm == parsedata.st.KEYVAL:
-                fsm, contflag, ttt, stry = vparser.fstack.pop()
-                #print (" Reducing keyval", fsm, "'"+ttt+"'", "\"" + stry + "\""            )
-                xstack.push([ttt, "=", stry])
-            else:
-                break
-            if vparser.contflag == 0:
-                break
+        xstack = self.getparms(vparser)
         while True:
             xkey = xstack.pop()
             if not xkey:
                 break
             kk, ee, vv = xkey;
-            vv = vv.replace("\"",""); vv = vv.replace("\'","")
+            #vv = vv.replace("\"",""); vv = vv.replace("\'","")
             #print ("link key: '" + kk + "' val: '" + vv + "'")
             if kk == "file" or kk == "name":
                 # Try docroot - current dir - home dir
@@ -667,27 +656,16 @@ class CallBack():
 
     def Image2(self, vparser, token, tentry):
         self.flush()
-        xstack = stack.Stack()
-        # Walk optionals:
-        while True:
-            fsm, contflag, ttt, stry = vparser.fstack.peek()
-            if fsm == parsedata.st.KEYVAL:
-                fsm, contflag, ttt, stry = vparser.fstack.pop()
-                xstack.push([ttt, "=", stry])
-            else:
-                break
-            if vparser.contflag == 0:
-                break
-        xtag = xTextTag();  fname = ""; www = 0; hhh = 0
+        xstack = self.getparms(vparser)
+        xtag = xTextTag();
+        fname = ""; www = 0; hhh = 0
         while True:
             xkey = xstack.pop()
             if not xkey:
                 break
             kk, ee, vv = xkey;
-            vv = vv.replace("\"",""); vv = vv.replace("\'","")
-
-            #print ("key: '" + kk + "' val: '" + vv + "'")
-
+            #vv = vv.replace("\"",""); vv = vv.replace("\'","")
+            #print ("image2 key: '" + kk + "' val: '" + vv + "'")
             if kk == "align":
                 if vv == "left":
                     xtag.set_property("justification", Gtk.Justification.LEFT)
@@ -695,13 +673,10 @@ class CallBack():
                     xtag.set_property("justification", Gtk.Justification.CENTER)
                 elif vv == "right":
                     xtag.set_property("justification", Gtk.Justification.RIGHT)
-
             if kk == "width":
                 www = int(vv)
-
             if kk == "height":
                 hhh = int(vv)
-
             if kk == "name" or kk == "file":
                 # Try docroot - curr dir - home/Pictures - home
                 fname = self.pvg.docroot + "/" + vv
@@ -797,27 +772,29 @@ class CallBack():
         self.emit( "<tabx>")
         #print("Tabx")
 
-    def Tabx2(self, vparser, token, tentry):
-        #print("Tab2")
-        self.flush()
+    def getparms(self, vparser):
+        ''' Walk optionals '''
         xstack = stack.Stack()
-        # Walk optionals:
         while True:
             fsm, contflag, ttt, stry = vparser.fstack.peek()
-            if fsm == parsedata.st.KEYVAL:
-                fsm, contflag, ttt, stry = vparser.fstack.pop()
-                xstack.push([ttt, "=", stry])
-            else:
+            if fsm != parsedata.st.KEYVAL:
                 break
             if vparser.contflag == 0:
                 break
-        xtag = xTextTag();  fname = ""; www = 0; hhh = 0
-        while True:
-            xkey = xstack.pop()
-            if not xkey:
-                break
-            kk, ee, vv = xkey;
-            vv = vv.replace("\"",""); vv = vv.replace("\'","")
+            fsm, contflag, ttt, stry = vparser.fstack.pop()
+            stry = stry.replace("\"",""); stry = stry.replace("\'","")
+            xstack.push([ttt, "=", stry])
+        #print(xstack.dump())
+        return xstack
+
+    def Tabx2(self, vparser, token, tentry):
+        #print("Tab2")
+        self.flush()
+        xstack = self.getparms(vparser)
+        xtag = xTextTag();
+        fname = ""; www = 0; hhh = 0
+        while xstack.peek():
+            kk, ee, vv = xstack.pop()
             #print ("key: '" + kk + "' val: '" + vv + "'")
             if kk == "count" or kk == "repeat":
                 count = vv

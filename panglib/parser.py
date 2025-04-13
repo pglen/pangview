@@ -133,7 +133,7 @@ class Parser():
         mmm = tt[1];
         self.oldstrx = utils.esc(self.strx)
         self.strx = data[mmm.start():mmm.end()]
-        if self.pvg.all:
+        if self.pvg.show_all:
             print ("parse_item", tt[0], "'" + utils.esc(self.strx) + "'")
         #print ("parser:", tt[0], "=", "'" + self.strx + "'"        )
         if self.pvg.show_state:
@@ -150,14 +150,12 @@ class Parser():
         try:
             item = curr[tt[0][0]]
             if self.pvg.show_parse:
-                #print("\nitem:", item)
-                # show context
-                #bbb = mmm.start() - 5;  eee = mmm.end()+ 5
-                #cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
-                #        data[mmm.end():eee]
-                #cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
-                #        data[mmm.end():eee]
-                #print("Cont:" "'" + cont + "'")
+                print("\nitem:", item)
+                #show context
+                bbb = mmm.start();  eee = mmm.end()
+                cont = data[bbb:mmm.start()] + "'" +  self.strx + "'" + \
+                        data[mmm.end():eee]
+                print("Cont:" "'" + cont + "'")
                 pass
         except:
             #print ("no item on", "tt = ",  tt, sys.exc_info())
@@ -178,7 +176,7 @@ class Parser():
             pass
         else:
             if self.pvg.show_state_change:
-                print (" pushstate", self.fsm, self.oldstrx, "->",
+                print ("   pushstate", self.fsm, self.oldstrx, "->",
                             item[5], "tok:", tt[0], self.strx)
             self.pushstate(tt)
             self.fsm = item[5]
@@ -197,11 +195,12 @@ class Parser():
             pass
 
         if self.pvg.show_state_change:
-            print("  popstate", old, "->", self.fsm, self.stry)
+            print(" popstate", old, "->", self.fsm, self.stry)
 
     def reduce(self):
         # Never called, just a p9laceholder
-        print("reduce called");
+        #print("reduce called");
+        pass
 
 #parsedata.dumpids()
 #parsedata.dumptokens()

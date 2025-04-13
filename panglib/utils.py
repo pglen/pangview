@@ -17,8 +17,7 @@ class pvg():
     got_clock = False; show_timing = False; second = ""
     xfull_screen = False; flag = False; show_parse = False
     emit = False; show_state = False;  show_state_change = False;
-    pane_pos = -1
-    warnings = False; all = False
+    pane_pos = -1;  warnings = False; show_all = False
 
 # ------------------------------------------------------------------------
 # Convert octal string to integer

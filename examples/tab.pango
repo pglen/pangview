@@ -1,10 +1,12 @@
+begin
 01234567890123456789012345678901234567890
-a<tab><tab>b<tab><tab>c<tab><tab>d
+aaaa <tab><tab>baaaaa<tab><tab>caaa<tab><tab> d
+aaaaa<tab><tab>baaaa<tab><tab>caaaaaa<tab><tab>daaaaaa
 <f>\
 01234567890123456789012345678901
 a<tab>b<tab>c<tab>d
-</f>
 
-a<tab count=4>b
-
+01234567890123456789012345678901
+a<tab count=3>b
+</f>\
 end

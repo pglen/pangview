@@ -1,4 +1,4 @@
-#                                     README
+#                     README
 ## Document parser and display using pango
 
   This utility was created to quickly display a formatted file. It was
@@ -7,13 +7,13 @@ a welcome screen.
 
  The pangview utility displays a .pango file.
 
- The format of the file is friendly, it is like a fusion of pango, rich
+   The format of the file is friendly, it is like a fusion of pango, rich
  text and html. (but simpler) The parser was written in python, it is
  easy to extend.
 
  A quick intro:
 
-     <i> Italic</i>     for italic text
+     <i> Italic </i>    for italic text
      <b> Bold </b>      for bold text
      <r> Red </r>       for red text
      <xl>Large</xl>     for large text

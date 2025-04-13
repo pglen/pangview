@@ -129,7 +129,7 @@ def mainfunc():
         if aa[0] == "-s": pvg.show_state  = True
         if aa[0] == "-c": pvg.show_state_change  = True
         if aa[0] == "-w": pvg.warnings = True
-        if aa[0] == "-l": pvg.all = True
+        if aa[0] == "-l": pvg.show_all = True
         if aa[0] == "-g": pvg.show_state_change = True
 
     try:
