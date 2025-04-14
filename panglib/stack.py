@@ -6,6 +6,9 @@ class Stack():
         self._store = []
         self.reset()
 
+    def  __str__(self):
+        return str(self._store)
+
     def push(self, item):
         try:
             self._store.append(item)

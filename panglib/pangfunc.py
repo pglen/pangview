@@ -20,10 +20,9 @@ import panglib.pangdisp as pangdisp
 
 old_stresc = ""
 accum = ""
+unittxt = ""
 old_xtag = None
 fontstack = stack.Stack()
-
-#MainView = None
 
 # ------------------------------------------------------------------------
 # Hack for caching interaction with the pango subsystem.
@@ -77,17 +76,17 @@ class xTextTag(Gtk.TextTag):
 
 class CallBack():
 
-    def __init__(self, TextState, mainadd, mainimg, mainemit):
+    def __init__(self, TextState, mainadd, mainimg, mainsub, mainemit):
         self.TextState = TextState
         self.TextStateOrg = copy.copy(self.TextState)
         self.gl_mainadd = mainadd
         self.gl_mainimg = mainimg
+        self.gl_mainsub = mainsub
         self.gl_emit = mainemit
         self.pvg =  utils.pvg
         self.oldstate = None
 
     def emit(self, strx):
-        self.flush()
         self.gl_emit(strx)
 
     def Comm(self, vparser, token, tentry):
@@ -208,22 +207,13 @@ class CallBack():
         accum += stresc
         self.oldstate = copy.deepcopy(self.TextState)
 
-    def show_textstate_diff(self, TextState, strx):
-        print(strx, "textstate:", end = " ")
-        for aa in dir(TextState):
-            if aa[:2] != "__":
-                val = getattr(TextState, aa)
-                if getattr(self.TextStateOrg, aa) != val:
-                    print("diff =", aa, val, end = " ")
-        print()
-
     # --------------------------------------------------------------------
     def parseTextState(self, text2, TextState, vparser = None):
 
         xtag = xTextTag()
 
         #print("textstate on ", "'" + text2 + "'")
-        #self.show_textstate_diff(TextState)
+        #self.TextState.diff(self.TextStateOrg)
 
         if self.TextState.comm2 != "":
             # Split
@@ -659,6 +649,7 @@ class CallBack():
         xstack = self.getparms(vparser)
         xtag = xTextTag();
         fname = ""; www = 0; hhh = 0
+        #print("image2", xstack)
         while True:
             xkey = xstack.pop()
             if not xkey:
@@ -699,19 +690,69 @@ class CallBack():
                         GdkPixbuf.InterpType.BILINEAR)
                 pixbuf = pixbuf2
             self.gl_mainimg(pixbuf)
-
         except GObject.GError as error:
             #print ("Failed to load image file '" + vv + "'")
             self.gl_mainimg(None)
             pass
-
         vparser.popstate()
         self.emit( "<image2>")
 
     def eImage(self, vparser, token, tentry):
-        print("eimage")
+        #print("eimage")
         vparser.popstate()
         self.emit( "<eimage>")
+
+    def Unit(self, vparser, token, tentry):
+        self.flush()
+        self.gl_mainadd("xx", xTextTag())
+        self.gl_mainsub("", True)
+        self.emit( "<unit>")
+
+    # --------------------------------------------------------------------
+    def Unit3(self, vparser, token, tentry):
+        global unittxt
+        #self.emit(vparser.strx)
+        #self.flush()
+        #unittxt += utils.unescape(vparser.strx)
+        unittxt += vparser.strx
+        #unittxt += str(token[2])
+        #self.gl_mainsub(unittxt)
+        #print("Utext", unittxt)
+
+    def Unit2(self, vparser, token, tentry):
+        self.flush()
+        xstack = self.getparms(vparser)
+        xtag = xTextTag();
+        fname = ""; www = 0; hhh = 0
+        #print("image2", xstack)
+        while True:
+            xkey = xstack.pop()
+            if not xkey:
+                break
+            kk, ee, vv = xkey;
+            #print ("image2 key: '" + kk + "' val: '" + vv + "'")
+            if kk == "align":
+                if vv == "left":
+                    xtag.set_property("justification", Gtk.Justification.LEFT)
+                elif vv == "center":
+                    xtag.set_property("justification", Gtk.Justification.CENTER)
+                elif vv == "right":
+                    xtag.set_property("justification", Gtk.Justification.RIGHT)
+            if kk == "width":
+                www = int(vv)
+            if kk == "height":
+                hhh = int(vv)
+
+        vparser.popstate()
+        self.emit("<unit2>")
+
+    def eUnit(self, vparser, token, tentry):
+        global unittxt
+        #print("eunit", unittxt)
+        self.gl_mainsub(unittxt)
+        unittxt = ""
+        vparser.popstate()
+        #self.emit( "<eunit>")
 
     def Inc(self, vparser, token, tentry):
         self.emit( "<inc>")
@@ -817,19 +858,7 @@ class CallBack():
     def Span2(self, vparser, token, tentry):
 
         #vparser.pushstate(token)
-
-        xstack2 = stack.Stack()
-        # Walk keyvals and optionals:
-        while True:
-            fsm, contflag, ttt, stry = vparser.fstack.peek()
-            if fsm == parsedata.st.KEYVAL:
-                fsm, contflag, ttt, stry = vparser.fstack.pop()
-                #print (" pop      ", fsm, contflag, ttt, stry)
-                xstack2.push([ttt, "=", stry])
-            else:
-                break
-            if contflag == 0:
-                break
+        xstack2 = self.getparms(vparser)
 
         # Set font parameters:
         while True:
@@ -837,7 +866,6 @@ class CallBack():
             if not xkey:
                 break
             kk, ee, vv = xkey;
-            vv = vv.replace("\"",""); vv = vv.replace("\'","")
             #print ("key: ",kk, vv)
             if kk == "background" or kk == "bg" or kk == "bgcolor":
                 self.TextState.bgcolor = vv
@@ -852,19 +880,16 @@ class CallBack():
                     self.TextState.bold = True
                 else:
                     self.TextState.bold = False
-
             elif kk == "italic":
                 if utils.isTrue(vv):
                     self.TextState.italic = True
                 else:
                     self.TextState.italic = False
-
             elif kk == "under" or kk == "underline":
                 if utils.isTrue(vv):
                     self.TextState.ul = True
                 else:
                     self.TextState.ul = False
-
             elif kk == "align" or kk == "alignment":
                 vvv = vv.lower()
                 if vvv == "left":
@@ -875,7 +900,6 @@ class CallBack():
                     #print (" centering")
                     self.TextState.center = True
                 elif vvv == "middle":
-                    #print (" centering")
                     self.TextState.center = True
             else:
                 if self.pvg.warnings:
@@ -890,18 +914,6 @@ class CallBack():
         if old_state:
             self.TextState = copy.copy(old_state)
             #self.show_textstate_diff(old_state, "Rest")
-
-        #self.TextState.color    = old_state.color
-        #self.TextState.bgcolor  = old_state.bgcolor
-        #self.TextState.size     = old_state.size
-        #self.TextState.font     = old_state.font
-        #self.TextState.left     = old_state.left
-        #self.TextState.center   = old_state.center
-        #self.TextState.right    = old_state.right
-        #self.TextState.ul       = old_state.ul
-        #self.TextState.bold     = old_state.bold
-        #self.show_textstate_diff(self.TextState)
-
         vparser.popstate()
         self.emit ("<espan>" )
 

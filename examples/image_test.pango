@@ -1,1 +1,3 @@
-<image name=./447w.jpg>
+Hello <image name=./447w.jpg> After
+Hello <image name=./pinguin.xpm> After
+New line

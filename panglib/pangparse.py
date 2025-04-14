@@ -8,7 +8,7 @@ import  panglib.pangdisp as pangdisp
 # See SYNTAX for details on text formats
 
 cb = pangfunc.CallBack(pangdisp.ts, pangdisp.add_text,
-                    pangdisp.add_image, pangdisp.emit_one)
+                    pangdisp.add_image, pangdisp.add_sub, pangdisp.emit_one)
 tokdef = []
 
 _gl_cnt = 0
@@ -143,8 +143,10 @@ tokens =  (
     (lookup("ewrap"),     "</w>"                ),
     (lookup("link"),      "<link "              ),
     (lookup("elink"),     "</link>"             ),
-    (lookup("image"),      "<image "            ),
-    (lookup("eimage"),     "</image>"           ),
+    (lookup("image"),     "<image "             ),
+    (lookup("eimage"),    "</image>"            ),
+    (lookup("unit"),      "<unit "              ),
+    (lookup("eunit"),     "</unit>"             ),
     (lookup("sub"),       "<sub>"               ),
     (lookup("esub"),      "</sub>"              ),
     (lookup("sup"),       "<sup>"               ),
@@ -245,6 +247,7 @@ class st():
     INIT        = [unique(),   "init"]
     SPAN        = [unique(),   "span"]
     SPANTXT     = [unique(),   "spantxt"]
+    UNITTXT     = [unique(),   "unittxt"]
     IDENT       = [unique(),   "ident"]
     KEY         = [unique(),   "key"]
     VAL         = [unique(),   "val"]
@@ -297,7 +300,9 @@ class st():
     INC         = [unique(),    "inc"]
     EINC        = [unique(),    "einc"]
     IMAGE       = [unique(),    "image"]
+    UNIT        = [unique(),    "unit"]
     EIMAGE      = [unique(),    "eimage"]
+    EUNIT       = [unique(),    "eunit"]
     TABX        = [unique(),    "tabx"]
     ETABX       = [unique(),    "etabx"]
     SUB         = [unique(),    "sup"]
@@ -335,8 +340,10 @@ def dumpstates():
 # State groups for recursion:
 
 # These are states that have recursive actions:
-# (like bold in italic or size in color etc ...) Note specifically, that
-# the SPAN state is not in this list, as inside span definitions formatting
+# (like bold in italic or size in color etc ...)
+
+# Note specifically, that
+# Obsolete: the SPAN state is in this list, as inside span definitions formatting
 # does not make sence. This parser ignores such occurances.
 
 STATEFMT = [st.INIT,  st.BOLD, st.ITALIC, st.RED,
@@ -346,7 +353,9 @@ STATEFMT = [st.INIT,  st.BOLD, st.ITALIC, st.RED,
             st.LARGE, st.XLARGE, st.XXLARGE,
             st.SUB, st.SUP, st.LINK, st.CENT,
             st.RIGHT, st.WRAP, st.FILL, st.INDENT,
-            st.SPAN, st.SPANTXT, st.FIXED, st.MARGIN, st.LMARGIN ]
+            st.UNIT, st.UNITTXT,
+            st.SPAN, st.SPANTXT,
+            st.FIXED, st.MARGIN, st.LMARGIN ]
 
 #STATEFMT = None
 
@@ -409,6 +418,7 @@ parsetable = (
     ( None,    STATEFMT,  pl("wrap"),     None,   cb.Wrap,      st.WRAP, 0 ),
     ( None,    STATEFMT,  pl("link"),     None,   cb.Link,      st.LINK, 0 ),
     ( None,    STATEFMT,  pl("image"),    None,   cb.Image,     st.IMAGE, 0 ),
+    ( None,    STATEFMT,  pl("unit"),     None,   cb.Unit,      st.UNIT, 0 ),
     ( None,    STATEFMT,  pl("inc"),      None,   cb.Inc,       st.INC, 0 ),
     ( None,    STATEFMT,  pl("sub"),      None,   cb.Sub,       st.SUB, 0 ),
     ( None,    STATEFMT,  pl("sup"),      None,   cb.Sup,       st.SUP, 0 ),
@@ -432,7 +442,8 @@ parsetable = (
     ( None,   STATEFMT,   pl("bsnl"),     None,   None,        st.IGNORE, 0 ),
 
     ( st.SPAN,   None,     pl("ident"),    None,     None,        st.KEY, 1 ),
-    #( KEYVAL, None,     pl("ident"),    None,     cb.Keyval,   st.KEY, 1 ),
+
+     #( KEYVAL, None,     pl("ident"),    None,     cb.Keyval,   st.KEY, 1 ),
     ( st.KEY,    None,     pl("eq"),       None,     None,        st.VAL, 1 ),
     ( st.VAL,    None,     pl("ident"),    None,     cb.Keyval,   st.IGNORE, 0 ),
     ( st.VAL,    None,     pl("str"),      None,     cb.Keyval,   st.IGNORE, 0 ),
@@ -449,23 +460,27 @@ parsetable = (
     ( st.IMAGE,   None,     pl("gt"),       None,     cb.Image2,    st.IGNORE, 0 ),
     ( st.IMAGE,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
 
-    ( st.TABX,   None,     pl("ident"),    None,     None,         st.KEY, 1 ),
+    ( st.UNIT,   None,     pl("ident"),     None,      None,         st.KEY, 1 ),
+    ( st.UNIT,   None,      pl("gt"),       None,     cb.Unit2,     st.UNITTXT, 0 ),
+    ( st.UNIT,   None,      pl("sp"),       None,     None,         st.IGNORE, 0 ),
+
+    ( st.TABX,   None,     pl("ident"),    None,     None,          st.KEY, 1 ),
     ( st.TABX,   None,     pl("gt"),       None,     cb.Tabx2,      st.IGNORE, 0 ),
-    ( st.TABX,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
+    ( st.TABX,   None,     pl("sp"),       None,     None,          st.IGNORE, 0 ),
 
     ( st.LINK,   None,     pl("ident"),    None,     None,          st.KEY, 1 ),
     ( st.LINK,   None,     pl("gt"),       None,     cb.Link2,      st.SPANTXT, 0 ),
     ( st.LINK,   None,     pl("sp"),       None,     None,          st.IGNORE, 0 ),
 
-    ( st.SPANTXT, None,    pl("espan"),    None,     cb.eSpan,      st.IGNORE, 0 ),
-    ( st.SPANTXT, None,    pl("elink"),    None,     cb.eLink,      st.IGNORE, 0 ),
+    ( st.SPANTXT, None,    pl("espan"),    None,      cb.eSpan,      st.IGNORE, 0 ),
+    ( st.SPANTXT, None,    pl("elink"),    None,      cb.eLink,      st.IGNORE, 0 ),
+    ( st.UNITTXT, None,    pl("eunit"),    None,      cb.eUnit,      st.IGNORE, 0 ),
 
-    ( st.SPANTXT, None,    pl("bold"),     None,     cb.Bold,       st.BOLD, 0 ),
-    ( st.SPANTXT, None,    pl("it"),       None,     cb.Italic,     st.ITALIC, 0 ),
-    ( st.SPANTXT, None,    None,       TXTCLASS,     cb.Text,       st.IGNORE, 0 ),
+    ( st.UNITTXT, None,    None,        TXTCLASS,     cb.Unit3,      st.IGNORE, 0 ),
+    ( st.SPANTXT, None,    None,        TXTCLASS,     cb.Text,       st.IGNORE, 0 ),
 
-    ( st.ITALIC,   None, None,       TXTCLASS,       cb.Text,       st.IGNORE, 0 ),
-    ( st.ITALIC,   None,  pl("eit"),      None,      cb.eItalic,    st.IGNORE, 0 ),
+    ( st.ITALIC,   None, None,          TXTCLASS,     cb.Text,      st.IGNORE, 0 ),
+    ( st.ITALIC,   None,  pl("eit"),      None,       cb.eItalic,    st.IGNORE, 0 ),
 
     ( st.BOLD,     None, None,       TXTCLASS,       cb.Text,   st.IGNORE, 0 ),
     ( st.BOLD,     None,  pl("ebold"),    None,      cb.eBold,  st.IGNORE, 0 ),

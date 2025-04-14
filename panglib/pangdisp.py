@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import sys, os, re, time
+import sys, os, re, time, copy
 
 import  panglib.parser as parser
 import  panglib.stack as stack
 import  panglib.lexer as lexer
+import  panglib.utils as utils
 import  panglib.pangdisp as pangdisp
 import  panglib.pangfunc as pangfunc
 import  panglib.textstate as textstate
@@ -81,6 +82,10 @@ def add_image(pixbuf):
         else:
             mw.add_broken()
 
+def add_sub(txt, flag = False):
+    if mw:
+        mw.add_text_sub(txt, flag)
+
 class PangoView(Gtk.Window):
 
     hovering_over_link = False
@@ -99,7 +104,7 @@ class PangoView(Gtk.Window):
         self.pvg = pvg
         self.lastfile = ""
         Gtk.Window.__init__(self)
-        self.cb = pangfunc.CallBack(ts, add_text, add_image, emit_one)
+        self.cb = pangfunc.CallBack(ts, add_text, add_image, add_sub, emit_one)
         try:
             self.set_screen(parent.get_screen())
         except AttributeError:
@@ -107,8 +112,6 @@ class PangoView(Gtk.Window):
 
         self.set_title(self.__class__.__name__)
         #self.set_border_width(0)
-        #self.loadname = ""
-
         img_dir = os.path.dirname(os.path.abspath(__file__))
         #img_path = os.path.join(img_dir, "pangview.png")
         img_path = os.path.join(img_dir, "pang.png")
@@ -119,6 +122,9 @@ class PangoView(Gtk.Window):
             #print ("Cannot load app icon.")
             pass
         #rect = self.get_allocation()
+
+        self.floatlist = []
+        self.currfloat = 0
 
         disp2 = Gdk.Display()
         disp = disp2.get_default()
@@ -253,17 +259,8 @@ class PangoView(Gtk.Window):
             self.buffer_1.insert(self.iter, text)
         self.waiting = False
 
-    def add_text_tag(self, text, tags, flag=False):
-        #print("txt tag beg", self.iter.get_offset())
-        if flag:
-            self.buffer_2.insert_with_tags_by_name(self.iter2, text, tags)
-        else:
-            self.buffer_1.insert_with_tags_by_name(self.iter, text, tags)
-        #print("txtt end", self.iter.get_offset())
-        self.waiting = False
-
     def add_text_xtag(self, text, tags, flag=False):
-        #print("xtxt beg", self.iter.get_offset(), "text:", "'" + text + "'")
+        #print("add_text_xtag", self.iter.get_offset(), "text:", "'" + utils.esc(text) + "'")
         if flag:
             try: self.buffer_2.get_tag_table().add(tags)
             except: pass
@@ -276,6 +273,58 @@ class PangoView(Gtk.Window):
         #self.iter.forward_char()
         #print("xtxt end", self.iter.get_offset())
         self.waiting = False
+
+    def add_text_sub(self, txt, create = False, flag=False):
+        print("add_text_sub", self.iter.get_offset(), "text:", "'" + utils.esc(txt) + "'")
+        if flag:
+            pass
+        else:
+            mark = None
+            if create:
+                vvv = self.view1.get_buffer()
+                pos = vvv.get_property("cursor-position")
+                print("cursor:", pos)
+                iterx = vvv.get_iter_at_offset(pos-1)
+                mark = vvv.create_mark(None, iterx, False)
+            GLib.timeout_add(100, self.add_subx, txt, mark, create)
+            #self.add_subx(txt, mark, create)
+        self.waiting = False
+
+    def add_subx(self, txt, mark, create):
+        #print("add_subx(", txt, ")", mark, create)
+        vvv = self.view1.get_buffer()
+        if create:
+            iterx = vvv.get_iter_at_mark(mark)
+            #print(iterx", iterx)
+            anc = vvv.create_child_anchor(iterx)
+            floater = self.new_sub_text(txt)
+            self.view1.add_child_at_anchor(floater, anc)
+        else:
+            #iterx = vvv.get_iter_at_mark(self.mark)
+            floater = self.floatlist[self.currfloat - 1]
+            #fff = floater.get_buffer()
+            #end   = fff.get_end_iter()
+            #old = self.floater.get_buffer().get_text(start, end, False)
+            #print("old", old)
+            floater.get_buffer().set_text(txt)
+            #self.floater.queue_draw()
+
+        #floater2 = self.new_sub_text("hello\nWorkld2")
+        #self.view1.add_child_at_anchor(floater2, anc)
+
+        #self.view1.add_child_in_window(self.lab,
+        #    self.view1, 100, 100)
+
+    def new_sub_text(self, txt):
+        #floater = PangoView(self.pvg)
+        floater = Gtk.TextView()
+        floater.get_buffer().set_text(txt)
+        floater.override_background_color(Gtk.StateFlags.NORMAL,
+                                                    Gdk.RGBA(.9, .9, .9))
+        floater.show()
+        self.floatlist.append(floater)
+        self.currfloat += 1
+        return floater
 
     # --------------------------------------------------------------------
     # Links can be activated by pressing Enter.
@@ -519,7 +568,7 @@ class PangoView(Gtk.Window):
 
     def showfile(self, strx, reload = 1):
         #self.loadname = strx
-        GLib.timeout_add(300, self._showfile, strx)
+        GLib.timeout_add(10, self._showfile, strx)
 
     def _showfile(self, strx, reload = 1):
 

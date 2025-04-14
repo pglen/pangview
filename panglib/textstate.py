@@ -32,4 +32,15 @@ class TextState():
         for aa in self.org:
             self.__dict__[aa] = self.org[aa]
 
+    def diff(self, other):
+        was = 0
+        for aa in dir(self):
+            if aa[:2] != "__":
+                val = getattr(self, aa)
+                if type(val) == type("") or type(val) == type(1):
+                    if val != getattr(other, aa):
+                        print("diff =", aa, val, end = " ")
+                        was = 1
+        if was: print()
+
 # EOF
