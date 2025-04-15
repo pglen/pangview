@@ -112,6 +112,7 @@ class Parser():
             print(file=fp)
 
     def process(self, buf):
+        #print(buf)
         self.buff = buf
         self.lexit(buf)
         self.parse()

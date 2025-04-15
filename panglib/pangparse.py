@@ -98,7 +98,7 @@ tokens =  (
     (lookup("ehid"),      "</hid>"              ),
     (lookup("bold"),      "<b>"                 ),
     (lookup("tabx"),      "<tab "               ),
-    (lookup("etabx"),     "</tab"               ),
+    (lookup("etabx"),     "</tab>"              ),
     (lookup("tab"),       "<tab>"               ),
     (lookup("ebold"),     "</b>"                ),
     (lookup("itbold"),    "<ib>"                ),
@@ -166,7 +166,6 @@ tokens =  (
     (lookup("ncol"),      "<#[0-9a-fA-F]+ *>"   ),
     (lookup("encol"),     "</#>"                ),
     (lookup("escquo"),    r"\\\""               ),
-    (lookup("dblbs"),     r"\\\\"               ),
     (lookup("ident"),     "[A-Za-z0-9_\-\./]+"  ),
     (lookup("str4"),      "\#[0-9a-zA-Z]+"      ),
     (lookup("str3"),      "(\\\\[0-7]+)+"       ),
@@ -178,8 +177,13 @@ tokens =  (
     (lookup("sp"),        " "                   ),
     (lookup("colu"),      "<colu>"              ),
     (lookup("bsnl"),      "\\\\\n"              ),
-    (lookup("nl"),        r"\n"                 ),
-    (lookup("any"),       "."                   ),
+    (lookup("ttx"),        r"\\t"                ),
+    (lookup("nlx"),        r"\\n"                ),
+    (lookup("crx"),        r"\\r"                ),
+    (lookup("alx"),        r"\\a"                 ),
+    (lookup("dblbs"),      r"\\"               ),
+    (lookup("nl"),         r"\n"                 ),
+    (lookup("any"),        "."                   ),
     )
 
 def dumptokens():
@@ -401,6 +405,10 @@ TXTCLASS = pl("ident"), pl("eq"), pl("lt"), pl("str"), pl("str2"), \
 # -State -StateClass -Token -TokenClass -Function -newState -contFlag
 
 parsetable = (
+    ( None,    STATEFMT,  pl("ttx"),      None,   cb.Verbatim,  st.IGNORE, 0 ),
+    ( None,    STATEFMT,  pl("alx"),      None,    cb.Verbatim,  st.IGNORE, 0 ),
+    ( None,    STATEFMT,  pl("crx"),      None,    cb.Verbatim,  st.IGNORE, 0 ),
+    ( None,    STATEFMT,  pl("nlx"),      None,    cb.Verbatim,  st.IGNORE, 0 ),
     ( None,    STATEFMT,  pl("span"),     None,   cb.Span,      st.SPAN, 0 ),
     ( None,    STATEFMT,  pl("bold"),     None,   cb.Bold,      st.BOLD, 0 ),
     ( None,    STATEFMT,  pl("it"),       None,   cb.Italic,    st.ITALIC, 0 ),

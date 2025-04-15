@@ -74,6 +74,45 @@ def uni(xtab):
 
     return ccc
 
+def revesc(strx):
+
+    ''' reverse 'C' escape sequences \\n '''
+
+    retx = ""; pos = 0; lenx = len(strx)
+    while True:
+        if pos >= lenx:
+            break
+        chh = strx[pos]
+        if(chh == '\\'):
+            if pos >= lenx:
+                retx += chh
+                break
+            chh2 = strx[pos+1]
+            if chh2 == "n":
+                retx += '\n'
+                pos += 1
+            elif chh2 == "r":
+                retx += '\r'
+                pos += 1
+            elif chh2 == "a":
+                retx += '\a'
+                pos += 1
+            elif chh2 == "t":
+                retx += '\t'
+                pos += 1
+            else:
+                retx += chh + chh2;
+        else:
+            retx += chh
+        pos += 1
+
+    #print("revesc", strx)
+    #for aa in retx:
+    #    print(ord(retx))
+
+    return retx
+
+
 def esc(strx):
 
     ''' erase new line as \\n '''

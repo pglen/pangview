@@ -306,7 +306,8 @@ class PangEdit(Gtk.TextView):
             if background:
                 #print("bg", "'" + background + "'")
                 col = Gdk.RGBA(.97,.97,.97)
-                Gdk.RGBA.parse(col, background)
+                ret = Gdk.RGBA.parse(col, background)
+                #print("colparse", ret)
                 floater.override_background_color(
                         Gtk.StateFlags.NORMAL, col)
 

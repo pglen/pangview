@@ -706,6 +706,13 @@ class CallBack():
         vparser.popstate()
         self.emit( "<eimage>")
 
+    def Verbatim(self, vparser, token, tentry):
+        global accum
+        #self.flush(vparser)
+        sss = utils.revesc(vparser.strx)
+        #print("Verbatim", sss)
+        accum += sss
+
     def Unit(self, vparser, token, tentry):
         self.flush(vparser)
         #print("unit", token)
@@ -717,6 +724,7 @@ class CallBack():
         self.emit( "<unit>")
 
     def Unitx(self, vparser, token, tentry):
+        self.unit_bgcolor = None
         self.flush(vparser)
         self.start_unit = token[4]
         vparser.action.mainadd(" ", xTextTag())
@@ -816,8 +824,9 @@ class CallBack():
         self.emit( "<eimage>")
 
     def Tabx(self, vparser, token, tentry):
+        self.flush(vparser)
         self.emit( "<tabx>")
-        print("Tabx")
+        #print("Tabx")
 
     def getparms(self, vparser):
         ''' Walk optionals '''
@@ -835,7 +844,7 @@ class CallBack():
         return xstack
 
     def Tabx2(self, vparser, token, tentry):
-        print("Tabx2")
+        #print("Tabx2")
         self.flush(vparser)
         xstack = self.getparms(vparser)
         xtag = xTextTag();
