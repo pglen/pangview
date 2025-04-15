@@ -76,18 +76,16 @@ class xTextTag(Gtk.TextTag):
 
 class CallBack():
 
-    def __init__(self, TextState, mainadd, mainimg, mainsub, mainemit):
+    def __init__(self, TextState):
         self.TextState = TextState
         self.TextStateOrg = copy.copy(self.TextState)
-        self.gl_mainadd = mainadd
-        self.gl_mainimg = mainimg
-        self.gl_mainsub = mainsub
-        self.gl_emit = mainemit
         self.pvg =  utils.pvg
         self.oldstate = None
+        self.unit_bgcolor = None
 
     def emit(self, strx):
-        self.gl_emit(strx)
+        #self.gl_emit(strx)
+        pass
 
     def Comm(self, vparser, token, tentry):
         #print ("textstate comm", vparser.strx)
@@ -139,7 +137,7 @@ class CallBack():
         vparser.popstate()
         self.emit ("<eitalic>")
 
-    def flush(self):
+    def flush(self, parser):
         #return
         global oldstate, accum
 
@@ -153,11 +151,15 @@ class CallBack():
                 TextState2 =  self.TextState
 
             accum, xtag2 =  self.parseTextState(accum, TextState2)
-            self.gl_mainadd(accum, xtag2)
+            #self.gl_mainadd(accum, xtag2)
+            parser.action.mainadd(accum, xtag2)
+
             accum = ""
 
     # --------------------------------------------------------------------
     def Text(self, vparser, token, tentry):
+
+        #print("text", vparser, token)
 
         global oldstate, accum, old_stresc
 
@@ -194,12 +196,10 @@ class CallBack():
             #self.gl_mainadd(stresc, xtag, self.pvg.flag)
             textstate2 = self.TextState
 
-            #if enable_cache:
-            #    if self.oldstate:
-            #        textstate2 = self.oldstate
-
             accum, xtag2 = self.parseTextState(accum, textstate2, vparser)
-            self.gl_mainadd(accum, xtag2)
+            #self.gl_mainadd(accum, xtag2)
+            #vparser.action.show(accum, xtag2)
+            vparser.action.mainadd(accum, xtag2)
             accum = ""
 
         # Save tag state
@@ -645,7 +645,7 @@ class CallBack():
         #print("Image")
 
     def Image2(self, vparser, token, tentry):
-        self.flush()
+        self.flush(vparser)
         xstack = self.getparms(vparser)
         xtag = xTextTag();
         fname = ""; www = 0; hhh = 0
@@ -679,7 +679,8 @@ class CallBack():
                             fname = "~/" + vv
 
         # Exec collected stuff
-        self.gl_mainadd(" ", xtag)
+        #self.gl_mainadd(" ", xtag)
+        vparser.action.mainadd(" ", xtag)
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(fname)
             if www and hhh:
@@ -689,10 +690,13 @@ class CallBack():
                     0, 0, float(www)/pixbuf.get_width(), float(hhh)/pixbuf.get_height(),
                         GdkPixbuf.InterpType.BILINEAR)
                 pixbuf = pixbuf2
-            self.gl_mainimg(pixbuf)
+            #self.gl_mainimg(pixbuf)
+            vparser.action.mainimg(pixbuf)
+
         except GObject.GError as error:
             #print ("Failed to load image file '" + vv + "'")
-            self.gl_mainimg(None)
+            #self.gl_mainimg(None)
+            vparser.action.mainimg(pixbuf)
             pass
         vparser.popstate()
         self.emit( "<image2>")
@@ -703,55 +707,43 @@ class CallBack():
         self.emit( "<eimage>")
 
     def Unit(self, vparser, token, tentry):
-        self.flush()
-        #self.gl_mainadd("xx", xTextTag())
-        self.gl_mainadd(" ", xTextTag())
-        self.gl_mainsub("", True)
+        self.flush(vparser)
+        #print("unit", token)
+        vparser.action.mainadd(" ", xTextTag())
+        vparser.action.mainsub("", True)
         self.emit( "<unit>")
 
-    # --------------------------------------------------------------------
-    def Unit3(self, vparser, token, tentry):
-        global unittxt
-        #self.emit(vparser.strx)
-        #self.flush()
-        #unittxt += utils.unescape(vparser.strx)
-        unittxt += vparser.strx
-        #unittxt += str(token[2])
-        #self.gl_mainsub(unittxt)
-        #print("Utext", unittxt)
-
     def Unit2(self, vparser, token, tentry):
-        self.flush()
+        self.flush(vparser)
+        self.start_unit = token[4]
         xstack = self.getparms(vparser)
         xtag = xTextTag();
         fname = ""; www = 0; hhh = 0
-        #print("image2", xstack)
+        #print("Unit2", xstack)
         while True:
             xkey = xstack.pop()
             if not xkey:
                 break
             kk, ee, vv = xkey;
             #print ("image2 key: '" + kk + "' val: '" + vv + "'")
-            if kk == "align":
-                if vv == "left":
-                    xtag.set_property("justification", Gtk.Justification.LEFT)
-                elif vv == "center":
-                    xtag.set_property("justification", Gtk.Justification.CENTER)
-                elif vv == "right":
-                    xtag.set_property("justification", Gtk.Justification.RIGHT)
-            if kk == "width":
-                www = int(vv)
-            if kk == "height":
-                hhh = int(vv)
-
+            if kk == "background" or kk == "bg" or kk == "bgcolor":
+                self.unit_bgcolor = vv
         vparser.popstate()
         self.emit("<unit2>")
 
-    def eUnit(self, vparser, token, tentry):
+    def Unit3(self, vparser, token, tentry):
         global unittxt
-        #print("eunit", unittxt)
-        self.gl_mainsub(unittxt)
-        unittxt = ""
+        #unittxt += utils.unescape(vparser.strx)
+        pass
+
+    def eUnit(self, vparser, token, tentry):
+        self.flush(vparser)
+        global unittxt
+        #print("eunit", token)
+        self.end_unit = token[3]
+        #print("eunit-coord", self.start_unit, self.end_unit)
+        #self.gl_mainsub(vparser.buff[self.start_unit : self.end_unit])
+        vparser.action.mainsub(vparser.buff[self.start_unit : self.end_unit])
         vparser.popstate()
         #self.emit( "<eunit>")
 
@@ -761,7 +753,7 @@ class CallBack():
 
     def Inc2(self, vparser, token, tentry):
         #print("Inc2")
-        self.flush()
+        self.flush(vparser)
         xstack = stack.Stack()
         # Walk optionals:
         while True:
@@ -831,7 +823,7 @@ class CallBack():
 
     def Tabx2(self, vparser, token, tentry):
         #print("Tab2")
-        self.flush()
+        self.flush(vparser)
         xstack = self.getparms(vparser)
         xtag = xTextTag();
         fname = ""; www = 0; hhh = 0

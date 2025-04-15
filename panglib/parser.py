@@ -36,6 +36,27 @@ _show_default_action = False
 # The parser is not fully recursive, so states need to be nested by
 # hand. The flat parser is an advantage for text processing.
 
+class Action():
+
+    def __init__(self):
+        pass
+
+    def mainadd():
+        pass
+
+    def mainimg():
+        pass
+
+    def mainsub():
+        pass
+
+    def mainemit():
+        pass
+
+    # The default action (useful to see args)
+    def show(self, *txt):
+        print(" parser action:", txt)
+
 class Parser():
 
     def __init__(self, pvg = None):
@@ -47,6 +68,7 @@ class Parser():
         self.pvg = pvg
         self.pardict = {}
         self.strx = ""
+        self.action = Action()
 
         # Create parse dictionary:
         for pt in parsedata.parsetable:
@@ -90,6 +112,7 @@ class Parser():
             print(file=fp)
 
     def process(self, buf):
+        self.buff = buf
         self.lexit(buf)
         self.parse()
 
@@ -114,15 +137,17 @@ class Parser():
             if not tt:
                 break
             self.parse_item(self.data, tt)
-        parsedata.cb.flush()
+        parsedata.cb.flush(self)
         if self.pvg.show_timing:
             print ("parser: %.2f ms" % ((time.clock()-self.got_clock)*1000))
 
         #self.dumptree("bb")
 
     def add_class(self, dd, pt):
-        for aa in pt[3]:
-            dd[aa] = pt[:]
+        #print("pt", pt)
+        if pt[3]:
+            for aa in pt[3]:
+                dd[aa] = pt[:]
 
     # This is the new routine, dictionary driven
     # About ten times as fast

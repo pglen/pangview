@@ -7,8 +7,12 @@ import  panglib.pangdisp as pangdisp
 # Was created to quickly display formatted messages.
 # See SYNTAX for details on text formats
 
-cb = pangfunc.CallBack(pangdisp.ts, pangdisp.add_text,
-                    pangdisp.add_image, pangdisp.add_sub, pangdisp.emit_one)
+# Shortcut to callback instance
+cb = pangfunc.CallBack(pangdisp.ts)
+
+#pangdisp.ts, pangdisp.add_text,
+#pangdisp.add_image, pangdisp.add_sub, pangdisp.emit_one)
+
 tokdef = []
 
 _gl_cnt = 0
@@ -353,7 +357,7 @@ STATEFMT = [st.INIT,  st.BOLD, st.ITALIC, st.RED,
             st.LARGE, st.XLARGE, st.XXLARGE,
             st.SUB, st.SUP, st.LINK, st.CENT,
             st.RIGHT, st.WRAP, st.FILL, st.INDENT,
-            st.UNIT, st.UNITTXT,
+            #st.UNIT, st.UNITTXT, st.EUNIT,
             st.SPAN, st.SPANTXT,
             st.FIXED, st.MARGIN, st.LMARGIN ]
 
@@ -438,7 +442,7 @@ parsetable = (
     ( None,   STATEFMT,   pl("tab"),      None,   cb.Tab,      st.IGNORE, 0 ),
     ( None,   STATEFMT,   pl("tabx"),     None,   cb.Tabx,     st.TABX, 0 ),
     ( None,   STATEFMT,   pl("comm"),     None,   cb.Comm,     st.IGNORE, 0 ),
-    ( None,   STATEFMT,   pl("comm2"),     None,  cb.Comm2,    st.IGNORE, 0 ),
+    ( None,   STATEFMT,   pl("comm2"),    None,   cb.Comm2,    st.IGNORE, 0 ),
     ( None,   STATEFMT,   pl("bsnl"),     None,   None,        st.IGNORE, 0 ),
 
     ( st.SPAN,   None,     pl("ident"),    None,     None,        st.KEY, 1 ),
@@ -476,19 +480,19 @@ parsetable = (
     ( st.SPANTXT, None,    pl("elink"),    None,      cb.eLink,      st.IGNORE, 0 ),
     ( st.UNITTXT, None,    pl("eunit"),    None,      cb.eUnit,      st.IGNORE, 0 ),
 
-    ( st.UNITTXT, None,    None,        TXTCLASS,     cb.Unit3,      st.IGNORE, 0 ),
-    ( st.SPANTXT, None,    None,        TXTCLASS,     cb.Text,       st.IGNORE, 0 ),
+    ( st.UNITTXT, None,    None,           None,     cb.Unit3,      st.IGNORE, 0 ),
+    ( st.SPANTXT, None,    None,           TXTCLASS, cb.Text,       st.IGNORE, 0 ),
 
-    ( st.ITALIC,   None, None,          TXTCLASS,     cb.Text,      st.IGNORE, 0 ),
-    ( st.ITALIC,   None,  pl("eit"),      None,       cb.eItalic,    st.IGNORE, 0 ),
+    ( st.ITALIC,   None,  None,            TXTCLASS,     cb.Text,      st.IGNORE, 0 ),
+    ( st.ITALIC,   None,  pl("eit"),       None,       cb.eItalic,    st.IGNORE, 0 ),
 
-    ( st.BOLD,     None, None,       TXTCLASS,       cb.Text,   st.IGNORE, 0 ),
-    ( st.BOLD,     None,  pl("ebold"),    None,      cb.eBold,  st.IGNORE, 0 ),
+    ( st.BOLD,     None, None,            TXTCLASS,        cb.Text,   st.IGNORE, 0 ),
+    ( st.BOLD,     None,  pl("ebold"),    None,       cb.eBold,  st.IGNORE, 0 ),
 
-    ( st.ITBOLD,   None,   None,       TXTCLASS,     cb.Text,       st.IGNORE, 0 ),
+    ( st.ITBOLD,   None,   None,          TXTCLASS,     cb.Text,       st.IGNORE, 0 ),
     ( st.ITBOLD,   None,   pl("eitbold"), None,      cb.eItBold,    st.IGNORE, 0 ),
 
-    ( st.UL,       None,   None,       TXTCLASS,     cb.Text,         st.IGNORE, 0 ),
+    ( st.UL,       None,   None,        TXTCLASS,     cb.Text,         st.IGNORE, 0 ),
     ( st.UL,       None,  pl("eul"),       None,     cb.eUnderline,   st.IGNORE, 0 ),
 
     ( st.DUL,       None,   None,       TXTCLASS,    cb.Text,         st.IGNORE, 0 ),

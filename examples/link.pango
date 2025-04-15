@@ -1,6 +1,7 @@
 <xxl>Link text Demo </xxl>
 
-<link name=image.pango color = #ff0000>This is link in red (image.pango)</link>
+<link name=image.pango color = #00ff00>This is a link in green (image.pango)</link>
+<link name=imagex.pango color = #ff0000>This is bad link in red (imagex.pango)</link>
 Embedded in text <link name=colors.pango> is a regular link (colors.pango)</link> here.
 Embedded in text <link name=colors.pango> <u>is a regular underlined \
 link (colors.pango)</u></link> here.

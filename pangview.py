@@ -22,8 +22,6 @@ import  panglib.pangparse as pangparse
 pvg = utils.pvg
 myname = os.path.basename(sys.argv[0])
 
-# Our display object
-mainview = pangdisp.PangoView(pvg)
 
 import inspect
 if inspect.isbuiltin(time.process_time):
@@ -40,10 +38,10 @@ def bslink():
     #print ("backspace linking to:", strx)
     if strx == None or strx == "":
         return
-    mainview.showcursor(True)
+    #mainview.showcursor(True)
     mainview.showfile(strx)
 
-def link(strx):
+def pglink(strx):
 
     if pvg.verbose:
         print ("linking to:", "'" + strx + "'")
@@ -52,11 +50,13 @@ def link(strx):
         return
 
     if not utils.isfile(strx):
-        mainview.showcursor(False)
-        pangdisp.message_dialog("Missing or broken link",
+        mainview.message_dialog("Missing or broken link",
             "Cannot find file '%s'" % strx );
         return
     mainview.showfile(strx)
+
+# Our display object
+mainview = pangdisp.PangoView(pvg, pglink, bslink)
 
 # ------------------------------------------------------------------------
 
@@ -148,9 +148,6 @@ def mainfunc():
         mainview.fullscreen()
     elif pvg.full_screen:
         mainview.set_fullscreen()
-
-    mainview.link_callback = link
-    mainview.bs_callback = bslink
 
     if pvg.second != "":
         if pvg.pane_pos >= 0:
