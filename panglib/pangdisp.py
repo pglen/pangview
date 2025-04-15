@@ -334,6 +334,7 @@ class PangoView(Gtk.Window):
     def new_sub_text(self, txt):
         #floater = PangoView(self.pvg)
         floater = Gtk.TextView()
+        #floater = Gtk.PangoView()
         floater.get_buffer().set_text(txt)
         floater.override_background_color(Gtk.StateFlags.NORMAL,
                                                     Gdk.RGBA(.9, .9, .9))
