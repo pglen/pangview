@@ -70,23 +70,6 @@ xpm_data = [
 
 mv = None
 
-# This was necessary to separate presentation
-
-def add_text(accum, xtag2):
-    if mw:
-        mw.add_text_xtag(accum, xtag2)
-
-def add_image(pixbuf):
-    if mw:
-        if pixbuf:
-            mw.add_pixbuf(pixbuf)
-        else:
-            mw.add_broken()
-
-def add_sub(txt, flag = False):
-    if mw:
-        mw.add_text_sub(txt, flag)
-
 class PangoView(Gtk.Window):
 
     # Create the toplevel window
@@ -201,14 +184,14 @@ class PangoView(Gtk.Window):
         except:
             strerr = "File:  '" + strx + "'  must be an existing and readble file. "
             print (strerr)
-            self.add_text(strerr)
+            self.view1.insert(strerr)
             return
         try:
             buf = fh.read();
         except:
             strerr2 =  "Cannot read file '" + strx + "'"
             print (strerr2)
-            self.add_text(strerr2)
+            self.view1.insert(strerr2)
             fh.close()
             return
         fh.close()

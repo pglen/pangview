@@ -20,7 +20,6 @@ import panglib.pangdisp as pangdisp
 
 old_stresc = ""
 accum = ""
-unittxt = ""
 old_xtag = None
 fontstack = stack.Stack()
 
@@ -477,6 +476,7 @@ class CallBack():
 
     def eXxlarge(self, vparser, token, tentry):
         self.TextState.xxlarge = False
+        #self.flush(vparser)
         vparser.popstate()
         self.emit( "<exxlarge>")
 
@@ -709,8 +709,20 @@ class CallBack():
     def Unit(self, vparser, token, tentry):
         self.flush(vparser)
         #print("unit", token)
+        # This is a placeholder for the sub unit
         vparser.action.mainadd(" ", xTextTag())
-        vparser.action.mainsub("", True)
+        #self.flush(vparser)
+        # Create it in place
+        vparser.action.mainsub("", True, None)
+        self.emit( "<unit>")
+
+    def Unitx(self, vparser, token, tentry):
+        self.flush(vparser)
+        self.start_unit = token[4]
+        vparser.action.mainadd(" ", xTextTag())
+        #self.flush(vparser)
+        # Create it in place
+        vparser.action.mainsub("", True, None)
         self.emit( "<unit>")
 
     def Unit2(self, vparser, token, tentry):
@@ -720,6 +732,8 @@ class CallBack():
         xtag = xTextTag();
         fname = ""; www = 0; hhh = 0
         #print("Unit2", xstack)
+
+        self.unit_bgcolor = None
         while True:
             xkey = xstack.pop()
             if not xkey:
@@ -728,24 +742,23 @@ class CallBack():
             #print ("image2 key: '" + kk + "' val: '" + vv + "'")
             if kk == "background" or kk == "bg" or kk == "bgcolor":
                 self.unit_bgcolor = vv
+
         vparser.popstate()
         self.emit("<unit2>")
 
     def Unit3(self, vparser, token, tentry):
-        global unittxt
-        #unittxt += utils.unescape(vparser.strx)
-        pass
+        #print("Unit3")
+        self.emit("<unit3>")
 
     def eUnit(self, vparser, token, tentry):
         self.flush(vparser)
-        global unittxt
-        #print("eunit", token)
         self.end_unit = token[3]
-        #print("eunit-coord", self.start_unit, self.end_unit)
-        #self.gl_mainsub(vparser.buff[self.start_unit : self.end_unit])
-        vparser.action.mainsub(vparser.buff[self.start_unit : self.end_unit])
+        #print("eunit coords:", self.start_unit, self.end_unit)
+        # Fill in from unparsed, so the sub window gets raw data
+        vstr = vparser.buff[self.start_unit : self.end_unit]
+        vparser.action.mainsub(vstr, False, self.unit_bgcolor)
         vparser.popstate()
-        #self.emit( "<eunit>")
+        self.emit( "<eunit>")
 
     def Inc(self, vparser, token, tentry):
         self.emit( "<inc>")
@@ -804,7 +817,7 @@ class CallBack():
 
     def Tabx(self, vparser, token, tentry):
         self.emit( "<tabx>")
-        #print("Tabx")
+        print("Tabx")
 
     def getparms(self, vparser):
         ''' Walk optionals '''
@@ -822,20 +835,23 @@ class CallBack():
         return xstack
 
     def Tabx2(self, vparser, token, tentry):
-        #print("Tab2")
+        print("Tabx2")
         self.flush(vparser)
         xstack = self.getparms(vparser)
         xtag = xTextTag();
-        fname = ""; www = 0; hhh = 0
+        count = 0;
         while xstack.peek():
             kk, ee, vv = xstack.pop()
             #print ("key: '" + kk + "' val: '" + vv + "'")
             if kk == "count" or kk == "repeat":
                 count = vv
         #print("tabx count", count)
-        for aa in range(int(count)):
-            #print("add tab")
+        if not count:
             self.TextState.tab += 1
+        else:
+            for aa in range(int(count)):
+                #print("add tab")
+                self.TextState.tab += 1
         vparser.popstate()
         self.emit( "<tabx2>")
 
@@ -909,6 +925,16 @@ class CallBack():
             #self.show_textstate_diff(old_state, "Rest")
         vparser.popstate()
         self.emit ("<espan>" )
+
+    def Badkey(self, vparser, token, tentry):
+        fsm, contflag, ttt, stry = vparser.fstack.pop()      # EQ
+        print("stry", stry)
+        #vparser.fstack.push([parsedata.st.KEYVAL, contflag, stry, vparser.strx])
+        ##vparser.popstate()
+        #vparser.fsm = fsm
+        #fsm, contflag, ttt, stry = vparser.fstack.pop()      # EQ
+        #vparser.popstate()
+        vparser.popstate()
 
     def Keyval(self, vparser, token, tentry):
 

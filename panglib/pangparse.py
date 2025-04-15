@@ -150,6 +150,7 @@ tokens =  (
     (lookup("image"),     "<image "             ),
     (lookup("eimage"),    "</image>"            ),
     (lookup("unit"),      "<unit "              ),
+    (lookup("unitx"),     "<unit>"              ),
     (lookup("eunit"),     "</unit>"             ),
     (lookup("sub"),       "<sub>"               ),
     (lookup("esub"),      "</sub>"              ),
@@ -305,6 +306,7 @@ class st():
     EINC        = [unique(),    "einc"]
     IMAGE       = [unique(),    "image"]
     UNIT        = [unique(),    "unit"]
+    UNITX       = [unique(),    "unitx"]
     EIMAGE      = [unique(),    "eimage"]
     EUNIT       = [unique(),    "eunit"]
     TABX        = [unique(),    "tabx"]
@@ -330,6 +332,7 @@ class st():
     NBGCOL      = [unique(),    "nbgcol"]
     ENBNCOL     = [unique(),    "enbgcol"]
     XSP         = [unique(),    "xsp"]
+    POPSTATE    = [-3,          "popstate"]
     ANYSTATE    = [-2,          "anystate"]
     REDUCE      = [-1,          "reduce"]
 
@@ -354,7 +357,7 @@ STATEFMT = [st.INIT,  st.BOLD, st.ITALIC, st.RED,
             st.GREEN, st.BLUE, st.BGRED, st.BGGREEN,
             st.BGBLUE, st.UL, st.DUL, st.STRIKE,
             st.SMALL, st.NCOL, st.NBGCOL, st.XSMALL,
-            st.LARGE, st.XLARGE, st.XXLARGE,
+            st.LARGE, st.XLARGE, st.XXLARGE, st.XXXLARGE,
             st.SUB, st.SUP, st.LINK, st.CENT,
             st.RIGHT, st.WRAP, st.FILL, st.INDENT,
             #st.UNIT, st.UNITTXT, st.EUNIT,
@@ -423,6 +426,7 @@ parsetable = (
     ( None,    STATEFMT,  pl("link"),     None,   cb.Link,      st.LINK, 0 ),
     ( None,    STATEFMT,  pl("image"),    None,   cb.Image,     st.IMAGE, 0 ),
     ( None,    STATEFMT,  pl("unit"),     None,   cb.Unit,      st.UNIT, 0 ),
+    ( None,    STATEFMT,  pl("unitx"),    None,   cb.Unitx,     st.UNITX, 0 ),
     ( None,    STATEFMT,  pl("inc"),      None,   cb.Inc,       st.INC, 0 ),
     ( None,    STATEFMT,  pl("sub"),      None,   cb.Sub,       st.SUB, 0 ),
     ( None,    STATEFMT,  pl("sup"),      None,   cb.Sup,       st.SUP, 0 ),
@@ -449,10 +453,12 @@ parsetable = (
 
      #( KEYVAL, None,     pl("ident"),    None,     cb.Keyval,   st.KEY, 1 ),
     ( st.KEY,    None,     pl("eq"),       None,     None,        st.VAL, 1 ),
+    ( st.KEY,    None,     pl("gt"),       None,     cb.Badkey,   st.IGNORE, 0 ),
     ( st.VAL,    None,     pl("ident"),    None,     cb.Keyval,   st.IGNORE, 0 ),
     ( st.VAL,    None,     pl("str"),      None,     cb.Keyval,   st.IGNORE, 0 ),
     ( st.VAL,    None,     pl("str2"),     None,     cb.Keyval,   st.IGNORE, 0 ),
     ( st.VAL,    None,     pl("str4"),     None,     cb.Keyval,   st.IGNORE, 0 ),
+
     ( st.SPAN,   None,     pl("gt"),       None,     cb.Span2,    st.SPANTXT, 0 ),
     ( st.SPAN,   None,     pl("sp"),       None,     None,        st.IGNORE, 0 ),
 
@@ -464,7 +470,7 @@ parsetable = (
     ( st.IMAGE,   None,     pl("gt"),       None,     cb.Image2,    st.IGNORE, 0 ),
     ( st.IMAGE,   None,     pl("sp"),       None,     None,         st.IGNORE, 0 ),
 
-    ( st.UNIT,   None,     pl("ident"),     None,      None,         st.KEY, 1 ),
+    ( st.UNIT,   None,      pl("ident"),     None,      None,         st.KEY, 1 ),
     ( st.UNIT,   None,      pl("gt"),       None,     cb.Unit2,     st.UNITTXT, 0 ),
     ( st.UNIT,   None,      pl("sp"),       None,     None,         st.IGNORE, 0 ),
 
@@ -479,6 +485,7 @@ parsetable = (
     ( st.SPANTXT, None,    pl("espan"),    None,      cb.eSpan,      st.IGNORE, 0 ),
     ( st.SPANTXT, None,    pl("elink"),    None,      cb.eLink,      st.IGNORE, 0 ),
     ( st.UNITTXT, None,    pl("eunit"),    None,      cb.eUnit,      st.IGNORE, 0 ),
+    ( st.UNITX,   None,    pl("eunit"),    None,      cb.eUnit,      st.IGNORE, 0 ),
 
     ( st.UNITTXT, None,    None,           None,     cb.Unit3,      st.IGNORE, 0 ),
     ( st.SPANTXT, None,    None,           TXTCLASS, cb.Text,       st.IGNORE, 0 ),

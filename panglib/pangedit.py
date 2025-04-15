@@ -286,36 +286,39 @@ class PangEdit(Gtk.TextView):
         except: pass
         vvv.insert_with_tags(self.curriter(), txt, tags)
 
-    def add_text_sub(self, txt, create = False, flag=False):
-        #print("add_text_sub", self.curriter().get_offset(), "text:", "'" + utils.esc(txt) + "'")
-        if flag:
-            pass
+    def add_text_sub(self, txt, create, background):
+
+        #print("add_text_sub", self.curriter().get_offset(),
+        #            txt, create, background)
+
+        if create:
+            vvv = self.get_buffer()
+            pos = vvv.get_property("cursor-position")
+            iterx = vvv.get_iter_at_offset(pos-1)
+            #mark = vvv.create_mark(None, iterx)
+            #iterx2 = vvv.get_iter_at_mark(mark)
+            anc = vvv.create_child_anchor(iterx)
+            floater = self._new_sub_text(txt)
+            self.add_child_at_anchor(floater, anc)
         else:
-            mark = None
-            if create:
-                vvv = self.get_buffer()
-                pos = vvv.get_property("cursor-position")
-                #print("cursor:", pos)
-                iterx = vvv.get_iter_at_offset(pos-1)
-                anc = vvv.create_child_anchor(iterx)
-                floater = self._new_sub_text(txt)
-                self.add_child_at_anchor(floater, anc)
-            else:
-                 #iterx = vvv.get_iter_at_mark(self.mark)
-                floater = self.floatlist[self.currfloat - 1]
-                #floater.get_buffer().set_text(txt)
-                floater.showbuff(txt)
+            #GLib.timeout_add(300, self.execsub, txt)
+            floater = self.floatlist[self.currfloat - 1]
+            if background:
+                #print("bg", "'" + background + "'")
+                col = Gdk.RGBA(.97,.97,.97)
+                Gdk.RGBA.parse(col, background)
+                floater.override_background_color(
+                        Gtk.StateFlags.NORMAL, col)
+
+            floater.showbuff(txt)
+            self.usleep(10)      # Must bread for showing sub
         self.waiting = False
 
     def _new_sub_text(self, txt):
-        #floater = PangoView(self.pvg)
-        #floater = Gtk.TextView()
         floater = PangEdit(self.pvg)
-        floater.override_background_color(Gtk.StateFlags.NORMAL,
-                                                    Gdk.RGBA(.9, .9, .9))
-        floater.show()
         self.floatlist.append(floater)
         self.currfloat += 1
+        floater.show()
         return floater
 
     def follow_if_link(self, text_view, iter):
@@ -352,5 +355,13 @@ class PangEdit(Gtk.TextView):
         ppp.action = action
         ppp.process(buf)
         #self.showcursor(False)
+
+    def  usleep(self, msec):
+        got_clock = time.clock() + float(msec) / 1000
+        #print(got_clock)
+        while True:
+            if time.clock() > got_clock:
+                break
+            Gtk.main_iteration_do(False)
 
 # EOF

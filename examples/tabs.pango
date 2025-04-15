@@ -1,20 +1,7 @@
 1234567812345678123456781234567812345678123456781234567812345678
-<b>Bold</b>        <tab>text is tabbed     \tHello <i>cool</i><tab>Hello!
-Hello
+<b>Bold    </b> <tab count=3>text is tabbed  <tab>Hello <i>cool</i><tab>Hello!
+New tab line    <tab>is tabbed here  <tab><tab>double tab
+New tab line    <tab>is tabbed here  <tab><tab><tab>triple tab
+<b>Bold tab line    <tab>is tabbed here  <tab><tab><tab>triple tab </b>
+New tab line    <tab> is tabbed here  <tab>none       <tab>222  <tab>3333
 1234567812345678123456781234567812345678123456781234567812345678
-New tab line    \tis tabbed here  \t\tdouble tab 
-
-1234567812345678123456781234567812345678123456781234567812345678
-New tab line    \tis tabbed here  \t\t\ttriple tab 
-
-1234567812345678123456781234567812345678123456781234567812345678
-<b>Bold tab line    \tis tabbed here  \t\t\ttriple tab </b>
-
-
-1234567812345678123456781234567812345678123456781234567812345678
-New tab line    <tab> is tabbed here  <tab>none       \t222  \t3333
-
-
-
-
-

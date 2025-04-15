@@ -5,13 +5,8 @@ Hello\
 <i>3 Ultrasonic 3</i>
 </unit> World \
 
-
-
-
-
-
 Hello \
-<unit text=hello>\
+<unit background = lightblue>\
 s1 Ultrasonic 1
 s<b>2 Ultrasonic 2</b>
 s3 Ultrasonic 3

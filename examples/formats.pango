@@ -2,14 +2,24 @@
 </xl>
 This is <i>Italic</i> text and <b> Bold </b> text, and this is <b><i> ItalicBold </i></b> text.
 This is <u>underline</u> text, this is <uu>double underline</uu> text, \
-this is <s>StrikeTrough</s> text. \
-This is line continuation.
+this is <s>StrikeTrough</s> text.
 
-</in></in>\
+This is a line with \
+line continuation.
+
 <t>This is Right aligned <b>Bold</b> text</t>
 <c>And this is <i>centered</i> text.</c>
 And this left aligned (regular) text.</c>
 
+<in>\
+Indented1
+Indented2
+Indented3
+</in>
+
+<b><f>----------------------</f></b>
+<f>1234567812345678</f>
+</m>
 <c>This is centered text with <f>fixed (monospace) font</f></c>
 
 <f>Monospace <b>bold</b> <i>Italic</i> <xl>Extra Large</xl> font</f>
@@ -37,9 +47,15 @@ This is <l><g> Green Large <b>Bold</b> <u>Underline</u> </g></l> text.
 This is <xl> Extra Large <b>Bold</b> <i>Italic</i> <s>StrikeTrough</s> </xl> text.
 (extra large newline)<xl>
 </xl>
-This is <xxl> Extra Extra Large <b>Bold</b> <i>Italic</i> <s>StrikeTrough</s> </xxl> text.
+This is <xxl> Extra Extra Large <b>Bold</b> <i>Italic</i>
+<s>StrikeTrough</s> </xxl> text.
 (extra extra large newline)<xxl>
 </xxl>
+This is <xxxl> Triple  X Large <b>Bold</b> <i>Italic</i>
+<s>StrikeTrough</s> </xxxl> text.
+(triple x large newline)<xxxl>
+</xxxl>
+
 List:
 
 <in>\

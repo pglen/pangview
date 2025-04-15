@@ -1,8 +1,10 @@
-
-<b>Head <tab> <tab> Foot</b>
--------------------------------------------\
-
-This is text table  <tab> | <tab>Col 2 2 | <tab> a <tab>| col3
-This is text table2 <tab> | <tab>Col 2 3 | <tab> | col3 5
-This is text table3 <tab> | <tab>Col 2 4 | <tab> | col3 6
-
+<c><xxxl> Fake table with tabs.</xxxl>
+</c>
+<in>
+<b>Head  <tab count=5>Foot<tab count=1>     Vars<tab count=2>Notes </b>
+<fixed>----------------------------------------</fixed>
+This is  text row 1 <tab>  | <tab>Col 2 2 <tab> | <tab> a <tab> | <tab> colx 4
+This is  text row 2 <tab>  | <tab>Col 2 3 <tab> | <tab> b <tab> | <tab> colx 5
+This is  text row 3 <tab>  | <tab>Col 2 4 <tab> | <tab> c <tab> | <tab> colx 6
+</in>
+## EOF

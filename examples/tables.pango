@@ -1,0 +1,56 @@
+<xxxl>Unit based Table Demo</xxxl>
+
+<span font=mono>\
+Fixed font demo, table items:
+<m>
+    abcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefgabcdefg
+    1234567812345678123456781234567812345678123456781234567812345678
+
+    Table row1x <tab>Table col2x   <tab>Table col3x  <tab>Table col4x
+    Table row2xx <tab>Table col2xx  <tab>Table col3x  <tab>Table col4x
+    Table row3xxx <tab>Table col2xxx <tab>Table col3x  <tab>Table col4x
+    Table row4xxxx <tab>Table col2xxx <tab>Table col3x  <tab>Table col4x
+</m>
+</span>
+<f>----------------------------------------------------------------</f>
+<m>\
+<unit>\
+A lot of crap here
+A lot of crap here
+A lot of crap here
+A lot of crap here
+tc1
+</unit>\
+<unit background=#eeeeeee>\
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+More crap Here
+tc2\
+</unit>\
+<unit >\
+And another load
+And another load
+And another load
+And another load
+And another load
+And another load
+And another load
+And another load
+And another load
+And another load
+tc3
+</unit>
+# Table row 2
+<unit>tc1</unit><unit background=#eeeeeee>tc2</unit><unit >tc3</unit>
+# Table Row 3
+<unit>tc1</unit><unit background=#eeeeeee>tc2</unit><unit >tc3</unit>
+
+</m>
+
+# EOF

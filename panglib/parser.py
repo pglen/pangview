@@ -199,6 +199,9 @@ class Parser():
             self.reduce(tt)
         elif item[5] == parsedata.st.IGNORE:
             pass
+        elif item[5] == parsedata.st.POPSTATE:
+            pass
+
         else:
             if self.pvg.show_state_change:
                 print ("   pushstate", self.fsm, self.oldstrx, "->",
@@ -211,6 +214,7 @@ class Parser():
         self.fstack.push([self.fsm, self.contflag, tt, self.strx])
 
     def popstate(self):
+        parsedata.cb.flush(self)
         old = self.fsm
         try:
             self.fsm, self.contflag, self.ttt, self.stry = self.fstack.pop()
