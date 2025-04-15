@@ -125,6 +125,7 @@ class PangoView(Gtk.Window):
 
         self.floatlist = []
         self.currfloat = 0
+        self.wait = False
 
         disp2 = Gdk.Display()
         disp = disp2.get_default()
@@ -193,9 +194,6 @@ class PangoView(Gtk.Window):
         self.hpaned = hpaned
         self.set_pane_position(1)
 
-        self.iter = self.buffer_1.get_iter_at_offset(0)
-        self.iter2 = self.buffer_1.get_iter_at_offset(0)
-
         self.set_focus(view1)
 
         self.show_all()
@@ -228,19 +226,17 @@ class PangoView(Gtk.Window):
     def clear(self, flag=False):
         if flag:
             self.buffer_2.set_text("", 0)
-            self.iter2 = self.buffer_2.get_iter_at_offset(0)
         else:
             self.buffer_1.set_text("", 0)
-            self.iter = self.buffer_1.get_iter_at_offset(0)
 
     def add_pixbuf(self, pixbuf, flag=False):
-        #print("pix beg", self.iter.get_offset())
+        #print("pix beg", self.curriter().get_offset())
         if flag:
-            self.buffer_2.insert_pixbuf(self.iter2, pixbuf)
+            self.buffer_2.insert_pixbuf(curriter(), pixbuf)
         else:
-            self.buffer_1.insert_pixbuf(self.iter, pixbuf)
+            self.buffer_1.insert_pixbuf(self.curriter(), pixbuf)
         self.waiting = False
-        #print("pix end", self.iter.get_offset())
+        #print("pix end", self.curriter().get_offset())
 
     def add_broken(self, flag=False):
         try:
@@ -252,43 +248,62 @@ class PangoView(Gtk.Window):
         self.add_pixbuf(pixbuf, flag)
 
     def add_text(self, text, flag=False):
-        #print("txt beg", self.iter.get_offset())
+        #print("txt beg", self.curriter().get_offset())
         if flag:
-            self.buffer_2.insert(self.iter2, text)
+            self.buffer_2.insert(self.curriter2(), text)
         else:
-            self.buffer_1.insert(self.iter, text)
+            self.buffer_1.insert(self.curriter(), text)
         self.waiting = False
 
+    def curriter(self):
+        pos = self.buffer_1.get_property("cursor-position")
+        iterx = self.buffer_1.get_iter_at_offset(pos)
+        return iterx
+
+    def curriter2(self):
+        pos = self.buffer_2.get_property("cursor-position")
+        iterx = self.buffer_2.get_iter_at_offset(pos)
+        return iterx
+
     def add_text_xtag(self, text, tags, flag=False):
-        #print("add_text_xtag", self.iter.get_offset(), "text:", "'" + utils.esc(text) + "'")
+
+        #print("add_text_xtag", self.curriter().get_offset(), "text:", "'" + utils.esc(text) + "'")
         if flag:
             try: self.buffer_2.get_tag_table().add(tags)
             except: pass
-            self.buffer_2.insert_with_tags(self.iter2, text, tags)
+            self.buffer_2.insert_with_tags(curriter2(), text, tags)
         else:
             try: self.buffer_1.get_tag_table().add(tags)
             except: print("get_tag", sys.exc_info())
+            self.buffer_1.insert_with_tags(self.curriter(), text, tags)
 
-            self.buffer_1.insert_with_tags(self.iter, text, tags)
-        #self.iter.forward_char()
-        #print("xtxt end", self.iter.get_offset())
+        #self.curriter().forward_char()
+        #print("xtxt end", self.curriter().get_offset())
         self.waiting = False
 
     def add_text_sub(self, txt, create = False, flag=False):
-        print("add_text_sub", self.iter.get_offset(), "text:", "'" + utils.esc(txt) + "'")
+
+        print("add_text_sub", self.curriter().get_offset(), "text:", "'" + utils.esc(txt) + "'")
         if flag:
             pass
         else:
             mark = None
             if create:
+                while True:
+                    if not self.wait:
+                        break
+                    usleep(10)
                 vvv = self.view1.get_buffer()
                 pos = vvv.get_property("cursor-position")
-                print("cursor:", pos)
+                #print("cursor:", pos)
                 iterx = vvv.get_iter_at_offset(pos-1)
                 mark = vvv.create_mark(None, iterx, False)
-            GLib.timeout_add(100, self.add_subx, txt, mark, create)
+            self.wait = True
+            GLib.timeout_add(10, self.add_subx, txt, mark, create)
+
             #self.add_subx(txt, mark, create)
         self.waiting = False
+        # Wait
 
     def add_subx(self, txt, mark, create):
         #print("add_subx(", txt, ")", mark, create)
@@ -314,6 +329,7 @@ class PangoView(Gtk.Window):
 
         #self.view1.add_child_in_window(self.lab,
         #    self.view1, 100, 100)
+        self.wait = False
 
     def new_sub_text(self, txt):
         #floater = PangoView(self.pvg)
@@ -632,5 +648,17 @@ def     message_dialog(title, strx):
     dialog.add_button("OK", 0)
     dialog.run()
     dialog.destroy()
+
+# -----------------------------------------------------------------------
+# Sleep just a little, but allow the system to breed
+
+def  usleep(msec):
+
+    got_clock = time.clock() + float(msec) / 1000
+    #print(got_clock)
+    while True:
+        if time.clock() > got_clock:
+            break
+        Gtk.main_iteration_do(False)
 
 # EOF

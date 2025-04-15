@@ -704,7 +704,8 @@ class CallBack():
 
     def Unit(self, vparser, token, tentry):
         self.flush()
-        self.gl_mainadd("xx", xTextTag())
+        #self.gl_mainadd("xx", xTextTag())
+        self.gl_mainadd(" ", xTextTag())
         self.gl_mainsub("", True)
         self.emit( "<unit>")
 
