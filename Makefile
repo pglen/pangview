@@ -36,5 +36,10 @@ install:
 	cp    pangview.py ~/pgbin
 	cp -a panglib     ~/pgbin
 
+uninstall:
+	@echo Local uninstall only:
+	rm      ~/pgbin/pangview.py
+	rm  -r  ~/pgbin/panglib
+
 # End of Makefile
 

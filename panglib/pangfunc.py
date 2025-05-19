@@ -17,6 +17,7 @@ import panglib.parser as parser
 import panglib.utils as utils
 import panglib.pangparse as parsedata
 import panglib.pangdisp as pangdisp
+import panglib.pangedit as pangedit
 
 old_stresc = ""
 accum = ""
@@ -151,8 +152,12 @@ class CallBack():
 
             accum, xtag2 =  self.parseTextState(accum, TextState2)
             #self.gl_mainadd(accum, xtag2)
-            parser.action.mainadd(accum, xtag2)
 
+            try:
+                parser.action.mainadd(accum, xtag2)
+            except:
+                print("mainadd2", sys.exc_info())
+                raise
             accum = ""
 
     # --------------------------------------------------------------------
@@ -198,7 +203,10 @@ class CallBack():
             accum, xtag2 = self.parseTextState(accum, textstate2, vparser)
             #self.gl_mainadd(accum, xtag2)
             #vparser.action.show(accum, xtag2)
-            vparser.action.mainadd(accum, xtag2)
+            try:
+                vparser.action.mainadd(accum, xtag2)
+            except:
+                print("mainadd", sys.exc_info())
             accum = ""
 
         # Save tag state
@@ -804,16 +812,30 @@ class CallBack():
                         if not utils.isfile(fname):
                             fname = "~/" + vv
 
-        #print("fname", fname)
+        #print("Include fname:", fname)
         try:
             fp = open(fname, "r")
-            buff = fp.read()
+            buf = fp.read()
             fp.close()
-            #print(buff)
-            #pangdisp.reset_state()
-            parser.Parser(self.pvg).process(buff)
+        except:
+            print("Cannot load file", fname, sys.exc_info())
+
+        try:
+            #print("Include buff:", buff)
+
+            action = parser.Action()
+            action.mainadd = pangdisp.gl_view1.add_text_xtag
+            action.mainimg = pangdisp.gl_view1.add_image
+            action.mainsub = pangdisp.gl_view1.add_text_sub
+            ppp = parser.Parser(self.pvg)
+            ppp.action = action
+            ppp.process(buf)
+
+            #parser.Parser(self.pvg).process(buff)
         except:
             print("Cannot process file", fname, sys.exc_info())
+            if self.pvg.verbose:
+                utils.put_exc("Cannot process file")
 
         vparser.popstate()
         self.emit( "<inc2>")

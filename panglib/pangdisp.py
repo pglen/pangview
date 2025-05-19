@@ -13,6 +13,8 @@ import  panglib.textstate as textstate
 import  panglib.pangparse as pangparse
 
 ts = textstate.TextState()
+gl_view1 = None
+gl_view2 = None
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -26,6 +28,8 @@ from gi.repository import GdkPixbuf
 # XPM data for missing image
 
 #xstack = stack.Stack()
+
+gl_view1 = None
 
 rcnt = 1
 # ------------------------------------------------------------------------
@@ -127,6 +131,9 @@ class PangoView(Gtk.Window):
         self.add(hpaned)
 
         self.view1 = pangedit.PangEdit(self.pvg);
+        global gl_view1
+        gl_view1 = self.view1
+
         self.view1.link_callback = pglink
         self.view1.bs_callback = bslink
         self.buffer_1 = self.view1.get_buffer()
@@ -136,6 +143,9 @@ class PangoView(Gtk.Window):
         sw.add(self.view1)
 
         self.view2 = pangedit.PangEdit(self.pvg);
+        global gl_view2
+        gl_view2 = self.view2
+
         self.buffer_2 = self.view2.get_buffer()
         sw2 = Gtk.ScrolledWindow()
         sw2.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
@@ -196,7 +206,7 @@ class PangoView(Gtk.Window):
             return
         fh.close()
         if self.pvg.pgdebug > 5:
-            print (buf)
+            print("Buffer:", buf)
         if self.lastfile != strx:
             self.pvg.lstack.push(strx)
             self.lastfile = strx

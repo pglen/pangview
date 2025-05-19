@@ -348,6 +348,7 @@ class PangEdit(Gtk.TextView):
 
     def showbuff(self, buf):
 
+        #print("showbuff", len(buf), buf[:32])
         action = parser.Action()
         action.mainadd = self.add_text_xtag
         action.mainimg = self.add_image
